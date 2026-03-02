@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Business — AI-агенты и автоматизация под ключ</title>
+  <meta name="description" content="Строим AI-агентов и автоматизацию на n8n + LLM. Собственный продукт — доказательство. Команда из практиков.">
+  <meta property="og:title" content="Vibe Business Agency — AI-автоматизация под ключ">
+  <meta property="og:description" content="AI-агенты и автоматизация. Строим — потому что сами пользуемся.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fira+Code:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #070A10;
+      --surface:  #0D1219;
+      --card:     #131B27;
+      --border:   rgba(255,255,255,0.07);
+      --accent:   #DBFF4A;
+      --teal:     #00C9A7;
+      --red:      #FF6B6B;
+      --orange:   #FF9632;
+      --text:     #DCE7F2;
+      --muted:    #697A92;
+      --dim:      #2A3446;
+      --fd: 'Syne', sans-serif;
+      --fb: 'Manrope', sans-serif;
+      --fm: 'Fira Code', monospace;
+      --r: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--fb);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── Utils ─────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .label {
+      font-family: var(--fm);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: .75;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 6px;
+      font-family: var(--fb);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #07090E;
+    }
+    .btn-primary:hover {
+      background: #eaff6e;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(219,255,74,.2);
+    }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: none;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.04);
+    }
+
+    /* ─── Nav ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 18px 0;
+      background: rgba(7,10,16,.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--fm);
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: .04em;
+    }
+    .logo span { color: var(--accent); }
+    .nav-back {
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-link {
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link.active { color: var(--accent); }
+
+    /* ─── Section headers ─────────────────────────── */
+    section { padding: 80px 0; }
+    .sh { margin-bottom: 52px; }
+    .sh .label { margin-bottom: 12px; display: block; }
+    .sh h2 {
+      font-family: var(--fd);
+      font-size: clamp(26px, 3.5vw, 42px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .sh p { font-size: 17px; color: var(--muted); max-width: 560px; line-height: 1.65; }
+
+    /* ─── Hero ─────────────────────────────────────── */
+    .hero {
+      padding: 150px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -200px; right: -100px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(219,255,74,.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      bottom: -200px; left: -150px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,201,167,.04) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px 5px 10px;
+      border: 1px solid rgba(219,255,74,.2);
+      border-radius: 100px;
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 26px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; } 50% { opacity:.3; }
+    }
+
+    .hero h1 {
+      font-family: var(--fd);
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 800;
+      line-height: 1.08;
+      margin-bottom: 22px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 36px;
+      max-width: 560px;
+    }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-ctas .btn-primary { padding: 14px 30px; font-size: 15px; }
+
+    /* ─── Use Cases ────────────────────────────────── */
+    .uc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .uc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .uc-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(219,255,74,.3), transparent);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .uc-card:hover { border-color: rgba(219,255,74,.15); }
+    .uc-card:hover::before { opacity: 1; }
+    .uc-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .uc-card h3 {
+      font-family: var(--fd);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .uc-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .uc-tag {
+      display: inline-block;
+      margin-top: 14px;
+      font-family: var(--fm);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: .7;
+    }
+
+    /* ─── Why Us ────────────────────────────────────── */
+    .why-section { background: var(--surface); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .why-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px 32px;
+    }
+    .why-num {
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--accent);
+      opacity: .6;
+      margin-bottom: 12px;
+      letter-spacing: .08em;
+    }
+    .why-card h3 {
+      font-family: var(--fd);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .why-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ─── Proof bar ─────────────────────────────────── */
+    .proof-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(219,255,74,.03);
+      padding: 28px 0;
+    }
+    .proof-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .proof-label {
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .proof-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .proof-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .proof-tag {
+      font-family: var(--fm);
+      font-size: 11px;
+      padding: 4px 12px;
+      border: 1px solid rgba(219,255,74,.2);
+      border-radius: 100px;
+      color: var(--accent);
+    }
+
+    /* ─── Process ───────────────────────────────────── */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(12.5% + 28px);
+      right: calc(12.5% + 28px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--dim), var(--accent), var(--dim));
+      opacity: .4;
+    }
+    .process-step {
+      padding: 0 16px;
+      text-align: center;
+    }
+    .ps-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--fm);
+      font-size: 13px;
+      color: var(--accent);
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .process-step h4 {
+      font-family: var(--fd);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .process-step p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── CTA section ────────────────────────────────── */
+    .cta-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .cta-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .cta-main h2 {
+      font-family: var(--fd);
+      font-size: clamp(26px, 3vw, 38px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .cta-main h2 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .cta-main p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+    .cta-side {
+      background: var(--card);
+      border: 1px solid rgba(219,255,74,.12);
+      border-radius: var(--r);
+      padding: 28px;
+    }
+    .cta-side-title {
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      opacity: .8;
+    }
+    .cta-side p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .cta-side a {
+      font-size: 14px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .cta-side a:hover { text-decoration: underline; }
+
+    /* ─── School link ────────────────────────────────── */
+    .school-link-bar {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+    }
+    .school-link-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .school-link-text h3 {
+      font-family: var(--fd);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .school-link-text p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ─── Footer ─────────────────────────────────── */
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 12px; color: var(--dim); font-family: var(--fm); }
+
+    /* ─── Fade-in ─────────────────────────────────── */
+    .fi {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fi.visible { opacity: 1; transform: none; }
+
+    /* ─── Responsive ─────────────────────────────── */
+    @media (max-width: 960px) {
+      .uc-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .process-steps::before { display: none; }
+      .cta-inner { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .uc-grid { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr; }
+      section { padding: 64px 0; }
+      .hero { padding: 120px 0 60px; }
+      .school-link-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="../" class="nav-back">← Vibe Business</a>
+        <a href="../" class="logo">vibe<span>_</span>business</a>
+      </div>
+      <div class="nav-links">
+        <a href="../bot-zavod/" class="nav-link">Bot Zavod</a>
+        <a href="../school/" class="nav-link">Школа</a>
+        <a href="./" class="nav-link active">Агентство</a>
+        <a href="https://t.me/shushlon" class="btn btn-primary" target="_blank">Обсудить задачу</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-badge fi">
+      <span class="badge-dot"></span>
+      n8n + LLM · практики · живые кейсы
+    </div>
+    <h1 class="fi">
+      AI-агенты и автоматизация под ключ.<br>
+      Строим — потому что <em>сами пользуемся</em>.
+    </h1>
+    <p class="hero-sub fi">
+      Специализируемся на n8n + LLM-стеке. Собственный продукт — доказательство.
+      Строим для тех, кто хочет автоматизировать контент, поддержку клиентов или бизнес-процессы.
+    </p>
+    <div class="hero-ctas fi">
+      <a href="https://t.me/shushlon" class="btn btn-primary" target="_blank">
+        Обсудить задачу →
+      </a>
+      <a href="#how" class="btn btn-ghost">Как работаем</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF BAR -->
+<div class="proof-bar">
+  <div class="container">
+    <div class="proof-inner fi">
+      <span class="proof-label">Стек</span>
+      <div class="proof-divider"></div>
+      <div class="proof-tags">
+        <span class="proof-tag">n8n</span>
+        <span class="proof-tag">GPT / DeepSeek / Groq</span>
+        <span class="proof-tag">PostgreSQL</span>
+        <span class="proof-tag">Qdrant</span>
+        <span class="proof-tag">Telegram API</span>
+        <span class="proof-tag">Docker</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT WE BUILD -->
+<section id="services">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// что строим</span>
+      <h2>Use cases</h2>
+      <p>Берёмся только за то, что умеем и проверили на себе.</p>
+    </div>
+    <div class="uc-grid">
+      <div class="uc-card fi">
+        <span class="uc-icon">📡</span>
+        <h3>AI-контент-пайплайны</h3>
+        <p>Автосбор новостей из RSS, Telegram, Web → классификация LLM → генерация поста → автопубликация. Ваш канал работает на автопилоте.</p>
+        <span class="uc-tag">n8n + LLM + Telegram</span>
+      </div>
+      <div class="uc-card fi">
+        <span class="uc-icon">🤖</span>
+        <h3>RAG-агенты</h3>
+        <p>Боты поддержки клиентов с базой знаний, поиском по документам, памятью диалога. Интегрируем с Telegram, WhatsApp, сайтом.</p>
+        <span class="uc-tag">Qdrant + LLM + PostgreSQL</span>
+      </div>
+      <div class="uc-card fi">
+        <span class="uc-icon">⚙️</span>
+        <h3>Автоматизация бизнес-процессов</h3>
+        <p>n8n-интеграции между CRM, мессенджерами, таблицами, почтой. Убираем ручной труд из повторяющихся операций.</p>
+        <span class="uc-tag">n8n + API интеграции</span>
+      </div>
+      <div class="uc-card fi">
+        <span class="uc-icon">💬</span>
+        <h3>AI-боты</h3>
+        <p>Telegram и WhatsApp-боты с AI-логикой: онбординг, квалификация лидов, уведомления, персональные рекомендации.</p>
+        <span class="uc-tag">Telegram Bot API + LLM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// почему мы</span>
+      <h2>Практики, не теоретики</h2>
+      <p>Каждый дифференциатор — не маркетинг, а факт, который можно проверить.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fi">
+        <div class="why-num">// 01</div>
+        <h3>Bot Zavod — наш собственный продукт</h3>
+        <p>AI-контент-завод на n8n + LLM, который мы построили сами и используем каждый день. Это не кейс клиента — это наш собственный стек в продакшене.</p>
+      </div>
+      <div class="why-card fi">
+        <div class="why-num">// 02</div>
+        <h3>Знаем стек изнутри</h3>
+        <p>n8n, Qdrant, PostgreSQL, LLM API — мы не интегрируем по туториалу. Решаем нестандартные задачи, потому что сами разобрались с ними на своём продукте.</p>
+      </div>
+      <div class="why-card fi">
+        <div class="why-num">// 03</div>
+        <h3>Заказы выполняют наши выпускники</h3>
+        <p>Александр + специалисты, которых мы вырастили в школе. Исполнители — люди, которых мы знаем лично и за которых ручаемся.</p>
+      </div>
+      <div class="why-card fi">
+        <div class="why-num">// 04</div>
+        <h3>Не берём задачи, в которых не уверены</h3>
+        <p>Если задача вне нашего стека — скажем об этом честно. Только то, что умеем. Это дешевле, чем провальный проект с непредсказуемым результатом.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK -->
+<section id="how">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// как работаем</span>
+      <h2>Четыре шага</h2>
+      <p>Без долгих презентаций и менеджерских прослоек.</p>
+    </div>
+    <div class="process-steps fi">
+      <div class="process-step">
+        <div class="ps-num">01</div>
+        <h4>Описываете задачу</h4>
+        <p>Пишете в Telegram @shushlon — что хотите автоматизировать и какой результат нужен.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">02</div>
+        <h4>Бесплатная консультация</h4>
+        <p>Разбираем задачу вместе. Честно говорим, что реально, что нет, и какой стек подойдёт.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">03</div>
+        <h4>Оценка и решение</h4>
+        <p>Предлагаем конкретное решение с архитектурой и стоимостью. Фиксируем сроки и результат.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">04</div>
+        <h4>Строим и сдаём</h4>
+        <p>Разрабатываем, показываем в процессе, сдаём рабочий продукт с документацией.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="cta-main fi">
+        <h2>Есть задача?<br><em>Расскажите о ней.</em></h2>
+        <p>
+          Напишите в Telegram — разберём вашу задачу и честно скажем,
+          можем ли помочь. Консультация бесплатна.
+        </p>
+        <a href="https://t.me/shushlon" class="btn btn-primary" target="_blank" style="padding:14px 30px;font-size:15px;">
+          Написать @shushlon →
+        </a>
+      </div>
+      <div class="cta-side fi">
+        <div class="cta-side-title">// для автоматизаторов</div>
+        <p>
+          Вы умеете строить на n8n + LLM и хотите получать заказы?
+          Мы отдаём задачи своим выпускникам и проверенным специалистам.
+        </p>
+        <a href="https://t.me/shushlon" target="_blank">Написать об условиях →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHOOL LINK -->
+<div class="school-link-bar">
+  <div class="container">
+    <div class="school-link-inner fi">
+      <div class="school-link-text">
+        <h3>Хотите научиться сами?</h3>
+        <p>Школа Profy Conveyor — практикум по n8n+AI. Строите реальный продукт и забираете его с собой.</p>
+      </div>
+      <a href="../school/" class="btn btn-ghost">Посмотреть школу →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Vibe Business</span>
+      <span class="footer-copy" style="color: var(--muted);">AI-агенты и автоматизация</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        const siblings = e.target.parentElement.querySelectorAll('.fi');
+        siblings.forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.borderBottomColor =
+      window.scrollY > 40 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)';
+  });
+</script>
+
+</body>
+</html>

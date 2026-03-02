@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profy Conveyor — практикум по n8n+AI</title>
+  <meta name="description" content="Практикум по n8n+AI: строишь настоящий AI-контент-завод и забираешь его с собой. Второй поток — старт 1 апреля.">
+  <meta property="og:title" content="Profy Conveyor — практикум по n8n+AI">
+  <meta property="og:description" content="Не курс. Ты строишь реальный AI-контент-завод — и забираешь его с собой.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fira+Code:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #070A10;
+      --surface:  #0D1219;
+      --card:     #131B27;
+      --border:   rgba(255,255,255,0.07);
+      --accent:   #DBFF4A;
+      --teal:     #00C9A7;
+      --red:      #FF6B6B;
+      --orange:   #FF9632;
+      --text:     #DCE7F2;
+      --muted:    #697A92;
+      --dim:      #2A3446;
+      --fd: 'Syne', sans-serif;
+      --fb: 'Manrope', sans-serif;
+      --fm: 'Fira Code', monospace;
+      --r: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--fb);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── Utils ─────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .label {
+      font-family: var(--fm);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: .75;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 6px;
+      font-family: var(--fb);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #07090E;
+    }
+    .btn-primary:hover {
+      background: #eaff6e;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(219,255,74,.2);
+    }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: none;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.04);
+    }
+
+    /* ─── Nav ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 18px 0;
+      background: rgba(7,10,16,.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--fm);
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: .04em;
+    }
+    .logo span { color: var(--accent); }
+
+    /* ─── Hero ─────────────────────────────────────── */
+    .hero {
+      padding: 150px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -200px; right: -100px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(219,255,74,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      bottom: -200px; left: -150px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,201,167,.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px 5px 10px;
+      border: 1px solid rgba(219,255,74,.2);
+      border-radius: 100px;
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 26px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; } 50% { opacity:.3; }
+    }
+
+    .hero h1 {
+      font-family: var(--fd);
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 800;
+      line-height: 1.08;
+      margin-bottom: 22px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 36px;
+      max-width: 500px;
+    }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-ctas .btn-primary { padding: 14px 30px; font-size: 15px; }
+
+    /* Pipeline card */
+    .pipeline-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pipeline-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(219,255,74,.4), transparent);
+    }
+    .pipeline-card-label {
+      font-family: var(--fm);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    /* Nodes */
+    .pf { display: flex; flex-direction: column; gap: 14px; }
+    .pr { display: flex; align-items: center; gap: 0; }
+
+    .pn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-family: var(--fm);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .pn-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .pn-src  { background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--muted); min-width: 88px; }
+    .pn-n8n  { background: rgba(219,255,74,.08); border: 1px solid rgba(219,255,74,.18); color: var(--accent); }
+    .pn-llm  { background: rgba(0,201,167,.08); border: 1px solid rgba(0,201,167,.18); color: var(--teal); }
+    .pn-out  { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); color: var(--text); }
+
+    .pn-dot-rss { background: #FF6B6B; }
+    .pn-dot-tg  { background: #5BA4CF; }
+    .pn-dot-web { background: #A8B5C8; }
+    .pn-dot-n8n { background: var(--accent); }
+    .pn-dot-llm { background: var(--teal); }
+    .pn-dot-ok  { background: #4CAF50; }
+
+    /* Connector line */
+    .pc {
+      flex: 1;
+      height: 1px;
+      background: var(--dim);
+      position: relative;
+      overflow: hidden;
+      min-width: 14px;
+    }
+    .pc::after {
+      content: '';
+      position: absolute;
+      top: -1px; left: -50%;
+      width: 50%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent) 80%);
+      animation: flow 1.8s linear infinite;
+    }
+    .pc-2::after { animation-delay: .35s; }
+    .pc-3::after { animation-delay: .7s; }
+    .pc-teal::after { background: linear-gradient(90deg, transparent, var(--teal) 80%); }
+    @keyframes flow { from { left: -50%; } to { left: 150%; } }
+
+    /* Sources merge */
+    .psrc { display: flex; flex-direction: column; gap: 8px; }
+    .merge-line {
+      display: flex; flex-direction: column;
+      gap: 8px; margin-right: 6px;
+      position: relative;
+    }
+    .merge-line::before {
+      content: '';
+      position: absolute;
+      right: -6px; top: 50%; bottom: 0;
+      width: 6px; height: 1px;
+      background: var(--dim);
+    }
+
+    .pipeline-stat {
+      display: flex; gap: 16px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .ps-item { flex: 1; text-align: center; }
+    .ps-num {
+      font-family: var(--fd);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .ps-lbl {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ─── Stats bar ─────────────────────────────────── */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 28px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+    }
+    .stat { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-n {
+      font-family: var(--fd);
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .stat-l { font-size: 13px; color: var(--muted); }
+
+    /* ─── Section commons ─────────────────────────── */
+    section { padding: 96px 0; }
+    .sh { margin-bottom: 52px; }
+    .sh .label { display: block; margin-bottom: 12px; }
+    .sh h2 {
+      font-family: var(--fd);
+      font-size: clamp(26px,3.5vw,40px);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .sh p {
+      font-size: 17px;
+      color: var(--muted);
+      margin-top: 14px;
+      max-width: 540px;
+      line-height: 1.65;
+    }
+
+    /* ─── For Who ─────────────────────────────────── */
+    .for-who { background: var(--surface); }
+    .fw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex; gap: 13px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .ci {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+    .ci-y { background: rgba(219,255,74,.12); color: var(--accent); }
+    .ci-n { background: rgba(255,107,107,.1); color: var(--red); }
+
+    .not-for {
+      background: rgba(255,107,107,.04);
+      border: 1px solid rgba(255,107,107,.12);
+      border-radius: var(--r);
+      padding: 24px;
+    }
+    .not-for-title {
+      font-family: var(--fd);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+
+    /* ─── Tasks ──────────────────────────────────── */
+    .tasks-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      padding: 13px 20px;
+      font-family: var(--fm);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,.015);
+    }
+    td { padding: 15px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-family: var(--fm);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .b-easy { background: rgba(0,201,167,.1); color: var(--teal); border: 1px solid rgba(0,201,167,.15); }
+    .b-mid  { background: rgba(219,255,74,.1); color: var(--accent); border: 1px solid rgba(219,255,74,.15); }
+    .b-hard { background: rgba(255,150,50,.1); color: var(--orange); border: 1px solid rgba(255,150,50,.15); }
+
+    /* ─── Outcomes ───────────────────────────────── */
+    .outcomes { background: var(--surface); }
+    .out-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .out-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      position: relative;
+      transition: border-color .2s, transform .2s;
+    }
+    .out-card:hover { border-color: rgba(219,255,74,.22); transform: translateY(-2px); }
+    .out-card-n {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      margin-bottom: 18px;
+    }
+    .out-icon { font-size: 26px; margin-bottom: 14px; display: block; }
+    .out-card h3 {
+      font-family: var(--fd);
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .out-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ─── How It Works ───────────────────────────── */
+    .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+    .steps { display: flex; flex-direction: column; }
+    .step { display: flex; gap: 22px; padding-bottom: 28px; position: relative; }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 18px; top: 42px; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+    .step-n {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--accent);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .step-body h4 {
+      font-family: var(--fd);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      padding-top: 7px;
+    }
+    .step-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    .calls-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .calls-card h3 {
+      font-family: var(--fd);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .call-item {
+      display: flex; align-items: flex-start; gap: 13px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .call-item:last-child { border-bottom: none; }
+    .call-ico {
+      width: 34px; height: 34px;
+      border-radius: 7px;
+      background: rgba(219,255,74,.07);
+      border: 1px solid rgba(219,255,74,.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .call-lbl { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .call-desc { font-size: 12px; color: var(--muted); }
+
+    /* ─── Stack ──────────────────────────────────── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px,1fr));
+      gap: 14px;
+    }
+    .stack-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 18px 20px;
+      transition: border-color .2s;
+    }
+    .stack-item:hover { border-color: rgba(255,255,255,.15); }
+    .stack-name {
+      font-family: var(--fm);
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .stack-desc { font-size: 12px; color: var(--muted); }
+
+    /* ─── Mentor ─────────────────────────────────── */
+    .mentor { background: var(--surface); }
+    .mentor-grid { display: grid; grid-template-columns: 260px 1fr; gap: 60px; align-items: start; }
+    .mentor-photo {
+      aspect-ratio: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd);
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--dim);
+      position: relative;
+      overflow: hidden;
+    }
+    .mentor-photo::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(219,255,74,.05), transparent 60%);
+    }
+    .mentor-body { padding-top: 8px; }
+    .mentor-name {
+      font-family: var(--fd);
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .mentor-role {
+      font-family: var(--fm);
+      font-size: 11px;
+      letter-spacing: .1em;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+    .mentor-bio {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 26px;
+    }
+    .mentor-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .mentor-list li { display: flex; gap: 11px; font-size: 15px; }
+    .mentor-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+
+    /* ─── Pricing ─────────────────────────────────── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 32px; }
+    .pc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px;
+      position: relative;
+    }
+    .pc-card.cur {
+      border-color: rgba(219,255,74,.3);
+      background: linear-gradient(160deg, rgba(219,255,74,.06), var(--card));
+    }
+    .pc-card.cur::before {
+      content: 'ОТКРЫТ';
+      position: absolute;
+      top: -1px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #07090E;
+      font-family: var(--fm);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      padding: 3px 11px;
+      border-radius: 0 0 6px 6px;
+    }
+    .pc-cohort {
+      font-family: var(--fm);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      margin-bottom: 14px;
+    }
+    .pc-amount {
+      font-family: var(--fd);
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .pc-period { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+    .pc-card.past .pc-amount { opacity: .3; text-decoration: line-through; }
+    .pc-card.future .pc-amount { color: var(--muted); }
+    .pc-feats { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .pc-feats li { display: flex; gap: 9px; font-size: 13px; color: var(--muted); align-items: flex-start; }
+    .pc-feats li::before { content: '✓'; color: var(--teal); font-family: var(--fm); flex-shrink: 0; }
+
+    .price-note {
+      background: rgba(219,255,74,.05);
+      border: 1px solid rgba(219,255,74,.12);
+      border-radius: var(--r);
+      padding: 18px 22px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .price-note strong { color: var(--accent); }
+
+    /* ─── FAQ ─────────────────────────────────────── */
+    .faq-list { max-width: 700px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-btn {
+      width: 100%;
+      background: none; border: none;
+      text-align: left;
+      padding: 20px 0;
+      color: var(--text);
+      font-family: var(--fb);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color .2s;
+    }
+    .faq-btn:hover { color: var(--accent); }
+    .faq-ico {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      color: var(--muted);
+      transition: transform .25s, border-color .25s, color .25s;
+      font-family: var(--fm);
+    }
+    .faq-item.open .faq-ico {
+      transform: rotate(45deg);
+      border-color: rgba(219,255,74,.3);
+      color: var(--accent);
+    }
+    .faq-ans {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-ans { max-height: 300px; padding-bottom: 20px; }
+
+    /* ─── Final CTA ───────────────────────────────── */
+    .final {
+      background: var(--surface);
+      text-align: center;
+      padding: 110px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .final::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 90% at 50% 110%, rgba(219,255,74,.08) 0%, transparent 55%);
+    }
+    .final-inner { position: relative; z-index: 1; }
+    .final h2 {
+      font-family: var(--fd);
+      font-size: clamp(30px,5vw,56px);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .final h2 em { font-style: normal; color: var(--accent); }
+    .final p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 440px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .final .btn-primary { padding: 15px 34px; font-size: 16px; }
+    .final-contact { margin-top: 22px; font-size: 14px; color: var(--muted); }
+    .final-contact a { color: var(--accent); text-decoration: none; }
+    .final-contact a:hover { text-decoration: underline; }
+
+    /* ─── Footer ─────────────────────────────────── */
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 12px; color: var(--dim); font-family: var(--fm); }
+
+    /* ─── Fade-in ─────────────────────────────────── */
+    .fi {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fi.visible { opacity: 1; transform: none; }
+
+    /* ─── Responsive ─────────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .pipeline-card { display: none; }
+      .fw-grid { grid-template-columns: 1fr; }
+      .out-grid { grid-template-columns: 1fr 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .mentor-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .stat:nth-child(2) { border-right: none; }
+      .stat:nth-child(3) { border-top: 1px solid var(--border); padding-top: 20px; }
+      .stat:nth-child(4) { border-right: none; border-top: 1px solid var(--border); padding-top: 20px; }
+    }
+    @media (max-width: 600px) {
+      .out-grid { grid-template-columns: 1fr; }
+      section { padding: 64px 0; }
+      .hero { padding: 120px 0 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="../" style="font-family:var(--fm);font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;transition:color .2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← Vibe Business</a>
+        <a href="#" class="logo">profy<span>_</span>conveyor</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a href="../bot-zavod/" style="font-family:var(--fm);font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;transition:color .2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Bot Zavod</a>
+        <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM" class="btn btn-primary" target="_blank">Занять место</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge fi">
+          <span class="badge-dot"></span>
+          2-й поток · Старт 1 апреля · 5 000 ₽/мес
+        </div>
+        <h1 class="fi">
+          Не курс.<br>
+          Ты строишь реальный<br>
+          <em>AI-контент-завод</em> —<br>
+          и забираешь его с собой
+        </h1>
+        <p class="hero-sub fi">
+          Учишься n8n, работая над живым AI-пайплайном:
+          RSS и Telegram → LLM → готовый пост → автопубликация.
+          Весь стек включён. Ментор разбирает твои воркфлоу лично.
+        </p>
+        <div class="hero-ctas fi">
+          <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM" class="btn btn-primary" target="_blank">
+            Занять место →
+          </a>
+          <a href="#how" class="btn btn-ghost">Как это работает</a>
+        </div>
+      </div>
+
+      <!-- Pipeline Visualization -->
+      <div class="pipeline-card fi">
+        <div class="pipeline-card-label">// live pipeline · profy_conveyor</div>
+        <div class="pf">
+
+          <div class="pr">
+            <div class="psrc">
+              <div class="pn pn-src"><span class="pn-dot pn-dot-rss"></span>RSS</div>
+              <div class="pn pn-src" style="margin-top:8px"><span class="pn-dot pn-dot-tg"></span>Telegram</div>
+              <div class="pn pn-src" style="margin-top:8px"><span class="pn-dot pn-dot-web"></span>Web</div>
+            </div>
+            <div class="pc pc-2" style="height:40px; width:1px; min-width:24px;"></div>
+            <div class="pn pn-n8n"><span class="pn-dot pn-dot-n8n"></span>n8n</div>
+            <div class="pc pc-3" style="min-width:24px;"></div>
+            <div class="pn pn-llm"><span class="pn-dot pn-dot-llm"></span>LLM</div>
+            <div class="pc" style="min-width:24px;"></div>
+            <div class="pn pn-out"><span class="pn-dot pn-dot-ok"></span>Пост ✓</div>
+          </div>
+
+        </div>
+
+        <div class="pipeline-stat">
+          <div class="ps-item">
+            <div class="ps-num">3</div>
+            <div class="ps-lbl">источника</div>
+          </div>
+          <div class="ps-item">
+            <div class="ps-num">9</div>
+            <div class="ps-lbl">модулей n8n</div>
+          </div>
+          <div class="ps-item">
+            <div class="ps-num">100%</div>
+            <div class="ps-lbl">стек включён</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat fi">
+        <div class="stat-n">4</div>
+        <div class="stat-l">студента в первом потоке</div>
+      </div>
+      <div class="stat fi">
+        <div class="stat-n">2–3</div>
+        <div class="stat-l">месяца в среднем</div>
+      </div>
+      <div class="stat fi">
+        <div class="stat-n">3–10</div>
+        <div class="stat-l">часов в неделю</div>
+      </div>
+      <div class="stat fi">
+        <div class="stat-n">1 апр</div>
+        <div class="stat-l">старт второго потока</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOR WHO -->
+<section class="for-who" id="forwho">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// для кого</span>
+      <h2>Вам сюда, если…</h2>
+    </div>
+    <div class="fw-grid">
+      <ul class="checklist fi">
+        <li><span class="ci ci-y">✓</span>Хотите освоить n8n на практике, не на туториалах</li>
+        <li><span class="ci ci-y">✓</span>Хотите запустить Telegram-канал на автопилоте</li>
+        <li><span class="ci ci-y">✓</span>Ищете вход в профессию автоматизатора</li>
+        <li><span class="ci ci-y">✓</span>Хотите понять как работают AI-агенты — изнутри, на живом коде</li>
+        <li><span class="ci ci-y">✓</span>Готовы тратить 3–10 часов в неделю в своём темпе</li>
+      </ul>
+      <div class="fi">
+        <div class="not-for">
+          <div class="not-for-title">✕ &nbsp;Вам не сюда</div>
+          <ul class="checklist">
+            <li><span class="ci ci-n">✕</span>Уже строите сложные коммерческие n8n-воркфлоу</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU BUILD -->
+<section id="tasks">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// что вы строите</span>
+      <h2>Реальные задачи. Реальный продукт.</h2>
+      <p>Вы работаете над Bot Zavod — AI-контент-заводом, который уже запущен в бете. Задачи — из настоящего бэклога разработки, не придуманные для учёбы.</p>
+    </div>
+    <div class="tasks-wrap fi">
+      <table>
+        <thead>
+          <tr>
+            <th>Уровень</th>
+            <th>Примеры задач</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge b-easy">Простой</span></td>
+            <td>RSS-коллектор, классификатор новостей, отправка в Telegram</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-mid">Средний</span></td>
+            <td>LLM-агент с памятью, дедупликация через Vector DB, онбординг-бот</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-hard">Сложный</span></td>
+            <td>Мультиагентный пайплайн, health-монитор, аналитика качества контента</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="outcomes" id="outcomes">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// что получаете</span>
+      <h2>Уходите с инструментом,<br>не с сертификатом</h2>
+    </div>
+    <div class="out-grid">
+      <div class="out-card fi">
+        <div class="out-card-n">01</div>
+        <span class="out-icon">⚙️</span>
+        <h3>Свой контент-завод</h3>
+        <p>Задеплоенный, рабочий. Docker Compose, база данных, все воркфлоу. Запускаете для своего Telegram-канала — сразу.</p>
+      </div>
+      <div class="out-card fi">
+        <div class="out-card-n">02</div>
+        <span class="out-icon">📁</span>
+        <h3>Портфолио</h3>
+        <p>Реальные воркфлоу на живом проекте. Сразу виден уровень — без объяснений что за задача и зачем.</p>
+      </div>
+      <div class="out-card fi">
+        <div class="out-card-n">03</div>
+        <span class="out-icon">🔄</span>
+        <h3>Опыт полного цикла</h3>
+        <p>ТЗ → разработка → сдача → код-ревью с ментором. Так работают в команде.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// как устроено</span>
+      <h2>Ритм недели</h2>
+      <p>В своём темпе, в среднем 2–3 месяца. Зачёт — минимум 3 сданных модуля.</p>
+    </div>
+    <div class="how-grid">
+      <div class="steps fi">
+        <div class="step">
+          <div class="step-n">01</div>
+          <div class="step-body">
+            <h4>Берёте задачу</h4>
+            <p>Выбираете из бэклога по своему уровню. Задачи оценены по сложности заранее — вы видите что вас ждёт.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">02</div>
+          <div class="step-body">
+            <h4>Работаете в n8n</h4>
+            <p>Всё уже поднято и настроено. Платить за сервисы отдельно не нужно — весь стек включён.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">03</div>
+          <div class="step-body">
+            <h4>Задаёте вопросы</h4>
+            <p>Вопрос в Telegram-чат — ментор отвечает. Или выносите на групповой созвон.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">04</div>
+          <div class="step-body">
+            <h4>Сдаёте → ревью</h4>
+            <p>Ментор смотрит воркфлоу лично, даёт обратную связь по архитектуре и логике.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="calls-card fi">
+        <h3>Живое общение</h3>
+        <div class="call-item">
+          <div class="call-ico">📡</div>
+          <div>
+            <div class="call-lbl">1 групповой созвон в неделю</div>
+            <div class="call-desc">Открытый — приходите с любыми вопросами. Разбор одного полезен всем.</div>
+          </div>
+        </div>
+        <div class="call-item">
+          <div class="call-ico">🎯</div>
+          <div>
+            <div class="call-lbl">Созвоны по запросу</div>
+            <div class="call-desc">Застряли на задаче — созвон с ментором. Любой сокурсник может присоединиться.</div>
+          </div>
+        </div>
+        <div class="call-item">
+          <div class="call-ico">💬</div>
+          <div>
+            <div class="call-lbl">Telegram-чат</div>
+            <div class="call-desc">Общий чат со всеми участниками потока и ментором.</div>
+          </div>
+        </div>
+        <div class="call-item">
+          <div class="call-ico">▶️</div>
+          <div>
+            <div class="call-lbl">YouTube-обзоры нод</div>
+            <div class="call-desc">Теория бесплатно — обзоры нод n8n на открытом канале.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// стек включён</span>
+      <h2>Всё уже настроено —<br>платить отдельно не нужно</h2>
+    </div>
+    <div class="stack-grid fi">
+      <div class="stack-item">
+        <div class="stack-name">n8n</div>
+        <div class="stack-desc">Здесь вы строите всё</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">GPT · DeepSeek · Groq</div>
+        <div class="stack-desc">Генерация текста, классификация</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">PostgreSQL</div>
+        <div class="stack-desc">База данных пайплайна</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Qdrant</div>
+        <div class="stack-desc">Семантический поиск, дедупликация</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Image Generation</div>
+        <div class="stack-desc">Иллюстрации к постам</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">MinIO</div>
+        <div class="stack-desc">Хранение изображений</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">Grafana + Prometheus</div>
+        <div class="stack-desc">Видите реальные метрики проекта</div>
+      </div>
+      <div class="stack-item" style="border-color: rgba(219,255,74,.12); background: rgba(219,255,74,.03);">
+        <div class="stack-name" style="color: var(--accent);">+ весь CI/CD</div>
+        <div class="stack-desc">Docker Compose, деплой включён</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENTOR -->
+<section class="mentor" id="mentor">
+  <div class="container">
+    <div class="mentor-grid">
+      <div class="mentor-photo fi">АМ</div>
+      <div class="mentor-body fi">
+        <div class="mentor-name">Александр Мутев</div>
+        <div class="mentor-role">// автор Vibe Business · основатель Bot Zavod и Profy Conveyor</div>
+        <p class="mentor-bio">
+          Строит Bot Zavod как реальный AI-продукт. Ученики работают
+          над настоящим бэклогом — это не симулятор и не учебные задачки.
+        </p>
+        <ul class="mentor-list">
+          <li>Разбирает воркфлоу каждого участника лично</li>
+          <li>Отвечает в чате, объясняет архитектурные решения</li>
+          <li>Открытые созвоны — приходите с любыми вопросами</li>
+        </ul>
+        <p style="margin-top:20px; font-size:14px; color:var(--muted); font-style:italic;">
+          Это не записанный курс. Ментор рядом — не бот, не модератор.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// цена</span>
+      <h2>Заходите раньше —<br>платите меньше навсегда</h2>
+    </div>
+
+    <div class="pricing-grid fi">
+      <div class="pc-card past">
+        <div class="pc-cohort">ПЕРВЫЙ ПОТОК</div>
+        <div class="pc-amount">2 500 ₽</div>
+        <div class="pc-period">в месяц · закрыт</div>
+        <ul class="pc-feats">
+          <li>Доступ к практикуму</li>
+          <li>Весь стек сервисов</li>
+          <li>Telegram-чат + созвоны</li>
+          <li>Ревью воркфлоу</li>
+        </ul>
+      </div>
+      <div class="pc-card cur">
+        <div class="pc-cohort">ВТОРОЙ ПОТОК</div>
+        <div class="pc-amount">5 000 ₽</div>
+        <div class="pc-period">в месяц · старт 1 апреля</div>
+        <ul class="pc-feats">
+          <li>Доступ к практикуму и задачам</li>
+          <li>Общий n8n-инстанс + весь стек</li>
+          <li>1 групповой созвон в неделю</li>
+          <li>Созвоны по запросу</li>
+          <li>Telegram-чат с ментором</li>
+          <li>Ревью воркфлоу лично</li>
+        </ul>
+      </div>
+      <div class="pc-card future">
+        <div class="pc-cohort">БАЗОВАЯ ЦЕНА</div>
+        <div class="pc-amount">~7 500 ₽</div>
+        <div class="pc-period">в месяц · следующие потоки</div>
+        <ul class="pc-feats">
+          <li>Доступ к практикуму и задачам</li>
+          <li>Весь стек сервисов</li>
+          <li>Созвоны и чат</li>
+          <li>Ревью воркфлоу</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="price-note fi">
+      <strong>Как работает скидка:</strong> зашли раньше — платите меньше навсегда, пока учитесь.
+      Скидка второго потока действует 1 год с момента первого платежа.
+      Пропустили месяц — скидка сгорает, возвращаетесь по базовой цене.
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background: var(--surface);">
+  <div class="container">
+    <div class="sh fi">
+      <span class="label">// faq</span>
+      <h2>Частые вопросы</h2>
+    </div>
+    <div class="faq-list fi">
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Нужен ли опыт в n8n?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          Не обязателен. Большинство участников первого потока начинали с нуля или делали только простые workflow из 1–5 нод. Главное — готовность разбираться и тратить время.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Сколько времени нужно в неделю?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          От 3 часов (медленный темп) до 10 и больше. Вы сами регулируете темп — жёсткого расписания нет.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Сколько длится обучение?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          В среднем 2–3 месяца. Зачёт — минимум 3 сданных модуля с минимумом правок от ментора.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Что если застряну на задаче?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          Вопрос в Telegram-чат — ментор отвечает. Или выносите на групповой созвон или просите созвон лично. Никто не застревает надолго в одиночку.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Смогу запустить свой Telegram-канал на автопилоте?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          Да — именно для этого и нужен мини-завод, который вы строите. Уходите с задеплоенным Docker Compose, базой данных и воркфлоу — запускаете на своём сервере.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">
+          Как попасть?
+          <span class="faq-ico">+</span>
+        </button>
+        <div class="faq-ans">
+          Заполните анкету — это займёт 2 минуты. Мест ограничено.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="container">
+    <div class="final-inner fi">
+      <h2>Второй поток —<br><em>старт 1 апреля</em></h2>
+      <p>
+        Первый поток закрыт. Второй открыт прямо сейчас.
+        Цена 5 000 ₽/мес. С каждым потоком дороже.
+      </p>
+      <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM" class="btn btn-primary" target="_blank">
+        Занять место во втором потоке →
+      </a>
+      <div class="final-contact">
+        Или написать напрямую: <a href="https://t.me/shushlon" target="_blank">@shushlon</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 profy_conveyor</span>
+      <span class="footer-copy" style="color: var(--muted);">Практикум по n8n+AI</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // stagger siblings
+        const siblings = e.target.parentElement.querySelectorAll('.fi');
+        siblings.forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.borderBottomColor =
+      window.scrollY > 40 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)';
+  });
+</script>
+
+</body>
+</html>
