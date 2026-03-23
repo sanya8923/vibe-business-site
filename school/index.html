@@ -953,53 +953,36 @@
       <p>Каждый уровень — конкретный навык и конкретный результат. Двигаетесь в своём темпе.</p>
     </div>
 
-    <div class="tasks-wrap fi" style="overflow:visible; background:none; border:none; border-radius:0;">
-      <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
 
-        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:28px 32px;">
-          <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
-            <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); background:rgba(219,255,74,.08); border:1px solid rgba(219,255,74,.18); padding:4px 12px; border-radius:100px;">Intern</span>
-            <span style="font-size:13px; color:var(--muted);">Широкий охват инструментов и интеграций n8n</span>
-          </div>
-          <p style="font-size:14px; color:var(--text); line-height:1.65; margin-bottom:12px;">
-            Собираете небольшие воркфлоу и агентов, трогаете как можно больше нод. Быстрые результаты с первых шагов: Telegram-боты, скрапинг сайтов, AI-агенты, MCP-серверы, генерация изображений, мини-апы и многое другое.
-          </p>
-          <p style="font-size:13px; color:var(--teal);">Результат: портфолио воркфлоу — уверенная база автоматизатора</p>
-        </div>
-
-        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:28px 32px;">
-          <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
-            <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--orange); background:rgba(255,150,50,.08); border:1px solid rgba(255,150,50,.18); padding:4px 12px; border-radius:100px;">Junior</span>
-            <span style="font-size:13px; color:var(--muted);">Строите Bot Zavod — AI-контент-завод</span>
-          </div>
-          <p style="font-size:14px; color:var(--text); line-height:1.65; margin-bottom:12px;">
-            Учитесь проектировать большой продукт из множества взаимосвязанных процессов: соединять воркфлоу через прямые вызовы, расписания и базы данных. Разбираетесь в Docker Compose, переменных окружения, конфигурации продакшн-проекта.
-          </p>
-          <p style="font-size:13px; color:var(--teal);">Результат: задеплоенный Bot Zavod, готовый к работе</p>
-        </div>
-
-        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:28px 32px;">
-          <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
-            <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); background:rgba(0,201,167,.08); border:1px solid rgba(0,201,167,.18); padding:4px 12px; border-radius:100px;">Middle</span>
-            <span style="font-size:13px; color:var(--muted);">Сложная инфраструктура, свои микросервисы</span>
-          </div>
-          <p style="font-size:14px; color:var(--text); line-height:1.65; margin-bottom:12px;">
-            Связываете несколько инстансов n8n, разворачиваете большие продукты, подключаете свои микросервисы вместо платных решений. Завод из Junior-уровня дорабатываете под себя: хотите интеграцию с TikTok или новую площадку — получаете ТЗ и делаете.
-          </p>
-          <p style="font-size:13px; color:var(--teal);">При наличии заказов — можно участвовать в коммерческих проектах. Школа ведёт заказчика, студент участвует в разработке и созвонах.</p>
-        </div>
-
-        <div style="background:var(--card); border:1px solid rgba(255,255,255,.04); border-radius:12px; padding:28px 32px; opacity:.7;">
-          <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
-            <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:rgba(255,255,255,.04); border:1px solid var(--border); padding:4px 12px; border-radius:100px;">Senior / Pro</span>
-            <span style="font-size:13px; color:var(--muted);">Уже не студент — партнёр</span>
-          </div>
-          <p style="font-size:14px; color:var(--muted); line-height:1.65;">
-            Нет подписки. Есть доступ к закрытому чату и базе знаний. Свой инстанс n8n. При наличии заказов — получаете их напрямую, самостоятельно работаете с заказчиком.
-          </p>
-        </div>
-
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:12px;">
+        <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); background:rgba(219,255,74,.08); border:1px solid rgba(219,255,74,.18); padding:4px 12px; border-radius:100px; align-self:flex-start;">Intern</span>
+        <div style="font-size:13px; font-weight:600; color:var(--text); line-height:1.4;">Широкий охват n8n и AI</div>
+        <div style="font-size:13px; color:var(--muted); line-height:1.6; flex:1;">Telegram-боты, скрапинг, AI-агенты, MCP-серверы, мини-апы. Трогаете как можно больше нод.</div>
+        <div style="font-size:12px; color:var(--teal); font-family:var(--fm);">→ портфолио воркфлоу</div>
       </div>
+
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:12px;">
+        <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--orange); background:rgba(255,150,50,.08); border:1px solid rgba(255,150,50,.18); padding:4px 12px; border-radius:100px; align-self:flex-start;">Junior</span>
+        <div style="font-size:13px; font-weight:600; color:var(--text); line-height:1.4;">Строите Bot Zavod</div>
+        <div style="font-size:13px; color:var(--muted); line-height:1.6; flex:1;">Проектируете AI-контент-завод с нуля. Docker Compose, деплой, продакшн-конфигурация.</div>
+        <div style="font-size:12px; color:var(--teal); font-family:var(--fm);">→ задеплоенный Bot Zavod</div>
+      </div>
+
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:12px;">
+        <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); background:rgba(0,201,167,.08); border:1px solid rgba(0,201,167,.18); padding:4px 12px; border-radius:100px; align-self:flex-start;">Middle</span>
+        <div style="font-size:13px; font-weight:600; color:var(--text); line-height:1.4;">Инфраструктура и заказы</div>
+        <div style="font-size:13px; color:var(--muted); line-height:1.6; flex:1;">Несколько n8n-инстансов, свои микросервисы. Участие в коммерческих проектах школы.</div>
+        <div style="font-size:12px; color:var(--teal); font-family:var(--fm);">→ реальные заказы (70% вам)</div>
+      </div>
+
+      <div style="background:var(--card); border:1px solid rgba(255,255,255,.04); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:12px; opacity:.6;">
+        <span style="font-family:var(--fm); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:rgba(255,255,255,.04); border:1px solid var(--border); padding:4px 12px; border-radius:100px; align-self:flex-start;">Senior / Pro</span>
+        <div style="font-size:13px; font-weight:600; color:var(--muted); line-height:1.4;">Уже не студент — партнёр</div>
+        <div style="font-size:13px; color:var(--muted); line-height:1.6; flex:1;">Закрытый чат, база знаний, свой n8n. Заказы напрямую от клиентов школы.</div>
+        <div style="font-size:12px; color:var(--muted); font-family:var(--fm);">→ в разработке</div>
+      </div>
+
     </div>
   </div>
 </section>
