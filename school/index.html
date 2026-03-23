@@ -543,7 +543,7 @@
     /* ─── Stack ──────────────────────────────────── */
     .stack-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px,1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
     .stack-item {
@@ -1112,8 +1112,8 @@
   <div class="container">
     <div class="sh fi">
       <span class="label">// всё включено</span>
-      <h2>Вся инфраструктура уже в подписке —<br>просто заходите и работайте</h2>
-      <p>n8n-инстанс, токены AI-моделей, рабочая среда без VPN — платить отдельно не нужно.</p>
+      <h2>Всё нужное уже внутри — берёте и работаете</h2>
+      <p>n8n, AI-модели и рабочая среда включены в подписку. Ничего настраивать и отдельно оплачивать не нужно.</p>
     </div>
     <div class="stack-grid fi">
       <div class="stack-item" style="border-color: rgba(219,255,74,.12); background: rgba(219,255,74,.03);">
@@ -1121,32 +1121,24 @@
         <div class="stack-desc">Ваш собственный, уже развёрнут. Не нужно настраивать с нуля</div>
       </div>
       <div class="stack-item" style="border-color: rgba(219,255,74,.12); background: rgba(219,255,74,.03);">
-        <div class="stack-name" style="color: var(--accent);">Токены AI уже включены</div>
+        <div class="stack-name" style="color: var(--accent);">Токены AI включены</div>
         <div class="stack-desc">GPT · Claude · DeepSeek — через наш API. Без зарубежных карт</div>
       </div>
       <div class="stack-item">
-        <div class="stack-name">PostgreSQL</div>
-        <div class="stack-desc">База данных пайплайна</div>
+        <div class="stack-name">Весь стек готов</div>
+        <div class="stack-desc">Все сервисы для задач уже развёрнуты и настроены на нашей инфраструктуре</div>
       </div>
       <div class="stack-item">
-        <div class="stack-name">Qdrant</div>
-        <div class="stack-desc">Семантический поиск, дедупликация</div>
+        <div class="stack-name">Таск-трекер</div>
+        <div class="stack-desc">ТЗ, сдача работы и ревью ментора — всё в одном месте</div>
       </div>
       <div class="stack-item">
-        <div class="stack-name">Image Generation</div>
-        <div class="stack-desc">Иллюстрации к постам</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-name">MinIO</div>
-        <div class="stack-desc">Хранение изображений</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-name">Grafana + Prometheus</div>
-        <div class="stack-desc">Видите реальные метрики проекта</div>
+        <div class="stack-name">База знаний</div>
+        <div class="stack-desc">Созвоны и разборы автоматически попадают в базу. Знания копятся — не нужно искать по чатам</div>
       </div>
       <div class="stack-item" style="border-color: rgba(0,201,167,.12); background: rgba(0,201,167,.03);">
-        <div class="stack-name" style="color: var(--teal);">Matrix-мессенджер</div>
-        <div class="stack-desc">Работает без VPN в РФ. Не Telegram — не блокируется</div>
+        <div class="stack-name" style="color: var(--teal);">Мессенджер школы</div>
+        <div class="stack-desc">Собственная платформа. Работает без VPN, не подвержена блокировкам</div>
       </div>
     </div>
   </div>
