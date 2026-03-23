@@ -502,6 +502,26 @@
     }
     .how-step-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
 
+    .how-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+    .how-divider-label {
+      font-family: var(--fm);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--teal);
+      white-space: nowrap;
+      opacity: .8;
+    }
+    .how-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
     .how-support {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1047,6 +1067,11 @@
         <div class="how-step-title">Сдаёте → ревью</div>
         <div class="how-step-desc">Ментор смотрит воркфлоу и оставляет подробные комментарии в таск-трекере. По архитектуре, логике, оформлению.</div>
       </div>
+    </div>
+
+    <div class="how-divider fi">
+      <span class="how-divider-label">// поддержка на каждом шаге</span>
+      <div class="how-divider-line"></div>
     </div>
 
     <div class="how-support fi">
