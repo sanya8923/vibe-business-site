@@ -263,6 +263,8 @@
     .pc-2::after { animation-delay: .35s; }
     .pc-3::after { animation-delay: .7s; }
     .pc-teal::after { background: linear-gradient(90deg, transparent, var(--teal) 80%); }
+    .pc-orange::after { background: linear-gradient(90deg, transparent, var(--orange) 80%); }
+    .pc-dim::after { background: linear-gradient(90deg, transparent, rgba(220,231,242,.4) 80%); }
     @keyframes flow { from { left: -50%; } to { left: 150%; } }
 
     /* Sources merge */
@@ -793,43 +795,60 @@
         </div>
       </div>
 
-      <!-- Infrastructure Visualization -->
+      <!-- Student Journey Visualization -->
       <div class="pipeline-card fi">
-        <div class="pipeline-card-label">// готово к работе · profy_conveyor</div>
-        <div class="pf">
+        <div class="pipeline-card-label">// путь студента · profy_conveyor</div>
+        <div style="display:flex; flex-direction:column; padding:6px 0;">
 
-          <div class="pr">
-            <div class="pn pn-n8n" style="min-width:120px;"><span class="pn-dot pn-dot-n8n"></span>n8n-инстанс</div>
-            <div class="pc" style="min-width:28px;"></div>
-            <div class="pn pn-out"><span class="pn-dot pn-dot-ok"></span>Telegram-бот ✓</div>
+          <!-- INTERN: node left, animated line right -->
+          <div style="display:flex; align-items:center; padding:8px 0;">
+            <div class="pn pn-n8n" style="flex-shrink:0;"><span class="pn-dot pn-dot-n8n"></span>Intern</div>
+            <div class="pc" style="flex:1;"></div>
           </div>
 
-          <div class="pr">
-            <div class="pn pn-llm" style="min-width:120px;"><span class="pn-dot pn-dot-llm"></span>AI-токены</div>
-            <div class="pc pc-teal pc-2" style="min-width:28px;"></div>
-            <div class="pn pn-out"><span class="pn-dot pn-dot-ok"></span>AI-агент ✓</div>
+          <!-- connector right: Intern → Junior -->
+          <div style="height:20px; position:relative;">
+            <div style="position:absolute; right:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(219,255,74,.3), rgba(255,150,50,.3));"></div>
           </div>
 
-          <div class="pr">
-            <div class="pn" style="min-width:120px;background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.18);color:var(--teal);"><span class="pn-dot" style="background:var(--teal);width:6px;height:6px;border-radius:50%;flex-shrink:0;"></span>Matrix-чат</div>
-            <div class="pc pc-teal pc-3" style="min-width:28px;"></div>
-            <div class="pn pn-out"><span class="pn-dot pn-dot-ok"></span>Контент-завод ✓</div>
+          <!-- JUNIOR: node right, animated line left -->
+          <div style="display:flex; align-items:center; padding:8px 0; flex-direction:row-reverse;">
+            <div class="pn" style="color:var(--orange);background:rgba(255,150,50,.08);border:1px solid rgba(255,150,50,.25);flex-shrink:0;"><span class="pn-dot" style="background:var(--orange);"></span>Junior</div>
+            <div class="pc pc-orange pc-2" style="flex:1;"></div>
+          </div>
+
+          <!-- connector left: Junior → Middle -->
+          <div style="height:20px; position:relative;">
+            <div style="position:absolute; left:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(255,150,50,.3), rgba(0,201,167,.3));"></div>
+          </div>
+
+          <!-- MIDDLE: node left, animated line right -->
+          <div style="display:flex; align-items:center; padding:8px 0;">
+            <div class="pn" style="color:var(--teal);background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.25);flex-shrink:0;"><span class="pn-dot" style="background:var(--teal);"></span>Middle</div>
+            <div class="pc pc-teal pc-3" style="flex:1;"></div>
+          </div>
+
+          <!-- connector right: Middle → Senior/Pro -->
+          <div style="height:20px; position:relative;">
+            <div style="position:absolute; right:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(0,201,167,.3), rgba(220,231,242,.2));"></div>
+          </div>
+
+          <!-- SENIOR/PRO: node right, animated line left -->
+          <div style="display:flex; align-items:center; padding:8px 0; flex-direction:row-reverse;">
+            <div class="pn" style="color:var(--text);background:rgba(220,231,242,.06);border:1px solid rgba(220,231,242,.15);flex-shrink:0;"><span class="pn-dot" style="background:var(--text);"></span>Senior / Pro</div>
+            <div class="pc pc-dim" style="flex:1;"></div>
           </div>
 
         </div>
-
         <div class="pipeline-stat">
           <div class="ps-item">
-            <div class="ps-num" style="font-size:14px;letter-spacing:-.02em;">GPT · Claude</div>
-            <div class="ps-lbl">AI-токены включены</div>
+            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Только практика</div>
           </div>
           <div class="ps-item">
-            <div class="ps-num" style="font-size:18px;">без VPN</div>
-            <div class="ps-lbl">Matrix-мессенджер</div>
+            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Помощь ментора каждый день</div>
           </div>
           <div class="ps-item">
-            <div class="ps-num">100%</div>
-            <div class="ps-lbl">стек включён</div>
+            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Токены и n8n в стоимости</div>
           </div>
         </div>
       </div>
