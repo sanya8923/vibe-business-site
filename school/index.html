@@ -122,14 +122,21 @@
 
     /* ─── Hero ─────────────────────────────────────── */
     .hero {
-      padding: 80px 0 60px;
+      padding: 60px 0 0;
       position: relative;
       overflow: hidden;
       scroll-snap-align: start;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+    .hero > .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
+      padding-top: 20px;
+      padding-bottom: 40px;
     }
     .hero-glow {
       position: absolute;
