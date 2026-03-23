@@ -315,6 +315,24 @@
     }
     .stat { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
     .stat:last-child { border-right: none; }
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--fm);
+      font-size: 10px;
+      letter-spacing: .06em;
+      padding: 3px 9px;
+      border-radius: 4px;
+      border: 1px solid;
+      margin-bottom: 10px;
+    }
+    .stat-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
     .stat-n {
       font-family: var(--fd);
       font-size: 22px;
@@ -874,19 +892,23 @@
   <div class="container">
     <div class="stats-grid">
       <div class="stat fi">
-        <div class="stat-n">каждый день</div>
-        <div class="stat-l">ментор онлайн пн–пт 18:00–20:00</div>
+        <div class="stat-badge" style="color:var(--accent);border-color:rgba(219,255,74,.2);background:rgba(219,255,74,.05);">// ментор</div>
+        <div class="stat-val">каждый день</div>
+        <div class="stat-l">пн–пт 18:00–20:00 онлайн</div>
       </div>
       <div class="stat fi">
-        <div class="stat-n">ревью</div>
-        <div class="stat-l">по каждой задаче лично</div>
+        <div class="stat-badge" style="color:var(--teal);border-color:rgba(0,201,167,.2);background:rgba(0,201,167,.05);">// ревью</div>
+        <div class="stat-val">по каждой задаче</div>
+        <div class="stat-l">лично от ментора</div>
       </div>
       <div class="stat fi">
-        <div class="stat-n">GPT · Claude</div>
-        <div class="stat-l">токены включены</div>
+        <div class="stat-badge" style="color:var(--orange);border-color:rgba(255,150,50,.2);background:rgba(255,150,50,.05);">// токены AI</div>
+        <div class="stat-val">GPT · Claude · DeepSeek</div>
+        <div class="stat-l">включены в стоимость</div>
       </div>
       <div class="stat fi">
-        <div class="stat-n">4 уровня</div>
+        <div class="stat-badge" style="color:var(--muted);border-color:rgba(105,122,146,.2);background:rgba(105,122,146,.05);">// программа</div>
+        <div class="stat-val">4 уровня</div>
         <div class="stat-l">Intern → Senior/Pro</div>
       </div>
     </div>
