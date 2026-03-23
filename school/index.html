@@ -792,7 +792,9 @@
 
     /* ─── Footer ─────────────────────────────────── */
     footer {
-      padding: 28px 0;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 0;
       border-top: 1px solid var(--border);
     }
     .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -1372,7 +1374,7 @@
 </section>
 
 <!-- FINAL CTA -->
-<section class="final">
+<section class="final" style="position: relative;">
   <div class="container">
     <div class="final-inner fi">
       <h2>Зафиксируйте текущие условия<br><em>до смены тарифов</em></h2>
@@ -1388,17 +1390,15 @@
       </div>
     </div>
   </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <span class="footer-copy">© 2026 profy_conveyor</span>
-      <span class="footer-copy" style="color: var(--muted);">Практикум по n8n+AI</span>
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2026 profy_conveyor</span>
+        <span class="footer-copy" style="color: var(--muted);">Практикум по n8n+AI</span>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
+</section>
 
 <script>
   // FAQ accordion
