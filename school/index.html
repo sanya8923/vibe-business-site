@@ -566,17 +566,19 @@
     .mentor { background: var(--surface); }
     .mentor-grid { display: grid; grid-template-columns: 260px 1fr; gap: 60px; align-items: start; }
     .mentor-photo {
-      aspect-ratio: 1;
+      aspect-ratio: 3/4;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--fd);
-      font-size: 52px;
-      font-weight: 800;
-      color: var(--dim);
       position: relative;
       overflow: hidden;
+    }
+    .mentor-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
     }
     .mentor-photo::before {
       content: '';
@@ -1148,10 +1150,12 @@
 <section class="mentor" id="mentor">
   <div class="container">
     <div class="mentor-grid">
-      <div class="mentor-photo fi">АМ</div>
+      <div class="mentor-photo fi">
+        <img src="images/alexander.png" alt="Александр Мутев">
+      </div>
       <div class="mentor-body fi">
         <div class="mentor-name">Александр Мутев</div>
-        <div class="mentor-role">// автор Vibe Business · основатель Bot Zavod и Profy Conveyor</div>
+        <div class="mentor-role">// основатель Vibe Business</div>
         <p class="mentor-bio">
           Строит Bot Zavod как реальный AI-продукт. Ученики работают
           над настоящим бэклогом — это не симулятор и не учебные задачки.
