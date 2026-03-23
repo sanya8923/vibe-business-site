@@ -809,11 +809,35 @@
     .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .footer-copy { font-size: 12px; color: var(--dim); font-family: var(--fm); }
 
+    /* ─── Slide-show: секции выезжают снизу ──────── */
+    section:not(.hero) { overflow: hidden; }
+
+    section .container {
+      opacity: 0;
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.4s ease;
+    }
+    .hero .container         { transform: translateY(40px); }
+    section:not(.hero) .container { transform: translateY(100vh); }
+
+    .hero .stats-bar {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
+                  opacity 0.4s ease 0.2s;
+    }
+
+    section.snap-in .container,
+    section.snap-in .stats-bar {
+      opacity: 1;
+      transform: none;
+    }
+
     /* ─── Fade-in ─────────────────────────────────── */
     .fi {
       opacity: 0;
       transform: translateY(18px);
-      transition: opacity .6s ease, transform .6s ease;
+      transition: opacity .5s ease, transform .5s ease;
     }
     .fi.visible { opacity: 1; transform: none; }
 
@@ -836,6 +860,11 @@
       section { padding: 64px 0; min-height: auto; scroll-snap-align: none; }
       .hero { padding: 100px 0 0; min-height: auto; scroll-snap-align: none; }
       html { scroll-snap-type: none; }
+      /* Disable slide animations on mobile */
+      section .container, .hero .stats-bar {
+        opacity: 1 !important; transform: none !important; transition: none !important;
+      }
+      .fi { opacity: 1 !important; transform: none !important; transition: none !important; }
     }
   </style>
 </head>
@@ -1420,21 +1449,31 @@
     });
   });
 
-  // Fade-in on scroll
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        // stagger siblings
-        const siblings = e.target.parentElement.querySelectorAll('.fi');
-        siblings.forEach((el, i) => {
-          setTimeout(() => el.classList.add('visible'), i * 80);
-        });
+  // Slide-show: секция выезжает снизу, затем .fi-элементы появляются с задержкой
+  function activateSection(section) {
+    section.classList.add('snap-in');
+    const delay = section.classList.contains('hero') ? 450 : 480;
+    setTimeout(() => {
+      section.querySelectorAll('.fi').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 80);
+      });
+    }, delay);
+  }
+
+  // Hero: активируем на загрузке страницы
+  setTimeout(() => activateSection(document.querySelector('.hero')), 80);
+
+  // Остальные секции: активируем при входе в viewport
+  const slideObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        activateSection(entry.target);
+        slideObserver.unobserve(entry.target);
       }
     });
   }, { threshold: 0.1 });
 
-  document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+  document.querySelectorAll('section:not(.hero)').forEach(s => slideObserver.observe(s));
 
   // Nav scroll effect
   window.addEventListener('scroll', () => {
