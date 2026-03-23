@@ -797,59 +797,73 @@
 
       <!-- Student Journey Visualization -->
       <div class="pipeline-card fi">
-        <div class="pipeline-card-label">// путь студента · profy_conveyor</div>
-        <div style="display:flex; flex-direction:column; padding:6px 0;">
+        <style>
+          @keyframes flow-rtl { from { left: 150%; } to { left: -50%; } }
+          .pc-rtl-orange::after { animation: flow-rtl 1.8s .35s linear infinite; background: linear-gradient(270deg, transparent, var(--orange) 80%); }
+          .pc-rtl-dim::after    { animation: flow-rtl 1.8s .7s  linear infinite; background: linear-gradient(270deg, transparent, rgba(220,231,242,.4) 80%); }
+        </style>
 
-          <!-- INTERN: node left, animated line right -->
-          <div style="display:flex; align-items:center; padding:8px 0;">
+        <div class="pipeline-card-label">// путь студента · profy_conveyor</div>
+
+        <div style="padding:10px 0 14px;">
+
+          <!-- INTERN: L→R, exit corner bottom-right -->
+          <div style="display:flex; align-items:center; height:44px;">
             <div class="pn pn-n8n" style="flex-shrink:0;"><span class="pn-dot pn-dot-n8n"></span>Intern</div>
             <div class="pc" style="flex:1;"></div>
+            <div style="width:12px;height:22px;align-self:flex-end;flex-shrink:0;border-top:1px solid rgba(219,255,74,.35);border-right:1px solid rgba(219,255,74,.35);border-radius:0 6px 0 0;"></div>
           </div>
 
-          <!-- connector right: Intern → Junior -->
-          <div style="height:20px; position:relative;">
-            <div style="position:absolute; right:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(219,255,74,.3), rgba(255,150,50,.3));"></div>
+          <!-- RIGHT vertical Intern→Junior -->
+          <div style="height:18px;display:flex;justify-content:flex-end;">
+            <div style="width:1px;background:linear-gradient(to bottom,rgba(219,255,74,.25),rgba(255,150,50,.25));"></div>
           </div>
 
-          <!-- JUNIOR: node right, animated line left -->
-          <div style="display:flex; align-items:center; padding:8px 0; flex-direction:row-reverse;">
+          <!-- JUNIOR: R→L, entry corner top-right + exit corner bottom-left -->
+          <div style="display:flex;align-items:center;height:44px;flex-direction:row-reverse;">
+            <div style="width:12px;height:22px;align-self:flex-start;flex-shrink:0;border-bottom:1px solid rgba(255,150,50,.35);border-right:1px solid rgba(255,150,50,.35);border-radius:0 0 6px 0;"></div>
             <div class="pn" style="color:var(--orange);background:rgba(255,150,50,.08);border:1px solid rgba(255,150,50,.25);flex-shrink:0;"><span class="pn-dot" style="background:var(--orange);"></span>Junior</div>
-            <div class="pc pc-orange pc-2" style="flex:1;"></div>
+            <div class="pc pc-rtl-orange" style="flex:1;"></div>
+            <div style="width:12px;height:22px;align-self:flex-end;flex-shrink:0;border-top:1px solid rgba(255,150,50,.35);border-left:1px solid rgba(255,150,50,.35);border-radius:6px 0 0 0;"></div>
           </div>
 
-          <!-- connector left: Junior → Middle -->
-          <div style="height:20px; position:relative;">
-            <div style="position:absolute; left:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(255,150,50,.3), rgba(0,201,167,.3));"></div>
+          <!-- LEFT vertical Junior→Middle -->
+          <div style="height:18px;display:flex;justify-content:flex-start;">
+            <div style="width:1px;background:linear-gradient(to bottom,rgba(255,150,50,.25),rgba(0,201,167,.25));"></div>
           </div>
 
-          <!-- MIDDLE: node left, animated line right -->
-          <div style="display:flex; align-items:center; padding:8px 0;">
+          <!-- MIDDLE: L→R, entry corner top-left + exit corner bottom-right -->
+          <div style="display:flex;align-items:center;height:44px;">
+            <div style="width:12px;height:22px;align-self:flex-start;flex-shrink:0;border-bottom:1px solid rgba(0,201,167,.35);border-left:1px solid rgba(0,201,167,.35);border-radius:0 0 0 6px;"></div>
             <div class="pn" style="color:var(--teal);background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.25);flex-shrink:0;"><span class="pn-dot" style="background:var(--teal);"></span>Middle</div>
             <div class="pc pc-teal pc-3" style="flex:1;"></div>
+            <div style="width:12px;height:22px;align-self:flex-end;flex-shrink:0;border-top:1px solid rgba(0,201,167,.35);border-right:1px solid rgba(0,201,167,.35);border-radius:0 6px 0 0;"></div>
           </div>
 
-          <!-- connector right: Middle → Senior/Pro -->
-          <div style="height:20px; position:relative;">
-            <div style="position:absolute; right:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, rgba(0,201,167,.3), rgba(220,231,242,.2));"></div>
+          <!-- RIGHT vertical Middle→Senior/Pro -->
+          <div style="height:18px;display:flex;justify-content:flex-end;">
+            <div style="width:1px;background:linear-gradient(to bottom,rgba(0,201,167,.25),rgba(220,231,242,.2));"></div>
           </div>
 
-          <!-- SENIOR/PRO: node right, animated line left -->
-          <div style="display:flex; align-items:center; padding:8px 0; flex-direction:row-reverse;">
+          <!-- SENIOR/PRO: R→L, entry corner top-right -->
+          <div style="display:flex;align-items:center;height:44px;flex-direction:row-reverse;">
+            <div style="width:12px;height:22px;align-self:flex-start;flex-shrink:0;border-bottom:1px solid rgba(220,231,242,.2);border-right:1px solid rgba(220,231,242,.2);border-radius:0 0 6px 0;"></div>
             <div class="pn" style="color:var(--text);background:rgba(220,231,242,.06);border:1px solid rgba(220,231,242,.15);flex-shrink:0;"><span class="pn-dot" style="background:var(--text);"></span>Senior / Pro</div>
-            <div class="pc pc-dim" style="flex:1;"></div>
+            <div class="pc pc-rtl-dim" style="flex:1;"></div>
           </div>
 
         </div>
-        <div class="pipeline-stat">
-          <div class="ps-item">
-            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Только практика</div>
-          </div>
-          <div class="ps-item">
-            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Помощь ментора каждый день</div>
-          </div>
-          <div class="ps-item">
-            <div class="ps-lbl" style="font-size:11px;color:var(--text);line-height:1.4;">Токены и n8n в стоимости</div>
-          </div>
+
+        <!-- Stats: однострочный monospace -->
+        <div style="border-top:1px solid var(--border);padding-top:14px;display:flex;align-items:center;gap:0;font-family:var(--fm);font-size:10px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;">
+          <span style="color:var(--accent);flex-shrink:0;">✓</span>
+          <span style="color:var(--muted);margin:0 8px 0 5px;flex-shrink:0;">Только практика</span>
+          <span style="color:rgba(255,255,255,.1);flex-shrink:0;">|</span>
+          <span style="color:var(--teal);margin-left:8px;flex-shrink:0;">✓</span>
+          <span style="color:var(--muted);margin:0 8px 0 5px;flex-shrink:0;">Помощь ментора</span>
+          <span style="color:rgba(255,255,255,.1);flex-shrink:0;">|</span>
+          <span style="color:var(--accent);margin-left:8px;flex-shrink:0;">✓</span>
+          <span style="color:var(--muted);margin-left:5px;flex-shrink:0;">Токены и n8n включены</span>
         </div>
       </div>
     </div>
