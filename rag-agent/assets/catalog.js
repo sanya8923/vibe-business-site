@@ -10,7 +10,7 @@
   const STRETCHES = {
     // Embedding
     'S-Embed-OpenAI-Small':   { id: 'S-Embed-OpenAI-Small',   category: 'embedding', name: 'text-embedding-3-small',     short: 'Базовая дешёвая модель OpenAI для смыслового поиска.',     mode: 'managed cloud' },
-    'S-Embed-Cohere':         { id: 'S-Embed-Cohere',         category: 'embedding', name: 'Cohere Embed v3',           short: 'Длинный контекст до 32k, multilingual.',                  mode: 'managed cloud' },
+    'S-Embed-Cohere':         { id: 'S-Embed-Cohere',         category: 'embedding', name: 'Cohere Embed v3',           short: 'Понимает большие документы целиком (до ~30 страниц текста за раз) и работает на 100+ языках.', mode: 'managed cloud' },
     'S-Embed-Voyage':         { id: 'S-Embed-Voyage',         category: 'embedding', name: 'Voyage AI',                  short: 'Лучшее качество для длинных документов.',                  mode: 'managed cloud' },
     'S-Embed-Voyage-Domain':  { id: 'S-Embed-Voyage-Domain',  category: 'embedding', name: 'Voyage Domain (law/finance)', short: 'Специализация под юр./фин. английские тексты.',           mode: 'managed cloud' },
     'S-Embed-Gemini':         { id: 'S-Embed-Gemini',         category: 'embedding', name: 'Gemini Embedding 2',         short: 'Мультимодальность text + image + video + audio.',         mode: 'managed cloud' },
@@ -18,7 +18,7 @@
     'S-Embed-BGE-Selfhost':   { id: 'S-Embed-BGE-Selfhost',   category: 'embedding', name: 'bge-m3 self-host',           short: 'Open-source модель на CPU/GPU клиента.',                   mode: 'self-host' },
 
     // Retrieval
-    'S-Retrieval-Hybrid':     { id: 'S-Retrieval-Hybrid',     category: 'retrieval', name: 'S-Retrieval-Hybrid',         short: 'Vector + BM25 keyword search через Postgres FTS, RRF fusion. Точные коды и термины ловятся 1-в-1.', mode: 'self-host' },
+    'S-Retrieval-Hybrid':     { id: 'S-Retrieval-Hybrid',     category: 'retrieval', name: 'Гибридный поиск (smart + keyword)',         short: 'Объединяет два поиска: «по смыслу» (находит близкие по теме фрагменты) и «по точному совпадению слов» (находит артикулы, номера договоров, шифры). Результаты обоих способов умно склеиваются — ничего не теряется.', mode: 'self-host' },
     'S-Retrieval-Rerank':     { id: 'S-Retrieval-Rerank',     category: 'retrieval', name: 'S-Retrieval-Rerank',         short: 'Cohere Rerank поверх top-50 → top-5 точных. Для крупной KB обязательно.', mode: 'managed cloud' },
     'S-Retrieval-Rerank-BGE': { id: 'S-Retrieval-Rerank-BGE', category: 'retrieval', name: 'bge-reranker self-host',     short: 'Self-host альтернатива Cohere для KB с ПДн / экономии.',   mode: 'self-host' },
     'S-Retrieval-MultiQuery': { id: 'S-Retrieval-MultiQuery', category: 'retrieval', name: 'S-Retrieval-MultiQuery',     short: 'LLM генерирует 3–5 переформулировок запроса параллельно.', mode: 'managed cloud' },
@@ -26,8 +26,8 @@
     'S-Retrieval-Eval':       { id: 'S-Retrieval-Eval',       category: 'retrieval', name: 'S-Retrieval-Eval',           short: 'Golden set 50 вопросов + n8n Evaluation, 4 метрики через LLM-as-judge.', mode: 'self-host' },
 
     // Memory backend (9)
-    'S-Mem-Profile':          { id: 'S-Mem-Profile',          category: 'memory',    name: 'Profile (Postgres)',         short: 'Структурированный профиль клиента в Postgres.',           mode: 'self-host' },
-    'S-Mem-Mem0':             { id: 'S-Mem-Mem0',             category: 'memory',    name: 'Mem0',                       short: 'Managed memory layer с готовой нодой n8n.',               mode: 'managed cloud' },
+    'S-Mem-Profile':          { id: 'S-Mem-Profile',          category: 'memory',    name: 'Профиль клиента в Postgres', short: 'Хранит факты о клиенте (имя, контакты, предпочтения) в обычной таблице базы данных. Postgres — это стандарт индустрии: бесплатный, надёжный, его используют миллионы компаний (включая Apple, Reddit, Spotify). Подходит для большинства проектов.', mode: 'self-host' },
+    'S-Mem-Mem0':             { id: 'S-Mem-Mem0',             category: 'memory',    name: 'Mem0',                       short: 'Готовый облачный сервис памяти для AI-агентов. Подключается одной нодой в n8n — не нужно строить хранилище самому.', mode: 'managed cloud' },
     'S-Mem-Supermemory':      { id: 'S-Mem-Supermemory',      category: 'memory',    name: 'Supermemory',                short: 'Managed memory с готовым admin UI.',                       mode: 'managed cloud' },
     'S-Mem-pgvector':         { id: 'S-Mem-pgvector',         category: 'memory',    name: 'pgvector в Postgres',        short: 'Сами строим semantic memory поверх pgvector.',             mode: 'self-host' },
     'S-Mem-Graphiti':         { id: 'S-Mem-Graphiti',         category: 'memory',    name: 'Graphiti',                   short: 'Temporal knowledge graph для истории взаимодействий.',     mode: 'self-host' },
@@ -37,16 +37,17 @@
     'S-Mem-Anthropic-Tool':   { id: 'S-Mem-Anthropic-Tool',   category: 'memory',    name: 'Anthropic Memory Tool',      short: 'Память на стороне Anthropic.',                              mode: 'managed cloud' },
 
     // Memory GDPR (6)
-    'S-Mem-Consent':          { id: 'S-Mem-Consent',          category: 'memory',    name: 'Consent welcome flow',       short: 'Согласие на обработку ПД при /start.',                     mode: 'self-host' },
-    'S-Mem-AutoDelete':       { id: 'S-Mem-AutoDelete',       category: 'memory',    name: 'AutoDelete',                 short: 'Cron автоудаление старых данных через срок.',              mode: 'self-host' },
-    'S-Mem-Forget':           { id: 'S-Mem-Forget',           category: 'memory',    name: 'Команда /forget',            short: 'Клиент сам удаляет свои данные.',                          mode: 'self-host' },
-    'S-Mem-Export':           { id: 'S-Mem-Export',           category: 'memory',    name: 'Команда /export',            short: 'Клиент получает свои данные на email.',                    mode: 'self-host' },
-    'S-Mem-AdminEdit':        { id: 'S-Mem-AdminEdit',        category: 'memory',    name: 'AdminEdit (REST)',           short: 'Админ правит память клиентов через curl/REST.',            mode: 'self-host' },
+    'S-Mem-Consent':          { id: 'S-Mem-Consent',          category: 'memory',    name: 'Согласие на обработку персональных данных', short: 'В начале первого разговора агент спрашивает у клиента согласие на обработку персональных данных и сохраняет ответ.', mode: 'self-host' },
+    'S-Mem-AutoDelete':       { id: 'S-Mem-AutoDelete',       category: 'memory',    name: 'Автоудаление старых данных', short: 'По расписанию (например, раз в сутки) система проходит по базе и удаляет данные, которые хранятся дольше установленного срока.', mode: 'self-host' },
+    'S-Mem-Forget':           { id: 'S-Mem-Forget',           category: 'memory',    name: 'Команда «забыть меня»',      short: 'Клиент пишет агенту специальную команду — все его данные удаляются из памяти.', mode: 'self-host' },
+    'S-Mem-Export':           { id: 'S-Mem-Export',           category: 'memory',    name: 'Экспорт истории по запросу клиента', short: 'Клиент пишет команду — получает на email все свои данные, которые агент хранит.', mode: 'self-host' },
+    'S-Mem-AdminEdit':        { id: 'S-Mem-AdminEdit',        category: 'memory',    name: 'Ручная правка памяти администратором', short: 'Админ может зайти и поправить любые данные в памяти клиентов: исправить имя, добавить факт, удалить ошибочную запись.', mode: 'self-host' },
     'S-Mem-AdminUI':          { id: 'S-Mem-AdminUI',          category: 'memory',    name: 'AdminUI',                    short: 'Готовый интерфейс админа для управления памятью.',         mode: 'managed cloud' },
 
     // Channels
+    'S-Channels-Telegram':    { id: 'S-Channels-Telegram',    category: 'channels',  name: 'Telegram',                   short: 'Самый массовый IT-канал в РФ — ~65 млн пользователей в день через VPN.', mode: 'self-host' },
     'S-Channels-WebWidget':   { id: 'S-Channels-WebWidget',   category: 'channels',  name: 'WebWidget',                  short: 'Чат-виджет на сайте клиента.',                              mode: 'self-host' },
-    'S-Channels-Landing':     { id: 'S-Channels-Landing',     category: 'channels',  name: 'Landing (Codex + Vercel)',   short: 'Вайбкодинг лендинга + деплой Vercel + домен. Тянет WebWidget.', mode: 'managed cloud' },
+    'S-Channels-Landing':     { id: 'S-Channels-Landing',     category: 'channels',  name: 'Лендинг для агента',         short: 'Простой одностраничный сайт под агента — собираем через AI-кодеры (Codex CLI / Claude Code), деплоим на Vercel и привязываем домен. Сюда же встраивается WebWidget с чатом.', mode: 'managed cloud' },
     'S-Channels-VK':          { id: 'S-Channels-VK',          category: 'channels',  name: 'VK-сообщество',              short: 'Native ноды n8n + VK Callback API.',                        mode: 'self-host' },
     'S-Channels-MAX':         { id: 'S-Channels-MAX',         category: 'channels',  name: 'MAX',                         short: 'Community-нода n8n-nodes-max. Только ООО/ИП РФ.',           mode: 'self-host' },
 
@@ -63,7 +64,7 @@
     // Data Vision (4)
     'S-Data-Vision-YandexGPT':{ id: 'S-Data-Vision-YandexGPT', category: 'data',     name: 'YandexGPT Vision',            short: 'РФ-managed. Описывает картинки/схемы.',                      mode: 'managed cloud' },
     'S-Data-Vision-GigaChat': { id: 'S-Data-Vision-GigaChat',  category: 'data',     name: 'GigaChat Vision',             short: 'РФ-managed multimodal от Сбера.',                            mode: 'managed cloud' },
-    'S-Data-Vision-Mistral':  { id: 'S-Data-Vision-Mistral',   category: 'data',     name: 'Mistral Pixtral',             short: 'ЕС managed Vision. Парный к Mistral OCR.',                   mode: 'managed cloud' },
+    'S-Data-Vision-Mistral':  { id: 'S-Data-Vision-Mistral',   category: 'data',     name: 'Mistral Pixtral',             short: 'Облачная модель, которая «смотрит» на картинки и схемы и описывает их текстом — для загрузки в базу знаний.', mode: 'managed cloud' },
     'S-Data-Vision-Gemini':   { id: 'S-Data-Vision-Gemini',    category: 'data',     name: 'Gemini Flash',                short: 'Самый дешёвый managed Vision (~$0.17/1000 стр).',            mode: 'managed cloud' },
 
     // Data Eval (1)
@@ -81,7 +82,7 @@
     // Chat Model
     'Chat-GigaChat':          { id: 'Chat-GigaChat',          category: 'chat',     name: 'GigaChat',                    short: 'РФ-managed под ФЗ-152.',                                     mode: 'managed cloud' },
     'Chat-YandexGPT':         { id: 'Chat-YandexGPT',         category: 'chat',     name: 'YandexGPT',                   short: 'РФ-managed альтернатива GigaChat.',                          mode: 'managed cloud' },
-    'Chat-DeepSeek':          { id: 'Chat-DeepSeek',          category: 'chat',     name: 'DeepSeek (через LiteLLM)',    short: 'Дешёвый облачный LLM. Хорошо работает с RU/EN.',             mode: 'managed cloud' },
+    'Chat-DeepSeek':          { id: 'Chat-DeepSeek',          category: 'chat',     name: 'DeepSeek',                    short: 'Дешёвая облачная AI-модель. Хорошо понимает и русский, и английский.', mode: 'managed cloud' },
     'Chat-GPT-4.1-mini':      { id: 'Chat-GPT-4.1-mini',      category: 'chat',     name: 'GPT-4.1-mini',                short: 'Стандартный production-вариант OpenAI.',                     mode: 'managed cloud' },
     'Chat-GPT-4.1':           { id: 'Chat-GPT-4.1',           category: 'chat',     name: 'GPT-4.1',                     short: 'Топ-модель OpenAI.',                                          mode: 'managed cloud' },
     'Chat-Claude':            { id: 'Chat-Claude',            category: 'chat',     name: 'Claude Sonnet',                short: 'Топ-модель Anthropic.',                                       mode: 'managed cloud' },
@@ -173,10 +174,10 @@
       if (isMulti) {
         leader.push('Chat-GPT-4.1');
         alternatives.push('Chat-Claude');
-        rationale = '3+ языков — нужна топ-модель с лучшим multilingual. GPT-4.1 / Claude.';
+        rationale = 'Три и больше языков — нужна топ-модель с лучшей поддержкой многоязычности. GPT-4.1 / Claude.';
       } else if (lowBudget) {
         leader.push('Chat-DeepSeek');
-        rationale = 'Малый бюджет — DeepSeek через школьный LiteLLM-прокси. Хорошо работает с RU и EN, очень дешёвый.';
+        rationale = 'Малый бюджет — DeepSeek. Хорошо работает с русским и английским, очень дешёвый.';
       } else {
         leader.push('Chat-GPT-4.1-mini');
         if (isRu) {
@@ -203,12 +204,12 @@
 
     // (a) Reindex / Freshness
     if (['B', 'C', 'D'].includes(uf)) {
-      const mode = uf === 'B' ? 'manual' : (uf === 'C' ? 'scheduled (cron)' : 'webhook (онлайн)');
+      const mode = uf === 'B' ? 'вручную' : (uf === 'C' ? 'по расписанию (например, раз в день)' : 'сразу при изменении документа');
       items.push({
         id: 'ops-reindex',
         required: true,
-        title: 'Reindex / Freshness — режим: ' + mode,
-        why: 'База обновляется ' + (uf === 'B' ? 'раз в месяц/квартал' : uf === 'C' ? 'раз в неделю' : 'каждый день') + '.'
+        title: 'Обновление базы знаний — режим: ' + mode,
+        why: 'База обновляется ' + (uf === 'B' ? 'раз в месяц или квартал' : uf === 'C' ? 'раз в неделю' : 'каждый день') + ', значит агенту нужно периодически перечитывать документы, чтобы отвечать по свежей информации.'
       });
     }
 
@@ -217,8 +218,8 @@
       items.push({
         id: 'ops-rate-limits',
         required: true,
-        title: 'Rate limits & retries (batching, exponential backoff)',
-        why: 'Большая нагрузка / большая база / частый ingest — иначе 429-ошибки потеряют документы.'
+        title: 'Защита от перегрузки и автоповторы при ошибках',
+        why: 'Много пользователей или большая база — без защиты внешние сервисы начнут возвращать ошибки и часть запросов потеряется. Решение: посылать запросы пачками, при ошибке ждать и повторять.'
       });
     }
 
@@ -227,8 +228,8 @@
       items.push({
         id: 'ops-embedding-cache',
         required: false,
-        title: 'Embedding cache (по hash контента)',
-        why: 'Сэкономит на повторных embedding при reindex.'
+        title: 'Кеш для уже обработанных документов',
+        why: 'Когда база обновляется, не обрабатываем заново всё — пропускаем то, что не изменилось. Экономит деньги и время на повторной обработке.'
       });
     }
 
@@ -237,8 +238,8 @@
       items.push({
         id: 'ops-response-cache',
         required: false,
-        title: 'Response cache (FAQ-кеш ответов)',
-        why: 'Бюджет ограничен и база меняется редко — кеш ответов даст экономию.'
+        title: 'Кеш частых ответов (FAQ)',
+        why: 'Если несколько клиентов задают один и тот же вопрос — берём готовый ответ из кеша, а не платим за новый запрос к AI. Экономит деньги.'
       });
     }
 
@@ -247,8 +248,8 @@
       items.push({
         id: 'ops-drift',
         required: false,
-        title: 'Drift monitoring (golden questions × раз в неделю)',
-        why: 'Production + сотни/тысячи пользователей — важно ловить деградацию качества вовремя.'
+        title: 'Мониторинг качества ответов',
+        why: 'Раз в неделю система автоматически прогоняет 50–100 заранее заготовленных вопросов и сравнивает ответы агента с эталонами. Если качество просело — придёт алерт.'
       });
     }
 
@@ -349,7 +350,7 @@
     }
     if (r.q3 === 'A') {
       leader.push('S-Retrieval-MultiQuery');
-      rationaleParts.push('Многоязыкие/разнообразные формулировки — MultiQuery даст 3–5 переформулировок.');
+      rationaleParts.push('Многоязычные / разнообразные формулировки — MultiQuery сгенерирует 3–5 вариантов одного запроса.');
     }
     if (r.q4 === 'A') {
       leader.push('S-Retrieval-MetaFilter');
@@ -482,8 +483,12 @@
     const q1 = c.q1 || [];
     const leader = [];
     const alternatives = [];
-    const rationaleParts = ['Telegram = базовый канал всегда (несмотря на блокировку, IT-аудитория через VPN).'];
+    const rationaleParts = [];
 
+    if (q1.includes('telegram')) {
+      leader.push('S-Channels-Telegram');
+      rationaleParts.push('Telegram — массовый IT-канал, ~65 млн RU/день через VPN.');
+    }
     if (q1.includes('webwidget')) {
       leader.push('S-Channels-WebWidget');
       rationaleParts.push('WebWidget — встраивание чата в сайт.');
@@ -507,6 +512,10 @@
     if (q1.includes('webwidget') && c.q2 === 'B') {
       leader.push('S-Channels-Landing');
       rationaleParts.push('Сайта нет — добавляем S-Channels-Landing (Codex CLI + Vercel + домен).');
+    }
+
+    if (leader.length === 0 && q1.length === 0) {
+      rationaleParts.push('Внимание: ни одного канала не выбрано — агент не сможет общаться с пользователями.');
     }
 
     return {

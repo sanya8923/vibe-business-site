@@ -6,6 +6,7 @@
 
   const STORAGE_KEY = 'rag-agent-projects';
   const ACTIVE_KEY = 'rag-agent-active-project';
+  const NEXT_NUM_KEY = 'rag-agent-next-project-num';
 
   // ─── Project model ────────────────────────────────────────
   function uid() {
@@ -70,6 +71,28 @@
     saveProjects(projects);
     setActiveProjectId(proj.id);
     return proj;
+  }
+
+  // ─── Project numbering (монотонный счётчик «Клиент N») ──────
+  function getNextProjectNum() {
+    const raw = localStorage.getItem(NEXT_NUM_KEY);
+    if (raw) {
+      const n = parseInt(raw, 10);
+      if (!isNaN(n) && n > 0) return n;
+    }
+    // Первый запуск: смотрим на существующие имена «Клиент N»
+    const max = getProjects().reduce((acc, p) => {
+      const m = /^Клиент\s+(\d+)$/.exec(p.name || '');
+      const n = m ? parseInt(m[1], 10) : 0;
+      return n > acc ? n : acc;
+    }, 0);
+    return max + 1;
+  }
+
+  function bumpNextProjectNum() {
+    const next = getNextProjectNum() + 1;
+    localStorage.setItem(NEXT_NUM_KEY, String(next));
+    return next;
   }
 
   function deleteProject(id) {
@@ -320,6 +343,7 @@
     setActiveProjectId, createProject, deleteProject, updateProject,
     updateBrief, updateAnswer, setCurrentStep,
     getProjectProgress, isBriefDone, isQuizDone,
+    getNextProjectNum, bumpNextProjectNum,
     // ui
     showToast, openModal, closeModal,
     copyToClipboard, escapeHtml,

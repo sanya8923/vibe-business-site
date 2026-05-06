@@ -7,7 +7,9 @@
   function ensureActiveProject() {
     let proj = window.RagShared.getActiveProject();
     if (!proj) {
-      proj = window.RagShared.createProject('Клиент 1');
+      const n = window.RagShared.getNextProjectNum();
+      proj = window.RagShared.createProject('Клиент ' + n);
+      window.RagShared.bumpNextProjectNum();
     }
     return proj;
   }
@@ -42,9 +44,11 @@
       if (!btn) return;
       const action = btn.dataset.action;
       if (action === 'new-project') {
-        const name = prompt('Имя нового клиента?', 'Клиент ' + (window.RagShared.getProjects().length + 1));
+        const suggestedNum = window.RagShared.getNextProjectNum();
+        const name = prompt('Имя нового клиента?', 'Клиент ' + suggestedNum);
         if (name) {
           window.RagShared.createProject(name);
+          window.RagShared.bumpNextProjectNum();
           if (typeof onChange === 'function') onChange();
         }
       } else if (action === 'rename-project') {

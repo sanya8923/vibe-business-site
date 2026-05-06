@@ -41,7 +41,7 @@
           q2: ['consent', 'autodelete', 'forget', 'export'],
           q3: 'B'
         },
-        channels: { q1: ['webwidget'], q2: 'A' },
+        channels: { q1: ['telegram', 'webwidget'], q2: 'A' },
         data: { q1: ['gdrive'], q2: ['text'] }
       },
       scenario: [
@@ -140,7 +140,7 @@
           q2: ['consent', 'forget'],
           q3: 'A'
         },
-        channels: { q1: ['webwidget', 'vk'], q2: 'B' },
+        channels: { q1: ['telegram', 'webwidget', 'vk'], q2: 'B' },
         data: { q1: ['manual'], q2: ['text'] }
       },
       scenario: [

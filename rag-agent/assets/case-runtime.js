@@ -9,26 +9,33 @@
     const $app = document.getElementById('case-app');
     if (!c) {
       $app.innerHTML = `
-        <div class="placeholder-page">
-          <h1>Кейс не найден</h1>
-          <a class="btn btn-primary" href="/rag-agent/">← На главную</a>
-        </div>`;
+        <section class="wz-hero">
+          <div class="wz-hero-eyebrow"><span class="wz-hero-dot"></span> Учебный кейс</div>
+          <h1 class="wz-hero-h1">Кейс не найден</h1>
+          <p class="wz-hero-lead">Проверь адрес или вернись на главную.</p>
+        </section>
+        <div style="margin-top:24px;"><a class="btn btn-ghost" href="/rag-agent/">← На главную</a></div>`;
       return;
     }
     if (c.placeholder) {
       $app.innerHTML = `
-        <div class="placeholder-page">
-          <div style="font-size:64px;margin-bottom:12px;">${esc(c.emoji)}</div>
-          <h1>${esc(c.title)}</h1>
-          <p class="muted">Кейс готовится. ${esc(c.cardDesc || '')}</p>
-          <p class="muted" style="margin-top:14px;">
-            Уже готовы — Юр.агентство и Автосервис.
-          </p>
-          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-            <a class="btn btn-ghost" href="/rag-agent/">← На главную</a>
-            <a class="btn btn-primary" href="/rag-agent/cases/jur-agency/">Открыть Юр.агентство</a>
+        <section class="wz-hero">
+          <div class="wz-hero-eyebrow"><span class="wz-hero-dot"></span> Учебный кейс · в работе</div>
+          <h1 class="wz-hero-h1">${esc(c.emoji)} ${esc(c.title)}</h1>
+          <p class="wz-hero-lead">Кейс готовится. ${esc(c.cardDesc || '')}</p>
+        </section>
+        <section class="brief-section">
+          <div class="brief-section-head">
+            <span class="brief-section-eyebrow"><span class="brief-section-dot"></span> Что уже готово</span>
+            <h2 class="brief-section-h2">Уже доступны Юр.агентство и Автосервис</h2>
           </div>
-        </div>`;
+          <p class="muted" style="margin-bottom:20px;">Открой готовый кейс, чтобы посмотреть полный пример: бриф, сценарий, корпус, стек и стоимость теста.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a class="btn btn-primary" href="/rag-agent/cases/jur-agency/">Открыть Юр.агентство →</a>
+            <a class="btn btn-ghost" href="/rag-agent/cases/auto-service/">Открыть Автосервис →</a>
+            <a class="btn btn-ghost" href="/rag-agent/">← На главную</a>
+          </div>
+        </section>`;
       return;
     }
     renderFull(c);
@@ -41,19 +48,15 @@
     const existing = window.RagShared.getProjects().find(p => p.source === 'case:' + c.slug);
 
     document.getElementById('case-app').innerHTML = `
-      <div class="case-header">
-        <span class="label">Учебный кейс</span>
-        <h1>${esc(c.emoji)} ${esc(c.title)}</h1>
-        <p class="case-tagline">${esc(c.tagline)}</p>
-      </div>
+      <section class="wz-hero">
+        <div class="wz-hero-eyebrow"><span class="wz-hero-dot"></span> Учебный кейс</div>
+        <h1 class="wz-hero-h1">${esc(c.emoji)} ${esc(c.title)}</h1>
+        <p class="wz-hero-lead">${esc(c.tagline)}</p>
+      </section>
 
-      <div class="case-block">
-        <h2><span class="case-block-num">02</span> Профиль клиента</h2>
-        <p>${esc(c.profile)}</p>
-      </div>
+      ${section('02', 'Профиль клиента', `<p class="case-text">${esc(c.profile)}</p>`)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">03</span> Бриф проекта</h2>
+      ${section('03', 'Бриф проекта', `
         <div class="brief-chips">
           ${(c.keyChips || []).map(ch => `
             <div class="brief-chip">
@@ -74,15 +77,14 @@
             </ul>
           </div>
         </div>
-      </div>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">04</span> Сценарий</h2>
-        <div style="font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Что бот должен уметь</div>
+      ${section('04', 'Сценарий', `
+        <div class="case-subhead">Что агент должен уметь</div>
         <ul class="scenario-list">
           ${(c.scenario || []).map(s => `<li>${esc(s)}</li>`).join('')}
         </ul>
-        <div style="font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">3 типичных диалога</div>
+        <div class="case-subhead">3 типичных диалога</div>
         ${(c.dialogs || []).map(d => `
           <div class="dialog-block">
             <div class="dialog-title">${esc(d.title)}</div>
@@ -94,10 +96,9 @@
             `).join('')}
           </div>
         `).join('')}
-      </div>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">05</span> Корпус документов</h2>
+      ${section('05', 'Корпус документов', `
         <div class="corpus-card">
           <p style="margin-bottom:10px;color:var(--muted);font-size:13.5px;">Всего: ${esc(c.corpus.total || '—')}</p>
           <ul class="brief-list" style="margin-bottom:14px;">
@@ -106,58 +107,52 @@
           <a class="btn btn-ghost btn-sm" href="${esc(c.corpus.url || '#')}" target="_blank">📁 Открыть корпус в Google Drive →</a>
           <div class="muted" style="font-size:12px;margin-top:8px;">Ссылка добавится когда корпус будет загружен.</div>
         </div>
-      </div>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">06</span> Получившийся стек</h2>
-        <div class="stack-grid">
-          ${['chat','embedding','retrieval','memory','channels','data','storage','sec','ops'].map(cat => stackCategory(stack[cat])).join('')}
-        </div>
-        ${warnings.length ? `
-          <div class="warning-banner" style="margin-top:18px;">
-            <div class="warning-banner-title">⚠️ Имей в виду</div>
-            <ul class="warning-banner-list">
-              ${warnings.map(w => `
-                <li class="warning-banner-item">
-                  <strong>${esc(w.title)}.</strong> ${w.body}
-                </li>`).join('')}
-            </ul>
-          </div>` : ''}
-      </div>
+      ${section('06', 'Получившийся стек', `
+        <p class="case-text muted" style="margin-bottom: 0;">
+          Каждая категория — это отдельный слой агента. В каждой ниже первая карточка с лайм-подсветкой — лидер #1, остальные — альтернативы.
+        </p>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">07</span> Стоимость теста</h2>
+      ${window.RagResult.renderWarnings(warnings)}
+
+      ${(window.RagResult.STACK_ORDER).map(cat => window.RagResult.renderCategorySection(stack[cat])).join('')}
+
+      ${section('07', 'Стоимость теста', `
         <div class="cost-card">
           <div class="cost-card-row"><span class="muted">💵 Стоимость прогона</span><strong>${esc(c.cost.test)}</strong></div>
           <div class="cost-card-row"><span class="muted">📊 Тестовый объём</span><strong>${esc(c.cost.testVolume)}</strong></div>
         </div>
-      </div>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">08</span> Связь с курсом</h2>
-        <p class="muted">Чтобы собрать production-готовый продукт под этот кейс — пройди модули в таком порядке:</p>
+      ${section('08', 'Связь с курсом', `
+        <p class="case-text muted" style="margin-bottom:14px;">Чтобы собрать production-готовый продукт под этот кейс — пройди модули в таком порядке:</p>
         <ol class="module-list">
           ${(c.modules || []).map(m => `<li><strong>${esc(m.id)}</strong> · ${esc(m.title)}${m.desc ? ' — <span class="muted">' + esc(m.desc) + '</span>' : ''}</li>`).join('')}
         </ol>
-      </div>
+      `)}
 
-      <div class="case-block">
-        <h2><span class="case-block-num">09</span> CTA</h2>
-        <div class="case-cta">
+      ${section('09', 'Применить как шаблон', `
+        <div class="case-cta-inner">
           ${existing ? `
             <h3>У тебя уже есть проект «${esc(existing.name)}»</h3>
             <p>Откроем финальный экран с готовым стеком.</p>
-            <a class="btn btn-primary" href="/rag-agent/wizard/result.html" data-action="open-existing" data-id="${esc(existing.id)}">Открыть финал →</a>
-            <button class="btn btn-ghost" data-action="apply-case" data-slug="${esc(c.slug)}" type="button" style="margin-left:8px;">Создать ещё один</button>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <a class="btn btn-primary" href="/rag-agent/wizard/result.html" data-action="open-existing" data-id="${esc(existing.id)}">Открыть финал →</a>
+              <button class="btn btn-ghost" data-action="apply-case" data-slug="${esc(c.slug)}" type="button">Создать ещё один</button>
+            </div>
           ` : `
-            <h3>📋 Применить как шаблон</h3>
+            <h3>📋 Создать проект из шаблона</h3>
             <p>Создаст проект «${esc(c.title)} (шаблон)» с предзаполненным брифом и ответами квизов. Сразу попадёшь в финал и увидишь готовый стек.</p>
-            <button class="btn btn-primary" data-action="apply-case" data-slug="${esc(c.slug)}" type="button">Применить как шаблон →</button>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button class="btn btn-primary" data-action="apply-case" data-slug="${esc(c.slug)}" type="button">Применить как шаблон →</button>
+            </div>
           `}
         </div>
-      </div>
+      `)}
 
-      <div style="margin-top:36px;">
+      <div style="margin: 28px 0 40px;">
         <a class="btn btn-ghost" href="/rag-agent/">← На главную</a>
       </div>
     `;
@@ -166,70 +161,16 @@
     window.RagPreview.bindAccordions(document);
   }
 
-  function stackCategory(catResult) {
-    if (!catResult) return '';
-    if (catResult.category === 'ops') return opsCard(catResult);
-    const meta = window.RagCatalog.CATEGORY_META[catResult.category] || {};
-    const leaders = catResult.leader || [];
-    const alts = catResult.alternatives || [];
-    if (!leaders.length && !alts.length) {
-      return `
-        <div class="stack-category">
-          <div class="stack-category-title"><span class="stack-category-icon">${esc(meta.icon || '·')}</span> ${esc(meta.title)}</div>
-          <div class="stack-empty">Стретчей не активировано — базовая инфраструктура справится.</div>
-        </div>`;
-    }
+  function section(num, title, bodyHtml) {
     return `
-      <div class="stack-category">
-        <div class="stack-category-title"><span class="stack-category-icon">${esc(meta.icon || '·')}</span> ${esc(meta.title)}</div>
-        ${leaders.map(id => leaderCard(id)).join('')}
-        ${alts.length ? `
-          <div class="stack-alternatives">
-            <div style="font-family:var(--fm);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px;">Альтернативы</div>
-            ${alts.map(id => altCard(id)).join('')}
-          </div>` : ''}
-        ${catResult.rationale ? `<div class="stack-leader-rationale">${esc(catResult.rationale)}</div>` : ''}
-      </div>`;
-  }
-
-  function opsCard(ops) {
-    const meta = window.RagCatalog.CATEGORY_META.ops;
-    if (!ops.items || !ops.items.length) {
-      return `
-        <div class="stack-category">
-          <div class="stack-category-title"><span class="stack-category-icon">${esc(meta.icon)}</span> ${esc(meta.title)}</div>
-          <div class="stack-empty">Дополнительных Ops-задач не требуется.</div>
-        </div>`;
-    }
-    return `
-      <div class="stack-category">
-        <div class="stack-category-title"><span class="stack-category-icon">${esc(meta.icon)}</span> ${esc(meta.title)}</div>
-        ${ops.items.map(it => `
-          <div class="${it.required ? 'stack-leader' : ''}" style="${it.required ? '' : 'margin-top:8px;'}">
-            <div class="${it.required ? 'stack-leader-name' : 'stack-alt-name'}">${esc(it.title)} <span class="${it.required ? 'stack-leader-tag' : 'stack-alt-tag'}">${it.required ? 'Обяз.' : 'Реком.'}</span></div>
-            <div class="${it.required ? 'stack-leader-desc' : 'stack-alt-desc'}">${esc(it.why)}</div>
-          </div>`).join('')}
-      </div>`;
-  }
-
-  function leaderCard(id) {
-    const s = window.RagCatalog.getStretch(id);
-    if (!s) return '';
-    return `
-      <div class="stack-leader">
-        <div class="stack-leader-name">${esc(s.name)} <span class="stack-leader-tag">🏆 Лидер</span></div>
-        <div class="stack-leader-desc">${esc(s.short)}</div>
-      </div>`;
-  }
-
-  function altCard(id) {
-    const s = window.RagCatalog.getStretch(id);
-    if (!s) return '';
-    return `
-      <div>
-        <div class="stack-alt-name">${esc(s.name)} <span class="stack-alt-tag">Альт.</span></div>
-        <div class="stack-alt-desc">${esc(s.short)}</div>
-      </div>`;
+      <section class="brief-section">
+        <div class="brief-section-head">
+          <span class="brief-section-eyebrow"><span class="brief-section-dot"></span> Блок ${esc(num)}</span>
+          <h2 class="brief-section-h2">${esc(title)}</h2>
+        </div>
+        ${bodyHtml}
+      </section>
+    `;
   }
 
   function bindActions() {
@@ -242,11 +183,22 @@
           window.RagShared.showToast('Шаблон применён ✓');
           setTimeout(() => { window.location.href = '/rag-agent/wizard/result.html'; }, 350);
         }
+        return;
       }
       const openBtn = e.target.closest('[data-action="open-existing"]');
       if (openBtn) {
         const id = openBtn.dataset.id;
         if (id) window.RagShared.setActiveProjectId(id);
+        return;
+      }
+      const stretchBtn = e.target.closest('[data-stretch]');
+      if (stretchBtn) {
+        e.preventDefault();
+        const id = stretchBtn.dataset.stretch;
+        const s = window.RagCatalog.getStretch(id);
+        window.RagShared.showToast(
+          s ? `Инструкция «${s.name}» — в разработке` : 'Инструкция в разработке'
+        );
       }
     });
   }

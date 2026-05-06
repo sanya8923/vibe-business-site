@@ -85,11 +85,14 @@
           ? (Array.isArray(ans) && ans.includes(opt.key))
           : (ans === opt.key);
         const hintHtml = opt.hint ? `<div class="option-hint">${esc(opt.hint)}</div>` : '';
+        const iconHtml = opt.icon
+          ? `<span class="option-icon" style="background:${esc(opt.iconBg || '#23262d')}">${opt.icon}</span>`
+          : `<span class="option-letter">${esc(opt.key.length > 3 ? '✓' : opt.key)}</span>`;
         return `
           <label class="option ${isChecked ? 'selected' : ''}" data-quiz="${esc(quizId)}" data-q="${esc(q.id)}" data-key="${esc(opt.key)}" data-type="${esc(q.type)}">
             <input type="${q.type === 'checkbox' ? 'checkbox' : 'radio'}" name="${esc(quizId + '-' + q.id)}" value="${esc(opt.key)}" ${isChecked ? 'checked' : ''}>
             <span class="option-marker ${q.type === 'checkbox' ? 'checkbox' : 'radio'}"></span>
-            <span class="option-letter">${esc(opt.key.length > 3 ? '✓' : opt.key)}</span>
+            ${iconHtml}
             <div class="option-body">
               <div class="option-text">${opt.text}</div>
               ${hintHtml}

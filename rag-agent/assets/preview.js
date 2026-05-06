@@ -75,8 +75,8 @@
       <div class="preview-section">
         <div class="preview-section-title">Базовая инфра</div>
         <div class="stretch-card">
-          <div class="stretch-card-name">n8n + Postgres + Telegram</div>
-          <div class="stretch-card-desc">Self-hosted n8n, Postgres под Memory/State, Telegram-канал по умолчанию.</div>
+          <div class="stretch-card-name">n8n + Postgres</div>
+          <div class="stretch-card-desc">Self-hosted n8n как движок, Postgres под Memory / State / vector storage. Каналы общения подбираются в квизе «Каналы».</div>
         </div>
       </div>`;
   }

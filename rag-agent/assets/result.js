@@ -51,29 +51,29 @@
           </div>
         </div>` : ''}
 
-      <div class="result-head screen">
-        <span class="label">Финал</span>
-        <h1>Готово! Вот рекомендация для <em>${esc(proj.name)}</em></h1>
-        <p>Накопленный стек собран по брифу и ответам. Что-то можно поменять — вернись к нужному квизу или брифу.</p>
-      </div>
-
-      <div class="result-cta-row">
-        <a class="btn btn-ghost" href="/rag-agent/wizard/data.html">← Изменить ответы</a>
-        <button class="btn btn-ghost" data-action="copy-brief" type="button">Скопировать опросник</button>
-        <button class="btn btn-teal" data-action="new-project" type="button">Создать ещё одного клиента</button>
-      </div>
+      <section class="wz-hero">
+        <span class="wz-hero-eyebrow"><span class="wz-hero-dot"></span>Шаг 7 из 7 · Финал</span>
+        <h1 class="wz-hero-h1">Готово! Вот стек для <em style="font-style:normal;color:var(--accent);">${esc(proj.name)}</em></h1>
+        <p class="wz-hero-lead">
+          Стек собран по брифу и ответам на квизы. Карточки сгруппированы по категориям технологий.
+          В каждой — лидер (#1) с подсветкой и альтернативы. Что-то можно поменять — вернись к нужному квизу или брифу.
+        </p>
+        <div class="final-meta-row">
+          <a class="btn btn-ghost" href="/rag-agent/wizard/data.html">← Изменить ответы</a>
+          <button class="btn btn-ghost" data-action="copy-brief" type="button">Скопировать опросник</button>
+          <button class="btn btn-teal" data-action="new-project" type="button">Создать ещё одного клиента</button>
+        </div>
+      </section>
 
       ${renderWarnings(warnings)}
 
-      <div class="result-block">
-        <div class="result-block-title">Получившийся стек</div>
-        <div class="stack-grid">
-          ${STACK_ORDER.map(cat => renderStackCategory(stack[cat])).join('')}
-        </div>
-      </div>
+      ${STACK_ORDER.map(cat => renderCategorySection(stack[cat])).join('')}
 
-      <div class="result-block">
-        <div class="result-block-title">Действия</div>
+      <section class="brief-section">
+        <header class="brief-section-head">
+          <span class="brief-section-eyebrow"><span class="brief-section-dot"></span>Действия</span>
+          <h2 class="brief-section-h2">Сводка для команды и клиента</h2>
+        </header>
         <div class="tabs">
           <button class="tab active" data-tab="md" type="button">📋 Markdown</button>
           <button class="tab" data-tab="tz" type="button">📝 Техзадание</button>
@@ -92,13 +92,132 @@
           </div>
           <textarea class="output-textarea" id="tz-output" readonly>${esc(generateTz(proj, stack, warnings))}</textarea>
         </div>
-      </div>
+      </section>
     `;
 
     bindActions();
   }
 
-  // ─── Stack rendering ─────────────────────────────────────
+  // ─── New: section per category, rec-cards inside ─────────
+  function renderCategorySection(catResult) {
+    if (!catResult) return '';
+    const meta = window.RagCatalog.CATEGORY_META[catResult.category] || {};
+    const title = meta.title || catResult.category;
+    const icon = meta.icon || '·';
+
+    if (catResult.category === 'ops') {
+      return renderOpsSection(catResult, meta);
+    }
+
+    const leaders = catResult.leader || [];
+    const alts = (catResult.alternatives || []).filter(id => !leaders.includes(id));
+
+    let bodyHtml;
+    if (leaders.length === 0 && alts.length === 0) {
+      bodyHtml = `<div class="rec-empty">Стретчей не активировано — базовая инфраструктура справится.</div>`;
+    } else {
+      const leaderCards = leaders.map((id, i) => recCard(id, i + 1, true)).join('');
+      const altCards = alts.map((id, i) => recCard(id, leaders.length + i + 1, false)).join('');
+      bodyHtml = `<div class="rec-cards">${leaderCards}${altCards}</div>`;
+    }
+
+    const rationaleHtml = catResult.rationale
+      ? `<div class="rec-rationale">${esc(catResult.rationale)}</div>`
+      : '';
+
+    return `
+      <section class="brief-section">
+        <header class="brief-section-head">
+          <span class="brief-section-eyebrow"><span class="brief-section-dot"></span>${esc(icon)} ${esc(title)}</span>
+          <h2 class="brief-section-h2">${esc(catTitleDescription(catResult.category) || title)}</h2>
+        </header>
+        ${bodyHtml}
+        ${rationaleHtml}
+      </section>`;
+  }
+
+  function recCard(id, rank, isLeader) {
+    const s = window.RagCatalog.getStretch(id);
+    if (!s) return '';
+    const klass = ['rec-card'];
+    klass.push(isLeader && rank === 1 ? 'rank-1' : 'rank-alt');
+    const rankLabel = isLeader && rank === 1 ? '#1 · Лидер' : `#${rank}`;
+    const tag = [s.mode, s.category].filter(Boolean).join(' · ');
+    const brand = (window.RagBrandIcons && window.RagBrandIcons.getStretchIcon)
+      ? window.RagBrandIcons.getStretchIcon(s.id)
+      : null;
+    const iconHtml = brand
+      ? `<span class="rec-icon" style="background:${brand.bg};">${brand.icon}</span>`
+      : '';
+    return `
+      <article class="${klass.join(' ')}">
+        <header class="rec-head">
+          ${iconHtml}
+          <div class="rec-head-text">
+            <div class="rec-name">${esc(s.name)}</div>
+            <div class="rec-tag">${esc(tag)}</div>
+          </div>
+          <span class="rec-rank">${esc(rankLabel)}</span>
+        </header>
+        <div class="rec-explain">${esc(s.short || '')}</div>
+        <div class="rec-foot">
+          <a class="btn btn-primary" href="#" data-stretch="${esc(s.id)}">Перейти к инструкции →</a>
+        </div>
+      </article>`;
+  }
+
+  function renderOpsSection(ops, meta) {
+    const title = meta.title || 'Ops';
+    const icon = meta.icon || '·';
+    if (!ops.items || !ops.items.length) {
+      return `
+        <section class="brief-section">
+          <header class="brief-section-head">
+            <span class="brief-section-eyebrow"><span class="brief-section-dot"></span>${esc(icon)} ${esc(title)}</span>
+            <h2 class="brief-section-h2">${esc(catTitleDescription('ops'))}</h2>
+          </header>
+          <div class="rec-empty">Базовой настройки достаточно — дополнительных задач по эксплуатации не требуется.</div>
+        </section>`;
+    }
+    const cards = ops.items.map((it, i) => {
+      const isReq = it.required;
+      return `
+        <article class="rec-card ${isReq ? 'rank-1' : 'rank-alt'}">
+          <header class="rec-head">
+            <div class="rec-head-text">
+              <div class="rec-name">${esc(it.title)}</div>
+              <div class="rec-tag">${isReq ? 'обязательно' : 'рекомендуется'} · эксплуатация</div>
+            </div>
+            <span class="rec-rank">${isReq ? 'Обязательно' : 'Рекоменд.'}</span>
+          </header>
+          <div class="rec-explain">${esc(it.why || '')}</div>
+        </article>`;
+    }).join('');
+    return `
+      <section class="brief-section">
+        <header class="brief-section-head">
+          <span class="brief-section-eyebrow"><span class="brief-section-dot"></span>${esc(icon)} ${esc(title)}</span>
+          <h2 class="brief-section-h2">${esc(catTitleDescription('ops'))}</h2>
+        </header>
+        <div class="rec-cards">${cards}</div>
+      </section>`;
+  }
+
+  function catTitleDescription(cat) {
+    return ({
+      chat:      'Chat Model — «мозг» агента, который читает вопрос клиента и формулирует ответ',
+      embedding: 'Embedding — превращает тексты в «отпечаток смысла», чтобы агент находил подходящие фрагменты по смыслу запроса',
+      retrieval: 'Retrieval — как агент ищет нужные куски в базе и насколько умно отбирает лучшие из них перед тем, как дать ответ',
+      memory:    'Memory — что агент помнит между диалогами: профиль клиента, факты, события',
+      channels:  'Channels — где агент общается с людьми: мессенджеры, виджет на сайте, лендинг',
+      data:      'Data — откуда берутся документы для базы знаний и как из них извлекается текст, таблицы, картинки',
+      storage:   'Vector Storage — долгосрочная память агента: база данных, в которой хранятся документы и состояние диалогов',
+      sec:       'Безопасность — защита агента от вредных запросов, утечек данных и злоупотреблений',
+      ops:       'Эксплуатация — что нужно сделать, чтобы агент стабильно работал: автообновления базы, контроль нагрузки, экономия на повторных запросах, мониторинг качества'
+    })[cat] || null;
+  }
+
+  // ─── Stack rendering (legacy, для обратной совместимости) ─
   function renderStackCategory(catResult) {
     if (!catResult) return '';
     if (catResult.category === 'ops') return renderOpsCategory(catResult);
@@ -183,10 +302,12 @@
         ${w.focusField ? `<div style="margin-top:4px;"><a class="btn btn-ghost btn-sm" href="/rag-agent/wizard/?focus=${esc(w.focusField)}">Изменить бриф</a></div>` : ''}
       </li>`).join('');
     return `
-      <div class="result-block warning-banner">
-        <div class="warning-banner-title">⚠️ Имей в виду</div>
+      <section class="brief-section warning-banner">
+        <header class="brief-section-head">
+          <span class="brief-section-eyebrow" style="color:var(--warn);"><span class="brief-section-dot" style="background:var(--warn);box-shadow:0 0 0 4px rgba(255,179,92,.14);"></span>⚠️ Имей в виду</span>
+        </header>
         <ul class="warning-banner-list">${items}</ul>
-      </div>`;
+      </section>`;
   }
 
   // ─── Markdown / TZ generation ──────────────────────────────
@@ -221,7 +342,7 @@
     lines.push('');
     lines.push('1. Согласуй с клиентом бриф и список технологий.');
     lines.push('2. Подключи учётные записи к выбранным managed-сервисам (API ключи).');
-    lines.push('3. Разверни базовый стек: n8n + Postgres + Telegram.');
+    lines.push('3. Разверни базовый стек: n8n + Postgres + выбранные в квизе каналы.');
     lines.push('4. Поэтапно подключай стретчи, начиная с категории с наибольшим количеством активаций.');
     lines.push('5. После production-готовности подключи Eval-стретчи и проверь регресс.');
     return lines.join('\n');
@@ -274,7 +395,7 @@
     lines.push('');
     lines.push('### 1. M0 — Основы n8n');
     lines.push('- Поднять школьный n8n / VPS с n8n.');
-    lines.push('- Настроить Telegram-бот, Chat Trigger, базовый AI Agent.');
+    lines.push('- Подключить выбранные каналы (Chat Trigger / Telegram / WebWidget / VK / MAX) и базовый AI Agent.');
     lines.push('');
     lines.push('### 2. M4 — Базы данных');
     lines.push('- Настроить Postgres + Postgres Chat Memory subnode.');
@@ -307,7 +428,7 @@
     }
     lines.push('');
     lines.push('### 7. AI-01 (финальная сборка)');
-    lines.push('- Channels: Telegram (база) + ' + (stack.channels.leader.map(id => stretchName(id)).join(', ') || 'нет дополнительных стретчей'));
+    lines.push('- Channels: ' + (stack.channels.leader.map(id => stretchName(id)).join(', ') || '⚠️ ни одного канала не выбрано'));
     lines.push('- Data sources: ' + (stack.data.leader.map(id => stretchName(id)).join(', ') || 'ручная загрузка через чат'));
     lines.push('');
     if (warnings && warnings.length) {
@@ -363,10 +484,22 @@
       if (e.target.matches('[data-action="copy-brief"]')) {
         window.RagWizardUI.openCopyBriefModal();
       } else if (e.target.matches('[data-action="new-project"]')) {
-        const name = prompt('Имя нового клиента?', 'Клиент ' + (window.RagShared.getProjects().length + 1));
+        const suggestedNum = window.RagShared.getNextProjectNum();
+        const name = prompt('Имя нового клиента?', 'Клиент ' + suggestedNum);
         if (name) {
           window.RagShared.createProject(name);
+          window.RagShared.bumpNextProjectNum();
           window.location.href = '/rag-agent/wizard/';
+        }
+      } else {
+        const stretchBtn = e.target.closest('[data-stretch]');
+        if (stretchBtn) {
+          e.preventDefault();
+          const id = stretchBtn.dataset.stretch;
+          const s = window.RagCatalog.getStretch(id);
+          window.RagShared.showToast(
+            s ? `Инструкция «${s.name}» — в разработке` : 'Инструкция в разработке'
+          );
         }
       }
     });
@@ -374,5 +507,13 @@
 
   function esc(t) { return window.RagShared.escapeHtml(t); }
 
-  window.RagResult = { start };
+  window.RagResult = {
+    start,
+    renderCategorySection,
+    recCard,
+    renderOpsSection,
+    catTitleDescription,
+    renderWarnings,
+    STACK_ORDER
+  };
 })();
