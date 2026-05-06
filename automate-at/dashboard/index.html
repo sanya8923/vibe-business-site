@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная · Automate At</title>
+  <meta name="description" content="Личный кабинет студента школы Profy Conveyor: тренажёр n8n + каталог готовых AI-продуктов.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+</head>
+<body class="aa-platform" data-aa-page="dashboard">
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner" id="aa-main-inner">
+
+      <!-- ═══════════ HERO «Что ты делаешь дальше» ═══════════ -->
+      <section class="aa-hero-card" id="hero">
+        <div class="aa-hero-card-eyebrow">
+          <span class="aa-hero-card-eyebrow-dot"></span>
+          <span id="hero-eyebrow">Продолжаешь</span>
+        </div>
+        <h1 class="aa-hero-card-title" id="hero-title">Что ты делаешь дальше</h1>
+        <p class="aa-hero-card-lead" id="hero-lead">
+          Бери задачу с того места, где остановился. Если только зашёл — начни с вводного модуля,
+          там за пару задач разберёшься как тут всё устроено.
+        </p>
+
+        <!-- Активная задача (рендерится JS-ом по state) -->
+        <div id="hero-task-slot"></div>
+
+        <div class="aa-hero-card-ctas" id="hero-ctas"></div>
+      </section>
+
+      <!-- ═══════════ ВИДЕО «Как тут устроено» ═══════════ -->
+      <section class="aa-block" id="intro-video">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Знакомство · Как тут устроено</h3>
+          <button class="aa-mini-block-link" type="button" data-action="dismiss-intro" aria-label="Скрыть видео">
+            Скрыть
+          </button>
+        </div>
+
+        <div class="aa-video-grid">
+          <div class="video-embed-placeholder" id="intro-video-frame">
+            <div class="video-embed-placeholder-inner">
+              <div class="video-embed-placeholder-play">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21"/></svg>
+              </div>
+              <div class="video-embed-placeholder-label">Видео автора · 2 мин</div>
+            </div>
+          </div>
+          <div class="aa-video-summary">
+            <div class="aa-video-bullet">
+              <div class="aa-video-bullet-num">1</div>
+              <div class="aa-video-bullet-text">
+                <strong>Два пути:</strong> тренажёр прокачивает навыки, продукты — собирают
+                рабочее решение под клиента или себя.
+              </div>
+            </div>
+            <div class="aa-video-bullet">
+              <div class="aa-video-bullet-num">2</div>
+              <div class="aa-video-bullet-text">
+                Идёшь любым — или комбинируешь. Можно сразу взять продукт, прыгая в тренажёр
+                за конкретными технологиями.
+              </div>
+            </div>
+            <div class="aa-video-bullet">
+              <div class="aa-video-bullet-num">3</div>
+              <div class="aa-video-bullet-text">
+                Внутри продуктов есть ссылки в тренажёр, если что-то непонятно по конкретной ноде.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════ КЛЮЧЕВОЕ — РАЗВИЛКА ДВУХ ПУТЕЙ ═══════════ -->
+      <section class="aa-block">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">С чего хочешь начать</h3>
+          <span class="aa-mini-block-link" style="cursor: default;">Можно совмещать</span>
+        </div>
+
+        <div class="path-cards">
+          <a class="path-card is-trainer" href="/automate-at/courses/">
+            <div class="path-card-head">
+              <div class="path-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="path-card-tag">Тренажёр</div>
+                <div class="path-card-title">Прокачка навыков n8n</div>
+              </div>
+            </div>
+            <p class="path-card-lead">
+              Если хочешь <strong>уверенно владеть n8n</strong> с нуля или подтянуть
+              конкретные навыки.
+            </p>
+            <ul class="path-card-howlist">
+              <li class="path-card-howlist-title">Как работает</li>
+              <li class="path-card-howlist-item">12 тематических модулей M0–M11</li>
+              <li class="path-card-howlist-item">Короткие задачи под одну технологию</li>
+              <li class="path-card-howlist-item">Идёшь по своему темпу</li>
+              <li class="path-card-howlist-item">Каждая задача учит чему-то конкретному</li>
+            </ul>
+            <span class="path-card-cta">
+              Открыть курс
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
+          </a>
+
+          <a class="path-card is-products" href="/automate-at/products/">
+            <div class="path-card-head">
+              <div class="path-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="path-card-tag">Продукты</div>
+                <div class="path-card-title">Готовые AI-решения</div>
+              </div>
+            </div>
+            <p class="path-card-lead">
+              Если хочешь <strong>собрать рабочий продукт</strong> под себя или клиента —
+              большая «настоящая» задача.
+            </p>
+            <ul class="path-card-howlist">
+              <li class="path-card-howlist-title">Как работает</li>
+              <li class="path-card-howlist-item">Каталог готовых решений: RAG-агент, документооборот, контент-завод</li>
+              <li class="path-card-howlist-item">Конструктор подбирает технологии под бриф</li>
+              <li class="path-card-howlist-item">На выходе — техзадание для самостоятельной сборки</li>
+              <li class="path-card-howlist-item">Если нет клиента — берёшь учебный кейс</li>
+            </ul>
+            <span class="path-card-cta">
+              Открыть каталог
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ═══════════ Прогресс модулей ═══════════ -->
+      <section class="aa-block" id="progress-block">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Прогресс модулей</h3>
+          <a class="aa-mini-block-link" href="/automate-at/courses/">
+            Все курсы
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="aa-mini-list" id="progress-list"></div>
+      </section>
+
+      <!-- ═══════════ Активные задачи ═══════════ -->
+      <section class="aa-block" id="active-tasks-block">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Активные задачи</h3>
+          <a class="aa-mini-block-link" href="/automate-at/tasks/">
+            Все задачи
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="aa-task-mini-grid" id="active-tasks-list"></div>
+      </section>
+
+      <!-- ═══════════ База знаний ═══════════ -->
+      <section class="aa-block">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Свежее в базе знаний</h3>
+          <a class="aa-mini-block-link" href="/automate-at/knowledge/">
+            Все статьи
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="aa-article-grid" id="articles-list"></div>
+      </section>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor — школа n8n и AI-агентов</span>
+        <span>Прототип v0.1</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const $ = sel => document.querySelector(sel);
+  const escapeHtml = window.AaShell.escapeHtml;
+  const ICON = window.AaShell.ICON;
+  const state = window.AaShell.getQueryParam('state') || 'default';
+
+  // ─── Hero состояния ────────────────────────────────────────
+  function renderHero() {
+    const eyebrow = $('#hero-eyebrow');
+    const title = $('#hero-title');
+    const lead = $('#hero-lead');
+    const taskSlot = $('#hero-task-slot');
+    const ctas = $('#hero-ctas');
+
+    if (state === 'empty') {
+      eyebrow.textContent = 'Старт';
+      title.textContent = 'Привет) Готов потыкать?';
+      lead.innerHTML = 'Ты только что зашёл. Если ни разу не работал с n8n — начни с вводного модуля. ' +
+        'Если уже что-то умеешь — посмотри каталог продуктов, может найдёшь свой кейс.';
+      taskSlot.innerHTML = '';
+      ctas.innerHTML = `
+        <a class="btn btn-primary" href="/automate-at/courses/">
+          Открыть вводный модуль
+          ${ICON.arrowRight}
+        </a>
+        <a class="btn btn-ghost" href="/automate-at/products/">
+          Посмотреть продукты
+        </a>`;
+      return;
+    }
+
+    if (state === 'onboarding') {
+      eyebrow.textContent = 'Подождать';
+      title.textContent = 'Готовлю тебе n8n';
+      lead.innerHTML = 'Займёт минут 5. Пока почитай вводный модуль — там за пару задач разберёшься как тут работает.';
+      taskSlot.innerHTML = '';
+      ctas.innerHTML = `
+        <a class="btn btn-primary" href="/automate-at/courses/">
+          Открыть M0
+          ${ICON.arrowRight}
+        </a>`;
+      return;
+    }
+
+    // default — есть активная задача
+    eyebrow.textContent = 'Продолжаешь';
+    title.textContent = 'Что ты делаешь дальше';
+    lead.innerHTML = 'Бери задачу с того места, где остановился. Параллельно открывается ' +
+      'твой n8n — так быстрее.';
+
+    taskSlot.innerHTML = `
+      <div class="aa-hero-task-row">
+        <div class="aa-hero-task-meta">
+          <div class="aa-hero-task-eyebrow">Активная задача</div>
+          <div class="aa-hero-task-title">
+            <span class="aa-hero-task-code">M1-04</span>
+            HTTP-запрос с ретраем
+          </div>
+          <div class="aa-hero-task-module">M1 · Маршрутизация и API · сложность 6</div>
+        </div>
+      </div>`;
+
+    ctas.innerHTML = `
+      <a class="btn btn-primary" href="#">
+        Продолжить задачу
+        ${ICON.arrowRight}
+      </a>
+      <a class="btn btn-ghost" href="/automate-at/courses/">
+        Открыть модуль M1
+      </a>`;
+  }
+
+  // ─── Прогресс модулей (mock) ───────────────────────────────
+  const MODULE_PROGRESS = state === 'empty' ? [
+    { code: 'M0', title: 'Старт: первый воркфлоу',     done: 0, total: 5,  isSuggestion: true }
+  ] : [
+    { code: 'M0', title: 'Старт: первый воркфлоу',     done: 5, total: 5  },
+    { code: 'M1', title: 'Маршрутизация и API',        done: 3, total: 7  },
+    { code: 'M2', title: 'Триггеры и расписания',      done: 1, total: 6  },
+    { code: 'M3', title: 'Code и Expressions',         done: 0, total: 6, isSuggestion: true }
+  ];
+
+  function renderProgress() {
+    const root = $('#progress-list');
+    if (!MODULE_PROGRESS.length) {
+      $('#progress-block').style.display = 'none';
+      return;
+    }
+    root.innerHTML = MODULE_PROGRESS.map(m => {
+      const percent = m.total ? Math.round((m.done / m.total) * 100) : 0;
+      const cls = m.isSuggestion ? 'aa-module-row is-suggestion' : 'aa-module-row';
+      const pill = m.isSuggestion
+        ? '<span class="aa-module-row-suggest-pill">Тебе сюда</span>' : '';
+      return `
+        <a class="${cls}" href="/automate-at/courses/">
+          <span class="aa-module-row-code">${escapeHtml(m.code)}</span>
+          <span class="aa-module-row-title">${escapeHtml(m.title)}</span>
+          ${pill}
+          <div class="aa-module-row-progress">
+            <div class="aa-module-row-progress-bar">
+              <div class="aa-module-row-progress-fill" style="width: ${percent}%"></div>
+            </div>
+            <div class="aa-module-row-progress-label">${m.done} / ${m.total}</div>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  // ─── Активные задачи (mock) ────────────────────────────────
+  const ACTIVE_TASKS = state === 'empty' ? [] : [
+    { code: 'M1-04', title: 'HTTP-запрос с ретраем',         module: 'M1 · Маршрутизация',     status: 'progress', last: '2 часа назад' },
+    { code: 'M2-02', title: 'Cron + If-нода: ежедневный отчёт', module: 'M2 · Триггеры',         status: 'review',   last: 'вчера' },
+    { code: 'AI-01-03', title: 'WF2: KB Master Agent (RAG-агент)', module: 'AI-01 · RAG-агент', status: 'changes',  last: '3 дня назад' }
+  ];
+
+  const STATUS_LABELS = {
+    progress: 'В работе',
+    review: 'На ревью',
+    changes: 'Доработать',
+    done: 'Готово'
+  };
+
+  function renderTasks() {
+    const root = $('#active-tasks-list');
+    if (!ACTIVE_TASKS.length) {
+      $('#active-tasks-block').innerHTML = `
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Активные задачи</h3>
+        </div>
+        <div class="aa-stub-card" style="padding: 28px 30px;">
+          <div class="aa-stub-card-lead" style="margin: 0;">
+            Активных задач нет. Возьми первую — M0-01 бесплатно.
+          </div>
+        </div>`;
+      return;
+    }
+    root.innerHTML = ACTIVE_TASKS.map(t => `
+      <a class="aa-task-mini-card" href="#">
+        <span class="aa-task-mini-status is-${t.status}">${escapeHtml(STATUS_LABELS[t.status])}</span>
+        <div class="aa-task-mini-title">
+          <span class="aa-task-mini-code">${escapeHtml(t.code)}</span>
+          ${escapeHtml(t.title)}
+        </div>
+        <div class="aa-task-mini-meta">
+          <span>${escapeHtml(t.module)}</span>
+          <span>·</span>
+          <span>${escapeHtml(t.last)}</span>
+        </div>
+      </a>`).join('');
+  }
+
+  // ─── База знаний (mock) ────────────────────────────────────
+  const ARTICLES = [
+    { tag: 'n8n',     title: 'Типы данных в n8n и операции сравнения', date: 'вчера' },
+    { tag: 'RAG',     title: 'Как выбрать модель эмбеддинга под задачу', date: '3 дня назад' },
+    { tag: 'Память',  title: 'Memory subnode + Vector Storage в n8n',     date: 'неделя назад' },
+    { tag: 'Code',    title: 'Code-нода: что возвращать downstream',     date: 'неделя назад' }
+  ];
+
+  function renderArticles() {
+    const root = $('#articles-list');
+    root.innerHTML = ARTICLES.map(a => `
+      <a class="aa-article-mini-card" href="/automate-at/knowledge/">
+        <span class="aa-article-mini-tag">${escapeHtml(a.tag)}</span>
+        <div class="aa-article-mini-title">${escapeHtml(a.title)}</div>
+        <div class="aa-article-mini-meta">${escapeHtml(a.date)}</div>
+      </a>`).join('');
+  }
+
+  // ─── Intro video dismiss ───────────────────────────────────
+  function initIntro() {
+    if (localStorage.getItem('aa-intro-video-dismissed') === '1') {
+      const block = $('#intro-video');
+      if (block) block.style.display = 'none';
+    }
+    document.addEventListener('click', (e) => {
+      const dismiss = e.target.closest('[data-action="dismiss-intro"]');
+      if (!dismiss) return;
+      localStorage.setItem('aa-intro-video-dismissed', '1');
+      const block = $('#intro-video');
+      if (block) block.style.display = 'none';
+    });
+  }
+
+  // ─── Bootstrap ─────────────────────────────────────────────
+  renderHero();
+  renderProgress();
+  renderTasks();
+  renderArticles();
+  initIntro();
+})();
+</script>
+
+</body>
+</html>

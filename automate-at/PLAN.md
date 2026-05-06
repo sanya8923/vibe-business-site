@@ -1,0 +1,106 @@
+# Automate At — Prototype Plan
+
+> Vanilla HTML/CSS/JS прототип ЛК школы Profy Conveyor / платформы Automate At.
+> Деплой: `https://vibe-business.space/automate-at/`.
+> Стилистика — общие токены и компоненты с `/rag-agent/` (импорт через `<link rel="stylesheet" href="/rag-agent/assets/styles.css">`).
+
+## Концепция (с созвона 2026-05-06)
+
+Два пути обучения:
+- **Тренажёр** — 12 тематических модулей M0-M11 (классика). Линейные задачи под одну технологию.
+- **Продукты** — каталог готовых AI-решений (RAG-агент, документооборот, контент-завод). Большая «настоящая» задача.
+
+Пути не альтернативы — переплетаются: из задач продуктового модуля будут ссылки в тренажёр.
+
+Развилка показывается на главной dashboard.
+
+## Карта 23 экранов
+
+### Public (вне scope этой итерации — фаза 3)
+- `01` `/` — Landing
+- `02` `/blog` — Blog list
+- `03` `/blog/[slug]` — Blog post
+- `04` `/register` — Sign up
+- `05` `/login`, `/forgot-password`, `/reset-password` — Auth
+
+### Student dashboard (фокус фаз 1 и 2)
+- `06` `/dashboard` — **Главная ЛК с развилкой Тренажёр/Продукты** ⭐ Фаза 1, готов
+- `07` `/courses`, `/courses/[slug]`, `/tasks` — Каталог курсов (тренажёр) Фаза 1, index готов; detail Фаза 2
+- `08` `/tasks/[slug]` — Конкретная задача Фаза 2
+- `23` `/modules/[slug]` — Конкретный модуль Фаза 2
+- `09` `/billing` — Подписка и платежи Фаза 1, заглушка
+- `10` `/knowledge`, `/knowledge/[slug]` — База знаний Фаза 1, заглушка
+- `11` `/credentials` — Доступы (n8n, Matrix), masked Фаза 3
+- `12` `/referrals` — Реферальная программа Фаза 3
+- `13` `/settings` — Профиль, пауза, язык Фаза 1, заглушка
+
+### Products (новое в этой итерации)
+- `/products` — **Каталог продуктов AI-решений** ⭐ Фаза 1, готов
+  - Один рабочий — RAG-агент, ссылается на `/rag-agent/`
+  - Заглушки: документооборот, контент-завод
+  - Ссылка на топик «Предложка» в Telegram
+
+### Mentor (вне scope)
+- `/mentor/queue`, `/mentor/students`, `/mentor/students/[id]` — Фаза 3+
+
+### Admin (вне scope)
+- `14`–`22` — все admin-страницы — Фаза 3+
+
+## Карта связей в фазе 1
+
+```
+                    ┌─────────────────────────┐
+                    │   Sidebar (везде)       │
+                    │ ─ Главная (active)      │
+                    │ ─ Курсы (тренажёр)      │
+                    │ ─ Продукты              │
+                    │ ─ Задачи                │
+                    │ ─ База знаний           │
+                    │ ─ Подписка              │
+                    │ ─ Настройки             │
+                    └─────────────────────────┘
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       │                      │                      │
+   /dashboard            /courses                /products
+       │                      │                      │
+       ├──[btn] Открыть курс ─►─┐                    ├── /rag-agent/ (рабочий продукт)
+       └──[btn] Открыть каталог──────────────────────►
+                                │                    │
+                                ▼                    └── (заглушки: документооборот, контент-завод)
+                          (фаза 2: модули)
+```
+
+## States фазы 1
+
+### `/dashboard`
+- `default` — есть активная задача в hero, видны мини-блоки
+- `empty` — новый студент, в hero «Возьми первую задачу M0-01», мини-блоки скрыты
+- `?banner=past_due` — subscription banner показывает «Подписка истекла»
+- `?banner=expiring` — «Подписка истекает через 5 дней»
+
+### `/courses`
+- `default` — 12 модулей с мокнутым прогрессом
+
+### `/products`
+- `default` — RAG активен + 2 заглушки
+
+### Заглушки `/tasks /knowledge /billing /settings`
+- Только `wz-hero` + `brief-section` с описанием раздела
+
+## Phase 2 (next session)
+
+- `/courses/[slug]` — структура курса (M0 как пример)
+- `/tasks/[slug]` — страница задачи
+- `/knowledge/[slug]` — статья базы знаний
+- Модальные окна (logout placeholder, theme toggle full)
+
+## Phase 3 (future)
+
+Public страницы (`01`–`05`), credentials, referrals, mentor, admin — отдельные итерации после согласования с автором.
+
+## Деплой
+
+- Push в `main` → GitHub Actions → GitHub Pages
+- URL: `https://vibe-business.space/automate-at/dashboard/`
+- Изолировано: с главной `vibe-business.space` ссылки на `/automate-at/` НЕ ставим в этой итерации (как и `/rag-agent/`)

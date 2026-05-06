@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Курсы · Тренажёр n8n · Automate At</title>
+  <meta name="description" content="12 тематических модулей школы Profy Conveyor: тренажёр, прокачка навыков n8n с нуля до уверенного владения.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+</head>
+<body class="aa-platform" data-aa-page="courses">
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner">
+
+      <section class="wz-hero">
+        <div class="wz-hero-eyebrow">
+          <span class="wz-hero-dot"></span>
+          Тренажёр · 12 модулей
+        </div>
+        <h1 class="wz-hero-h1">Прокачка навыков n8n</h1>
+        <p class="wz-hero-lead">
+          12 тематических модулей с короткими задачами под одну технологию.
+          <strong>Идёшь по своему темпу</strong> — каждый модуль учит чему-то конкретному:
+          от первого воркфлоу до агентов и продуктовых модульных архитектур.
+          Если ни разу не работал с n8n — начни с M0.
+        </p>
+      </section>
+
+      <section class="aa-block">
+        <div class="aa-mini-block-head">
+          <h3 class="aa-mini-block-h3">Все модули</h3>
+          <span class="aa-mini-block-link" style="cursor: default;">12 модулей · 80+ задач</span>
+        </div>
+
+        <div class="aa-module-grid" id="module-grid"></div>
+      </section>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor — школа n8n и AI-агентов</span>
+        <span>Прототип v0.1</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const escapeHtml = window.AaShell.escapeHtml;
+
+  const MODULES = [
+    { code: 'M0',  title: 'Старт: первый воркфлоу',           desc: 'Знакомство с интерфейсом n8n. Триггеры, ноды, первая отправка сообщения. Учит как тут устроено.', done: 5, total: 5, status: 'done' },
+    { code: 'M1',  title: 'Маршрутизация и API',              desc: 'HTTP-нода, IF-нода, Switch. Учишься забирать данные извне и разводить логику по веткам.',         done: 3, total: 7, status: 'progress' },
+    { code: 'M2',  title: 'Триггеры и расписания',            desc: 'Cron, Webhook, Telegram-trigger. Когда воркфлоу запускается сам — без твоего участия.',           done: 1, total: 6, status: 'progress' },
+    { code: 'M3',  title: 'Code-нода и Expressions',          desc: 'JavaScript внутри n8n. Преобразование данных, условные выражения, шаблонизация.',                 done: 0, total: 6, status: 'not-started' },
+    { code: 'M4',  title: 'Бот-транскрибатор',                desc: 'Большой проект: Telegram-бот, который превращает голосовые в текст и маршрутизирует ответ.',     done: 0, total: 8, status: 'not-started' },
+    { code: 'M5',  title: 'Базы данных и DataTables',         desc: 'Postgres, DataTables n8n, конфиг через таблицы. Универсальные воркфлоу без правки логики.',       done: 0, total: 6, status: 'not-started' },
+    { code: 'M6',  title: 'Bot Zavod: контент-завод',         desc: 'Готовый pipeline сборки контента. RSS, Google Trends, Telegram-каналы как источники.',           done: 0, total: 9, status: 'locked' },
+    { code: 'M7',  title: 'AI-агенты: основы',                desc: 'AI Agent, инструменты, память. Как сделать чтобы агент не забывал контекст и эскалировал.',       done: 0, total: 7, status: 'locked' },
+    { code: 'M8',  title: 'RAG: векторные базы',              desc: 'Эмбеддинги, Qdrant/pgvector, гибридный поиск. Как сделать чтобы агент знал твою базу знаний.',    done: 0, total: 11, status: 'locked' },
+    { code: 'M9',  title: 'Модульные архитектуры',            desc: 'Разделение воркфлоу на части. Как добавить новый канал не трогая ядро бота.',                    done: 0, total: 5, status: 'locked' },
+    { code: 'M10', title: 'Memory: долгосрочная память',      desc: 'Профиль клиента, факты, GDPR/ФЗ-152. Что и как бот помнит между диалогами.',                      done: 0, total: 7, status: 'locked' },
+    { code: 'M11', title: 'Vibecoding: Claude Code и Codex',  desc: 'Использование AI-агентов-кодеров для написания воркфлоу и обвязок к ним.',                       done: 0, total: 5, status: 'locked' }
+  ];
+
+  const STATUS_LABELS = {
+    'done': 'Готово',
+    'progress': 'В работе',
+    'not-started': 'Доступно',
+    'locked': 'Скоро'
+  };
+
+  function renderModules() {
+    const root = document.getElementById('module-grid');
+    root.innerHTML = MODULES.map(m => {
+      const percent = m.total ? Math.round((m.done / m.total) * 100) : 0;
+      return `
+        <a class="aa-module-card" href="#">
+          <div class="aa-module-card-head">
+            <div class="aa-module-card-code">${escapeHtml(m.code)}</div>
+            <span class="aa-module-card-status is-${m.status}">${escapeHtml(STATUS_LABELS[m.status])}</span>
+          </div>
+          <div class="aa-module-card-title">${escapeHtml(m.title)}</div>
+          <p class="aa-module-card-desc">${escapeHtml(m.desc)}</p>
+          <div class="aa-module-card-progress">
+            <div class="aa-module-card-progress-bar">
+              <div class="aa-module-card-progress-fill" style="width: ${percent}%"></div>
+            </div>
+            <div class="aa-module-card-progress-label">${m.done} / ${m.total}</div>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  renderModules();
+})();
+</script>
+
+</body>
+</html>
