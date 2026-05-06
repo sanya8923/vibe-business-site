@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бриф клиента · RAG-агент wizard</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/rag-agent/assets/styles.css">
+</head>
+<body>
+
+<main>
+  <div class="aa-wrap">
+    <div id="project-selector-slot"></div>
+    <div id="progress-slot"></div>
+    <div class="screen" id="brief-app"></div>
+  </div>
+</main>
+
+<div id="modal-root"></div>
+<div id="toast" class="toast"></div>
+
+<script src="/rag-agent/assets/shared.js"></script>
+<script src="/rag-agent/assets/brief.js"></script>
+<script src="/rag-agent/assets/quizzes.js"></script>
+<script src="/rag-agent/assets/catalog.js"></script>
+<script src="/rag-agent/assets/cases.js"></script>
+<script src="/rag-agent/assets/preview.js"></script>
+<script src="/rag-agent/assets/wizard-ui.js"></script>
+
+<script>
+(function () {
+  const proj = window.RagWizardUI.ensureActiveProject();
+  window.RagShared.setCurrentStep(proj.id, 'brief');
+
+  const $sel = document.getElementById('project-selector-slot');
+  const $progress = document.getElementById('progress-slot');
+  const $app = document.getElementById('brief-app');
+
+  function render() {
+    const p = window.RagShared.getActiveProject();
+    window.RagWizardUI.renderProjectSelector($sel);
+    $progress.innerHTML = window.RagWizardUI.renderProgress('brief', p);
+    renderBrief(p);
+  }
+
+  function renderBrief(project) {
+    const fields = window.RagBrief.BRIEF_FIELDS;
+    const groups = window.RagBrief.BRIEF_GROUPS;
+    const brief = project.brief || {};
+
+    const groupsHtml = groups.map(g => {
+      const fieldsHtml = g.fields.map(fid => {
+        const f = fields[fid];
+        const optionsHtml = f.options.map(opt => {
+          const checked = brief[f.id] === opt.key;
+          const hintHtml = opt.hint ? `<div class="option-hint">${esc(opt.hint)}</div>` : '';
+          return `
+            <label class="option ${checked ? 'selected' : ''}" data-field="${esc(f.id)}" data-key="${esc(opt.key)}">
+              <input type="${f.type === 'checkbox' ? 'checkbox' : 'radio'}" name="${esc(f.id)}" value="${esc(opt.key)}" ${checked ? 'checked' : ''}>
+              <span class="option-marker ${f.type === 'checkbox' ? 'checkbox' : 'radio'}"></span>
+              <span class="option-letter">${esc(opt.key)}</span>
+              <div class="option-body">
+                <div class="option-text">${opt.text}</div>
+                ${hintHtml}
+              </div>
+            </label>`;
+        }).join('');
+        return `
+          <div class="brief-field">
+            <div class="brief-field-label">${esc(f.label)}</div>
+            ${f.hint ? `<div class="brief-field-hint">${esc(f.hint)}</div>` : ''}
+            <div class="options">${optionsHtml}</div>
+          </div>`;
+      }).join('');
+      return `
+        <section class="brief-section">
+          <header class="brief-section-head">
+            <span class="brief-section-eyebrow"><span class="brief-section-dot"></span>${esc(g.title)}</span>
+          </header>
+          <div class="brief-fields">${fieldsHtml}</div>
+        </section>`;
+    }).join('');
+
+    const validation = window.RagBrief.validateBrief(brief);
+
+    $app.innerHTML = `
+      <section class="wz-hero">
+        <span class="wz-hero-eyebrow"><span class="wz-hero-dot"></span>Шаг 1 из 7 · Опрос о проекте</span>
+        <h1 class="wz-hero-h1">Расскажи о проекте</h1>
+        <p class="wz-hero-lead">
+          Опиши задачу, аудиторию и инфраструктуру — подберём подходящий стек технологий
+          под твою ситуацию. Под каждым вариантом ответа есть пояснение с примерами,
+          ориентируйся на них.
+        </p>
+      </section>
+
+      ${groupsHtml}
+
+      <div class="quiz-actions" style="margin-top:24px;">
+        <a class="btn btn-ghost" href="/rag-agent/">← На главную</a>
+        <div class="flex gap-12">
+          <button class="btn btn-ghost" data-action="copy-brief" type="button">Скопировать опросник для клиента</button>
+          <button class="btn btn-primary" id="brief-next" ${validation.ok ? '' : 'disabled'}>Перейти к настройкам →</button>
+        </div>
+      </div>`;
+
+    bindOptions();
+    document.getElementById('brief-next').addEventListener('click', () => {
+      const p = window.RagShared.getActiveProject();
+      const v = window.RagBrief.validateBrief(p.brief);
+      if (!v.ok) {
+        window.RagShared.showToast('Заполни все поля брифа', 'warn');
+        return;
+      }
+      window.RagShared.setCurrentStep(p.id, 'embedding');
+      window.location.href = '/rag-agent/wizard/embedding.html';
+    });
+  }
+
+  function bindOptions() {
+    $app.querySelectorAll('.option[data-field]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        const fieldId = el.dataset.field;
+        const key = el.dataset.key;
+        const proj = window.RagShared.getActiveProject();
+        window.RagShared.updateBrief(proj.id, { [fieldId]: key });
+        render();
+        window.RagWizardUI.updatePlanFabCount();
+      });
+    });
+  }
+
+  function esc(t) { return window.RagShared.escapeHtml(t); }
+
+  // ── Bootstrap ───────────────────────────────────────────
+  window.RagWizardUI.bindProjectSelector($sel, render);
+  window.RagWizardUI.setupCopyBriefAction();
+  window.RagWizardUI.setupPlanUI();
+  render();
+})();
+</script>
+</body>
+</html>

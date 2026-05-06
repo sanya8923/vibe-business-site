@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress variants — выбор</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/rag-agent/assets/styles.css">
+  <style>
+    body { padding: 40px 0 80px; }
+    .lab-head { margin-bottom: 28px; }
+    .lab-head h1 {
+      font-family: var(--fd);
+      font-size: clamp(28px, 4vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px;
+    }
+    .lab-head p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+    .variant {
+      margin-top: 28px;
+    }
+    .variant-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .variant-num {
+      font-family: var(--fm);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .variant-title {
+      font-family: var(--fd);
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .variant-desc {
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.55;
+      max-width: 760px;
+      margin-bottom: 14px;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       Общая обёртка-карточка прогресса (одинаковая у всех)
+       ───────────────────────────────────────────────────── */
+    .pv-card {
+      padding: 22px 28px 24px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(219,255,74,.025) 0%, transparent 60%),
+        var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pv-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 28px; right: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+      opacity: .3;
+    }
+    .pv-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-family: var(--fm);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .pv-meta strong {
+      color: var(--accent);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .pv-meta > span:last-child {
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: .08em;
+    }
+    .pv-bar {
+      height: 3px;
+      background: var(--dim);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .pv-fill {
+      height: 100%;
+      width: 33%;
+      background: linear-gradient(90deg, var(--accent), var(--teal));
+      border-radius: 3px;
+    }
+    .pv-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT 1 — моно с точкой-разделителем
+       ═══════════════════════════════════════════════════════ */
+    .v1-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--fb);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 16px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      letter-spacing: -0.005em;
+    }
+    .v1-step::before {
+      content: attr(data-num);
+      font-family: var(--fm);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      opacity: .55;
+    }
+    .v1-step::after {
+      content: '·';
+      font-family: var(--fm);
+      opacity: .35;
+      margin: 0 -2px;
+    }
+    .v1-step.current {
+      color: #07090E;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .v1-step.current::before { color: rgba(7,9,14,.7); opacity: 1; }
+    .v1-step.current::after { color: rgba(7,9,14,.5); }
+    .v1-step.done {
+      color: var(--teal);
+      border-color: rgba(0,201,167,.35);
+      background: rgba(0,201,167,.05);
+    }
+    .v1-step.done::before { content: '✓'; color: var(--teal); opacity: 1; font-size: 12px; }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT 2 — цифра как watermark
+       ═══════════════════════════════════════════════════════ */
+    .v2-step {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      font-family: var(--fb);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      letter-spacing: -0.005em;
+    }
+    .v2-step::before {
+      content: attr(data-num);
+      font-family: var(--fm);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: currentColor;
+      opacity: .25;
+    }
+    .v2-step.current {
+      color: #07090E;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .v2-step.current::before { opacity: 1; color: rgba(7,9,14,.85); }
+    .v2-step.done {
+      color: var(--teal);
+      border-color: rgba(0,201,167,.35);
+      background: rgba(0,201,167,.05);
+    }
+    .v2-step.done::before { content: '✓'; opacity: 1; font-size: 14px; }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT 3 — квадратный чип вместо круга
+       ═══════════════════════════════════════════════════════ */
+    .v3-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--fb);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 16px 7px 7px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      letter-spacing: -0.005em;
+    }
+    .v3-step::before {
+      content: attr(data-num);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      font-family: var(--fm);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.55);
+      flex-shrink: 0;
+    }
+    .v3-step.current {
+      color: #07090E;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .v3-step.current::before {
+      background: #fff;
+      color: #07090E;
+    }
+    .v3-step.done {
+      color: var(--teal);
+      border-color: rgba(0,201,167,.35);
+      background: rgba(0,201,167,.05);
+    }
+    .v3-step.done::before {
+      content: '✓';
+      background: var(--teal);
+      color: #07090E;
+      font-size: 13px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT 4 — stepper с соединительной линией
+       ═══════════════════════════════════════════════════════ */
+    .v4-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+    .v4-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--fb);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: -0.005em;
+      flex-shrink: 0;
+    }
+    .v4-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px; height: 26px;
+      font-family: var(--fm);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px var(--card);
+    }
+    .v4-line {
+      flex: 1;
+      height: 2px;
+      background: var(--dim);
+      min-width: 16px;
+    }
+    .v4-line.done {
+      background: linear-gradient(90deg, var(--teal), var(--accent));
+    }
+    .v4-step.current { color: var(--accent); font-weight: 600; }
+    .v4-step.current .v4-dot {
+      background: var(--accent);
+      color: #07090E;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--card), 0 0 0 6px rgba(219,255,74,.18);
+    }
+    .v4-step.done { color: var(--teal); }
+    .v4-step.done .v4-dot {
+      background: var(--teal);
+      color: #07090E;
+      border-color: var(--teal);
+    }
+    .v4-step.done .v4-dot::after { content: '✓'; }
+    .v4-step.done .v4-num { display: none; }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT 5 — таблоидный, только лейбл + цветной dot
+       ═══════════════════════════════════════════════════════ */
+    .v5-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--fb);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      letter-spacing: -0.005em;
+    }
+    .v5-step::before {
+      content: '';
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      flex-shrink: 0;
+    }
+    .v5-step.current {
+      color: #07090E;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .v5-step.current::before {
+      background: #07090E;
+      box-shadow: 0 0 0 3px rgba(7,9,14,.18);
+    }
+    .v5-step.done {
+      color: var(--teal);
+      border-color: rgba(0,201,167,.35);
+      background: rgba(0,201,167,.05);
+    }
+    .v5-step.done::before {
+      width: 14px; height: 14px;
+      background: var(--teal);
+      content: '✓';
+      color: #07090E;
+      font-size: 9px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+    }
+
+    /* common — наведение */
+    .v1-step:hover, .v2-step:hover, .v3-step:hover, .v5-step:hover {
+      color: var(--text);
+      border-color: var(--border-hi);
+      background: rgba(255,255,255,.035);
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="aa-wrap">
+    <div class="lab-head">
+      <h1>Прогресс-бар: 5 вариантов</h1>
+      <p>Все примеры — состояние «шаг 3 из 7». Шаги 1–2 done (галочка teal), шаг 3 current (лайм fill), шаги 4–7 pending. Карточка-обёртка одинаковая, отличается только подача цифры/маркера.</p>
+    </div>
+
+    <!-- ═══ VARIANT 1 ═══ -->
+    <div class="variant">
+      <div class="variant-meta">
+        <span class="variant-num">Вариант 1</span>
+        <span class="variant-title">Моно с точкой-разделителем</span>
+      </div>
+      <p class="variant-desc">Цифра mono 11px → middle dot → лейбл. Без круга вокруг цифры. Done — галочка вместо цифры. Стиль терминала / IDE.</p>
+      <div class="pv-card">
+        <div class="pv-meta">
+          <span>Шаг 3 из 7<strong>Стратегия поиска</strong></span>
+          <span>33%</span>
+        </div>
+        <div class="pv-bar"><div class="pv-fill"></div></div>
+        <div class="pv-steps">
+          <a class="v1-step done" data-num="1" href="#">Опрос</a>
+          <a class="v1-step done" data-num="2" href="#">Поиск по смыслу</a>
+          <a class="v1-step current" data-num="3" href="#">Стратегия поиска</a>
+          <a class="v1-step" data-num="4" href="#">Память</a>
+          <a class="v1-step" data-num="5" href="#">Каналы</a>
+          <a class="v1-step" data-num="6" href="#">Источники</a>
+          <a class="v1-step" data-num="7" href="#">Финал</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VARIANT 2 ═══ -->
+    <div class="variant">
+      <div class="variant-meta">
+        <span class="variant-num">Вариант 2</span>
+        <span class="variant-title">Цифра как watermark</span>
+      </div>
+      <p class="variant-desc">Цифра mono крупная (15px), но на pending — приглушена до 25% opacity (как водяной знак). На current/done — opacity 1, читается громко. Без круга, без точки.</p>
+      <div class="pv-card">
+        <div class="pv-meta">
+          <span>Шаг 3 из 7<strong>Стратегия поиска</strong></span>
+          <span>33%</span>
+        </div>
+        <div class="pv-bar"><div class="pv-fill"></div></div>
+        <div class="pv-steps">
+          <a class="v2-step done" data-num="1" href="#">Опрос</a>
+          <a class="v2-step done" data-num="2" href="#">Поиск по смыслу</a>
+          <a class="v2-step current" data-num="3" href="#">Стратегия поиска</a>
+          <a class="v2-step" data-num="4" href="#">Память</a>
+          <a class="v2-step" data-num="5" href="#">Каналы</a>
+          <a class="v2-step" data-num="6" href="#">Источники</a>
+          <a class="v2-step" data-num="7" href="#">Финал</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VARIANT 3 ═══ -->
+    <div class="variant">
+      <div class="variant-meta">
+        <span class="variant-num">Вариант 3</span>
+        <span class="variant-title">Квадратный чип вместо круга</span>
+      </div>
+      <p class="variant-desc">Mini-square 22×22 с rounded-radius 5px. Контраст форм (овальный pill ↔ квадратный чип). Pending — graphite, current — белый чип на лайме, done — teal-fill с галкой.</p>
+      <div class="pv-card">
+        <div class="pv-meta">
+          <span>Шаг 3 из 7<strong>Стратегия поиска</strong></span>
+          <span>33%</span>
+        </div>
+        <div class="pv-bar"><div class="pv-fill"></div></div>
+        <div class="pv-steps">
+          <a class="v3-step done" data-num="1" href="#">Опрос</a>
+          <a class="v3-step done" data-num="2" href="#">Поиск по смыслу</a>
+          <a class="v3-step current" data-num="3" href="#">Стратегия поиска</a>
+          <a class="v3-step" data-num="4" href="#">Память</a>
+          <a class="v3-step" data-num="5" href="#">Каналы</a>
+          <a class="v3-step" data-num="6" href="#">Источники</a>
+          <a class="v3-step" data-num="7" href="#">Финал</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VARIANT 4 ═══ -->
+    <div class="variant">
+      <div class="variant-meta">
+        <span class="variant-num">Вариант 4</span>
+        <span class="variant-title">Stepper с соединительной линией</span>
+      </div>
+      <p class="variant-desc">Шаги связаны линией. До текущего шага линия teal→accent градиент, после — серая. Цифры в круглых dot'ах на линии. Классический form-stepper, сильнее «двигает» взгляд по прогрессу.</p>
+      <div class="pv-card">
+        <div class="pv-meta">
+          <span>Шаг 3 из 7<strong>Стратегия поиска</strong></span>
+          <span>33%</span>
+        </div>
+        <div class="pv-bar" style="margin-bottom:30px;"><div class="pv-fill"></div></div>
+        <div class="v4-stepper">
+          <a class="v4-step done" href="#"><span class="v4-dot"></span><span>Опрос</span></a>
+          <span class="v4-line done"></span>
+          <a class="v4-step done" href="#"><span class="v4-dot"></span><span>Поиск по смыслу</span></a>
+          <span class="v4-line done"></span>
+          <a class="v4-step current" href="#"><span class="v4-dot"><span class="v4-num">3</span></span><span>Стратегия поиска</span></a>
+          <span class="v4-line"></span>
+          <a class="v4-step" href="#"><span class="v4-dot"><span class="v4-num">4</span></span><span>Память</span></a>
+          <span class="v4-line"></span>
+          <a class="v4-step" href="#"><span class="v4-dot"><span class="v4-num">5</span></span><span>Каналы</span></a>
+          <span class="v4-line"></span>
+          <a class="v4-step" href="#"><span class="v4-dot"><span class="v4-num">6</span></span><span>Источники</span></a>
+          <span class="v4-line"></span>
+          <a class="v4-step" href="#"><span class="v4-dot"><span class="v4-num">7</span></span><span>Финал</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VARIANT 5 ═══ -->
+    <div class="variant">
+      <div class="variant-meta">
+        <span class="variant-num">Вариант 5</span>
+        <span class="variant-title">Таблоид: только лейбл + цветной dot</span>
+      </div>
+      <p class="variant-desc">Цифр нет вообще. Маркер — крошечная точка 7px слева. Pending — серая, current — тёмная с glow на лайме, done — teal-fill с галкой. Минимум информации, максимум визуальной чистоты.</p>
+      <div class="pv-card">
+        <div class="pv-meta">
+          <span>Шаг 3 из 7<strong>Стратегия поиска</strong></span>
+          <span>33%</span>
+        </div>
+        <div class="pv-bar"><div class="pv-fill"></div></div>
+        <div class="pv-steps">
+          <a class="v5-step done" href="#">Опрос</a>
+          <a class="v5-step done" href="#">Поиск по смыслу</a>
+          <a class="v5-step current" href="#">Стратегия поиска</a>
+          <a class="v5-step" href="#">Память</a>
+          <a class="v5-step" href="#">Каналы</a>
+          <a class="v5-step" href="#">Источники</a>
+          <a class="v5-step" href="#">Финал</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

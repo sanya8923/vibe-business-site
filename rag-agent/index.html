@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG-агент · продукт каталога Profy Conveyor</title>
+  <meta name="description" content="RAG-агент: AI-помощник по базе знаний. Готовая базовая сборка + конфигуратор технологий под клиента. Каталог из 6 готовых сценариев.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/rag-agent/assets/styles.css">
+</head>
+<body>
+
+<div id="continue-slot"></div>
+
+<header class="aa-page-header">
+  <div class="aa-brand">
+    <div class="aa-brand-mark">PC</div>
+    <span class="aa-brand-name">Profy Conveyor</span>
+    <span class="aa-brand-sub">/ каталог AI-продуктов</span>
+  </div>
+  <div class="aa-page-header-meta">
+    <span class="aa-version-pill">v0.1 · прототип</span>
+  </div>
+</header>
+
+<main>
+  <div class="aa-wrap">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="h-hero">
+      <div class="h-hero-inner">
+        <span class="h-hero-tag">
+          <span class="h-hero-tag-dot"></span>
+          AI-01 · продукт каталога
+        </span>
+
+        <h1 class="h-hero-h1">
+          <span class="h-hero-h1-accent">RAG</span>-агент
+        </h1>
+
+        <p class="h-hero-sub">
+          AI-помощник, который отвечает на вопросы по базе знаний из документов.
+          Бери <strong>готовую базовую сборку</strong> или <strong>подбери свой стек</strong> —
+          под себя или под клиента.
+        </p>
+
+        <div class="h-hero-ctas">
+          <a class="h-hero-cta-primary" href="#config">
+            Подобрать конфигурацию
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a class="h-hero-cta-secondary" href="#base">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            Собрать базового агента
+          </a>
+        </div>
+
+        <div class="h-hero-meta">
+          <div class="h-hero-meta-cell">
+            <div class="h-hero-meta-num">1</div>
+            <div class="h-hero-meta-label">Базовая сборка</div>
+          </div>
+          <div class="h-hero-meta-cell">
+            <div class="h-hero-meta-num">5</div>
+            <div class="h-hero-meta-label">Категорий конфигурации</div>
+          </div>
+          <div class="h-hero-meta-cell">
+            <div class="h-hero-meta-num">6</div>
+            <div class="h-hero-meta-label">Готовых кейсов</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ BLOCK 2 — БАЗОВЫЙ АГЕНТ ═══════════ -->
+    <section class="aa-section" id="base">
+      <span class="aa-section-eyebrow">База</span>
+
+      <article class="ba-card">
+        <div class="ba-card-head">
+          <div>
+            <h3 class="ba-card-h3">
+              Базовый RAG-агент
+              <span class="ba-card-h3-pill">Готов к сборке</span>
+            </h3>
+            <p class="ba-card-lead">
+              Telegram-бот, который отвечает по корпоративной базе знаний.
+              Если не нашёл ответ — эскалирует к оператору. Конфигурация по каналам
+              хранится в DataTable, новый канал добавляется без правки логики бота.
+            </p>
+          </div>
+        </div>
+
+        <!-- Облако тегов: технологии -->
+        <div class="ba-tags">
+          <span class="ba-tag">Telegram-бот</span>
+          <span class="ba-tag">DeepSeek</span>
+          <span class="ba-tag">text-embedding-3-small</span>
+          <span class="ba-tag">Qdrant</span>
+          <span class="ba-tag">Postgres</span>
+          <span class="ba-tag">DataTables</span>
+          <span class="ba-tag ba-tag-plain">5 воркфлоу n8n</span>
+        </div>
+
+        <!-- Задачи модуля -->
+        <div class="ba-tasks">
+          <div class="ba-tasks-head">
+            <div class="ba-tasks-title">
+              Задачи <em>6 шт.</em>
+            </div>
+            <a class="ba-tasks-link" href="#">
+              Перейти в модуль →
+            </a>
+          </div>
+
+          <div class="ba-task-list">
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-01</span>
+              <span class="ba-task-name">WF1: Загрузка файлов в KB через Chat Trigger Ingestion</span>
+              <span class="ba-task-difficulty">сложность 7</span>
+            </div>
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-02</span>
+              <span class="ba-task-name">Подготовка хранилищ: Postgres <code>kb_agent_logs</code> + DataTable <code>Gateway Config</code></span>
+              <span class="ba-task-difficulty">сложность 6</span>
+            </div>
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-03</span>
+              <span class="ba-task-name">WF2: KB Master Agent — ядро бота (AI Agent + Qdrant Tool + Memory)</span>
+              <span class="ba-task-difficulty">сложность 9</span>
+            </div>
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-04</span>
+              <span class="ba-task-name">WF6: Telegram Gateway — подключение бота к Telegram</span>
+              <span class="ba-task-difficulty">сложность 7</span>
+            </div>
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-05</span>
+              <span class="ba-task-name">WF3: Эскалация к оператору + расширение WF2 (Escalation Tool)</span>
+              <span class="ba-task-difficulty">сложность 8</span>
+            </div>
+            <div class="ba-task-row is-done">
+              <span class="ba-task-status">Done</span>
+              <span class="ba-task-code">AI-01-06</span>
+              <span class="ba-task-name">WF4: Error Workflow — глобальный обработчик падений</span>
+              <span class="ba-task-difficulty">сложность 5</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ═══════════ BLOCK 3 — КОНФИГУРАТОР ═══════════ -->
+    <section class="aa-section" id="config">
+      <span class="aa-section-eyebrow">Конфигуратор</span>
+
+      <article class="cf-card">
+        <!-- HEAD: заголовок + один lead -->
+        <header class="cf-card-head">
+          <h3 class="cf-card-h3">Конструктор RAG-агента</h3>
+          <p class="cf-card-lead">
+            Отвечаешь на короткий бриф о проекте и проходишь квизы по 5 категориям.
+            На выходе — список подходящих технологий и техническое задание для самостоятельной
+            сборки. Опросник для клиента можно скопировать и отправить ему отдельно.
+          </p>
+        </header>
+
+        <!-- Две кнопки в ряд (как в embedding-quiz) -->
+        <div class="cf-actions">
+          <a class="h-hero-cta-primary" href="/rag-agent/wizard/">
+            Пройти опрос
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <button class="h-hero-cta-secondary cf-copy-btn" type="button" id="cf-copy-quiz-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Скопировать опросник для клиента
+          </button>
+        </div>
+
+        <!-- Категории внутри той же карточки -->
+        <div class="cf-cats-block">
+          <div class="cf-cats">
+            <div class="cf-cat">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Embedding</div>
+                <span class="cf-cat-count">8 вариантов</span>
+              </div>
+              <div class="cf-cat-sub">как искать по смыслу</div>
+              <p class="cf-cat-desc">
+                Шифруем тексты компании в формат, который понимает агент. Бот ищет ответы
+                по смыслу запроса, а не по совпадению слов.
+              </p>
+            </div>
+            <div class="cf-cat">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Retrieval</div>
+                <span class="cf-cat-count">5 вариантов</span>
+              </div>
+              <div class="cf-cat-sub">стратегия поиска</div>
+              <p class="cf-cat-desc">
+                Как именно бот находит нужные куски в базе и насколько умно отбирает
+                лучшие из них перед тем, как дать ответ.
+              </p>
+            </div>
+            <div class="cf-cat">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Memory</div>
+                <span class="cf-cat-count">15 вариантов</span>
+              </div>
+              <div class="cf-cat-sub">память бота</div>
+              <p class="cf-cat-desc">
+                Что бот помнит про клиента между сообщениями: профиль, факты,
+                историю покупок. Плюс правила удаления данных по ФЗ-152 / GDPR.
+              </p>
+            </div>
+            <div class="cf-cat">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Channels</div>
+                <span class="cf-cat-count">5 вариантов</span>
+              </div>
+              <div class="cf-cat-sub">где общаться</div>
+              <p class="cf-cat-desc">
+                Telegram, виджет на сайте, ВК, MAX, отдельный лендинг — где
+                клиенты будут писать боту.
+              </p>
+            </div>
+            <div class="cf-cat">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Data</div>
+                <span class="cf-cat-count">11 вариантов</span>
+              </div>
+              <div class="cf-cat-sub">источники знаний</div>
+              <p class="cf-cat-desc">
+                Откуда бот берёт данные: PDF, Word, Notion, сайты, Google Sheets.
+                Как извлечь текст, таблицы и картинки.
+              </p>
+            </div>
+            <div class="cf-cat cf-cat-auto">
+              <div class="cf-cat-head">
+                <div class="cf-cat-name">Sec + Ops</div>
+              </div>
+              <p class="cf-cat-desc">
+                Защита промптов и ответов (Guardrails), Error Workflow, метрики и
+                регламент эксплуатации. Подбирается автоматически из брифа.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ═══════════ BLOCK 4 — ТРЕНИРОВОЧНЫЕ КЕЙСЫ ═══════════ -->
+    <section class="aa-section" id="cases">
+      <span class="aa-section-eyebrow">Тренировочные кейсы</span>
+
+      <article class="cs-card">
+        <header class="cs-card-head">
+          <h3 class="cs-card-h3">Если нет своего клиента — потренируйся на готовом</h3>
+          <p class="cs-card-lead">
+            Готовый сценарий с уже заполненным брифом и расставленными ответами на квизы.
+            Жмёшь «Применить шаблон» — попадаешь сразу в финал и собираешь RAG-агента
+            по отработанной конфигурации. Чтобы прокачать сборку, не дожидаясь живого
+            проекта.
+          </p>
+        </header>
+
+        <div class="cs-rows" id="cs-rows"></div>
+      </article>
+    </section>
+
+  </div>
+</main>
+
+<footer class="aa-page-footer">
+  <span>RAG-агент · AI-01 · продукт каталога Profy Conveyor</span>
+  <span>Прототип v0.1</span>
+</footer>
+
+<div id="modal-root"></div>
+<div id="toast" class="toast"></div>
+
+<script src="/rag-agent/assets/shared.js"></script>
+<script src="/rag-agent/assets/brief.js"></script>
+<script src="/rag-agent/assets/quizzes.js"></script>
+<script src="/rag-agent/assets/catalog.js"></script>
+<script src="/rag-agent/assets/cases.js"></script>
+
+<script>
+(function () {
+  const $ = sel => document.querySelector(sel);
+
+  // ── Continue banner ─────────────────────────────────────
+  function renderContinueBanner() {
+    const project = window.RagShared.getActiveProject();
+    if (!project) return;
+    const progress = window.RagShared.getProjectProgress(project);
+    const stepHref = window.RagShared.STEP_HREFS[progress.currentStep] || '/rag-agent/wizard/';
+    const stepLabel = window.RagShared.STEP_LABELS[progress.currentStep] || 'Бриф';
+    const isCompleted = progress.currentStep === 'completed';
+
+    const banner = document.createElement('div');
+    banner.className = 'aa-continue';
+    banner.innerHTML = `
+      <div class="aa-continue-text">
+        У тебя есть ${isCompleted ? 'завершённый' : 'незаконченный'} проект <strong>${escapeHtml(project.name)}</strong>.
+        ${isCompleted ? 'Открыть финал?' : 'Продолжить с шага «' + escapeHtml(stepLabel) + '»?'}
+      </div>
+      <div class="aa-continue-actions">
+        <a class="btn btn-primary btn-sm" href="${stepHref}">${isCompleted ? 'Открыть финал' : 'Продолжить'}</a>
+        <button class="btn btn-ghost btn-sm" data-action="new-project" type="button">Начать новый</button>
+      </div>`;
+    $('#continue-slot').appendChild(banner);
+  }
+
+  // ── Cases (row layout) ─────────────────────────────────
+  // 3 ключевых stretch-pill для row-карточки. Берём из catalog/preview если получится,
+  // иначе фиксируем вручную — это ОК для прототипа.
+  const CASE_HIGHLIGHTS = {
+    'jur-agency':     ['GigaChat-Pro', 'Hybrid + Rerank', 'WebWidget'],
+    'auto-service':   ['DeepSeek',     'Vector + MetaFilter', 'VK + WebWidget'],
+    'medical-clinic': ['Локальная LLM', 'Профиль · ФЗ-152', 'WhatsApp'],
+    'b2b-saas':       ['Claude',        'Multi-Query', 'Slack + WebWidget'],
+    'corporate':      ['GigaChat-Max',  'Graph + Rerank', 'MAX + Telegram'],
+    'edu-saas':       ['GPT-4 mini',    'Hybrid · 100k+ KB', 'WebWidget']
+  };
+
+  function renderCases() {
+    const cases = window.RagCases.listCases().filter(c => !c.placeholder);
+    const root = $('#cs-rows');
+    const arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+    root.innerHTML = cases.map(c => {
+      const pills = (CASE_HIGHLIGHTS[c.slug] || []).map((p, i) => {
+        const cls = i === 0 ? 'cs-pill is-accent' : 'cs-pill';
+        return `<span class="${cls}">${escapeHtml(p)}</span>`;
+      }).join('');
+
+      return `
+        <a class="cs-row" href="/rag-agent/cases/${c.slug}/">
+          <div class="cs-row-icon">${c.emoji}</div>
+          <div class="cs-row-body">
+            <div class="cs-row-head">
+              <div class="cs-row-title">${escapeHtml(c.title)}</div>
+            </div>
+            <p class="cs-row-desc">${escapeHtml(c.cardDesc)}</p>
+            <div class="cs-row-pills">${pills}</div>
+          </div>
+          <span class="cs-row-cta">
+            Применить шаблон ${arrowSvg}
+          </span>
+        </a>`;
+    }).join('');
+  }
+
+  // ── «Скопировать опросник для клиента» (модалка) ───────
+  function openClientBriefModal() {
+    const text = window.RagBrief.getBriefForClient();
+    window.RagShared.openModal({
+      title: 'Опросник для клиента',
+      bodyHtml: `
+        <p class="cf-modal-lead">
+          Скопируй текст и отправь клиенту до сборки. Когда вернутся ответы — впишешь
+          их в бриф конфигуратора.
+        </p>
+        <pre class="cf-modal-pre"><code>${escapeHtml(text)}</code></pre>`,
+      footHtml: `
+        <button class="btn btn-primary" type="button" data-action="copy-client-brief">Скопировать в буфер</button>
+        <button class="btn btn-ghost" type="button" data-modal-close>Закрыть</button>`
+    });
+  }
+
+  // ── Actions ─────────────────────────────────────────────
+  document.addEventListener('click', async e => {
+    if (e.target.matches('[data-action="new-project"]')) {
+      window.RagShared.setActiveProjectId(null);
+      window.location.href = '/rag-agent/wizard/';
+      return;
+    }
+    if (e.target.closest('#cf-copy-quiz-btn')) {
+      openClientBriefModal();
+      return;
+    }
+    if (e.target.matches('[data-action="copy-client-brief"]')) {
+      const ok = await window.RagShared.copyToClipboard(window.RagBrief.getBriefForClient());
+      window.RagShared.showToast(
+        ok ? 'Опросник скопирован — отправь клиенту' : 'Не удалось скопировать',
+        ok ? 'success' : 'error'
+      );
+    }
+  });
+
+  function escapeHtml(t) { return window.RagShared.escapeHtml(t); }
+
+  // ── Bootstrap ───────────────────────────────────────────
+  renderContinueBanner();
+  renderCases();
+})();
+</script>
+</body>
+</html>

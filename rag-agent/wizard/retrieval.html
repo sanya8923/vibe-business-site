@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retrieval · RAG-агент wizard</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/rag-agent/assets/styles.css">
+</head>
+<body>
+
+<main>
+  <div class="aa-wrap">
+    <div id="project-selector-slot"></div>
+    <div id="progress-slot"></div>
+    <div class="screen" id="quiz-app"></div>
+  </div>
+</main>
+
+<div id="modal-root"></div>
+<div id="toast" class="toast"></div>
+
+<script src="/rag-agent/assets/shared.js"></script>
+<script src="/rag-agent/assets/brief.js"></script>
+<script src="/rag-agent/assets/quizzes.js"></script>
+<script src="/rag-agent/assets/catalog.js"></script>
+<script src="/rag-agent/assets/cases.js"></script>
+<script src="/rag-agent/assets/preview.js"></script>
+<script src="/rag-agent/assets/wizard-ui.js"></script>
+<script src="/rag-agent/assets/quiz-runtime.js"></script>
+
+<script>RagQuizRuntime.start('retrieval');</script>
+</body>
+</html>
