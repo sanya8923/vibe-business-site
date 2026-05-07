@@ -2304,3 +2304,328 @@
 }
 .aa-platform-footer a { color: var(--muted); transition: color .15s ease; }
 .aa-platform-footer a:hover { color: var(--accent); }
+
+
+/* ============================================================
+   Phase 2.1 — Task page (1-column layout)
+   Action card inline, side cards full-width, DoD checklist,
+   IO box, test cases, stretch, context links.
+   ============================================================ */
+
+.aa-task-status-row {
+  margin-bottom: 14px;
+}
+
+/* Action card в основном потоке, кнопки справа */
+.aa-action-card.is-inline {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 24px;
+  padding: 22px 26px;
+  margin: 18px 0 22px;
+}
+.aa-action-card.is-inline .aa-action-card-text-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.aa-action-card.is-inline .aa-action-card-actions {
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 0;
+  flex-shrink: 0;
+  min-width: 200px;
+}
+.aa-action-card.is-inline .aa-action-card-meta {
+  border-top: none;
+  padding-top: 4px;
+}
+@media (max-width: 720px) {
+  .aa-action-card.is-inline {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .aa-action-card.is-inline .aa-action-card-actions {
+    flex-direction: row;
+    min-width: 0;
+  }
+  .aa-action-card.is-inline .aa-action-card-actions .btn {
+    flex: 1;
+  }
+}
+
+/* Side card на всю ширину (когда не в правой колонке) */
+.aa-side-card.is-full {
+  width: 100%;
+  padding: 18px 22px;
+}
+
+/* «Что нужно знать» под action card */
+.aa-task-prereq {
+  margin-bottom: 26px;
+}
+.aa-task-prereq .aa-side-card-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+.aa-task-prereq .aa-side-card-list li {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  .aa-task-prereq .aa-side-card-list {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Нижние секции (В этом модуле / Помощь) */
+.aa-bottom-section {
+  margin-top: 22px;
+}
+
+/* Помощь — кнопка слева */
+.aa-help-block .btn { align-self: flex-start; }
+
+/* Вход / Выход — компактный блок */
+.aa-io-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 18px;
+  margin: 22px 0 18px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.aa-io-box-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.aa-io-box-key {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  flex-shrink: 0;
+  width: 60px;
+}
+.aa-io-box-val {
+  color: var(--text);
+}
+
+/* Контекстные ссылки рядом с описанием */
+.aa-context-links {
+  margin: 12px 0 18px !important;
+  padding: 10px 12px;
+  background: rgba(0,201,167,.04);
+  border-left: 2px solid rgba(0,201,167,.4);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+}
+.aa-context-links a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 500;
+}
+.aa-context-links a:hover { text-decoration: underline; }
+
+/* DoD-чеклист */
+.aa-dod-block {
+  margin: 28px 0 22px;
+  padding: 22px 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative;
+}
+.aa-dod-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 18px; right: 18px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: .35;
+}
+.aa-dod-block-h2 {
+  font-family: var(--fd);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.aa-dod-block-lead {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.aa-dod-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aa-dod-item label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.aa-dod-item label:hover {
+  background: rgba(255,255,255,.04);
+  border-color: var(--border-hi);
+}
+.aa-dod-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.aa-dod-item-check {
+  width: 20px; height: 20px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-hi);
+  background: rgba(255,255,255,.02);
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+  transition: all .15s ease;
+}
+.aa-dod-item-check::before {
+  content: '✓';
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bg);
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.aa-dod-item.is-checked .aa-dod-item-check {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.aa-dod-item.is-checked .aa-dod-item-check::before { opacity: 1; }
+.aa-dod-item-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  transition: color .15s ease;
+}
+.aa-dod-item.is-checked .aa-dod-item-text {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,.2);
+}
+
+/* Тест-кейсы */
+.aa-test-cases-block {
+  margin: 24px 0 22px;
+}
+.aa-test-cases {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.aa-test-cases thead th {
+  background: rgba(255,255,255,.03);
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.aa-test-cases tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text);
+}
+.aa-test-cases tbody tr:last-child td { border-bottom: none; }
+.aa-test-cases tbody tr:hover td { background: rgba(255,255,255,.02); }
+.aa-test-cases tbody td:first-child {
+  width: 40%;
+  color: var(--text);
+  font-weight: 500;
+}
+.aa-test-cases tbody td:last-child { color: var(--muted); }
+
+/* Stretch (collapsible) */
+.aa-stretch {
+  margin: 22px 0;
+  border: 1px dashed var(--border-hi);
+  border-radius: 10px;
+  background: rgba(219,255,74,.02);
+  overflow: hidden;
+}
+.aa-stretch summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  user-select: none;
+  transition: background .15s ease;
+}
+.aa-stretch summary::-webkit-details-marker { display: none; }
+.aa-stretch summary:hover { background: rgba(219,255,74,.04); }
+.aa-stretch-title {
+  font-family: var(--fd);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -.005em;
+}
+.aa-stretch-arrow {
+  font-size: 16px;
+  color: var(--muted);
+  transition: transform .15s ease;
+}
+.aa-stretch[open] .aa-stretch-arrow { transform: rotate(180deg); }
+.aa-stretch[open] summary { border-bottom: 1px solid var(--border); }
+.aa-stretch .aa-md-body {
+  padding: 6px 18px 18px;
+}
+
+/* «В этом модуле» внизу — grid-раскладка вместо столбца */
+.aa-in-module-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 4px 14px;
+}
+@media (max-width: 540px) {
+  .aa-in-module-list-grid { grid-template-columns: 1fr; }
+}
