@@ -24,12 +24,15 @@
 - `05` `/login`, `/forgot-password`, `/reset-password` — Auth
 
 ### Student dashboard (фокус фаз 1 и 2)
-- `06` `/dashboard` — **Главная ЛК с развилкой Тренажёр/Продукты** ⭐ Фаза 1, готов
-- `07` `/courses`, `/courses/[slug]`, `/tasks` — Каталог курсов (тренажёр) Фаза 1, index готов; detail Фаза 2
-- `08` `/tasks/[slug]` — Конкретная задача Фаза 2
-- `23` `/modules/[slug]` — Конкретный модуль Фаза 2
+- `06` `/dashboard` — **Главная ЛК с развилкой Тренажёр/Продукты** ⭐ Фаза 1, ✅ готов
+- `07` `/courses` — Каталог курсов (тренажёр) ✅ готов
+- `07a` `/courses/M0/` — Страница модуля (пример M0) ✅ готов (Фаза 2)
+- `08` `/tasks/M0-01/` — Страница задачи (пример M0-01) ✅ готов (Фаза 2)
+- `23` `/modules/[slug]` — alias-роута нет, используется `/courses/[slug]/`
+- `tasks-list` `/tasks/` — Заглушка (полный список с фильтрами — TODO)
 - `09` `/billing` — Подписка и платежи Фаза 1, заглушка
-- `10` `/knowledge`, `/knowledge/[slug]` — База знаний Фаза 1, заглушка
+- `10` `/knowledge` — Каталог статей с поиском ✅ готов (Фаза 2 переработка из заглушки)
+- `10a` `/knowledge/chto-takoe-rag-agent/` — Пример статьи ✅ готов (Фаза 2)
 - `11` `/credentials` — Доступы (n8n, Matrix), masked Фаза 3
 - `12` `/referrals` — Реферальная программа Фаза 3
 - `13` `/settings` — Профиль, пауза, язык Фаза 1, заглушка
@@ -88,12 +91,14 @@
 ### Заглушки `/tasks /knowledge /billing /settings`
 - Только `wz-hero` + `brief-section` с описанием раздела
 
-## Phase 2 (next session)
+## Phase 2 (фактически сделана в этой же итерации)
 
-- `/courses/[slug]` — структура курса (M0 как пример)
-- `/tasks/[slug]` — страница задачи
-- `/knowledge/[slug]` — статья базы знаний
-- Модальные окна (logout placeholder, theme toggle full)
+- ✅ `/courses/M0/` — структура курса (M0 как пример)
+- ✅ `/tasks/M0-01/` — страница задачи
+- ✅ `/knowledge/chto-takoe-rag-agent/` — пример статьи
+- ✅ `/knowledge/` — каталог статей с поиском и фильтрами
+- ⏸ Модальные окна (logout placeholder, theme toggle full) — TODO для следующих сессий
+- ⏸ Масштабирование шаблона M0 на M1-M11 и других задач
 
 ## Phase 3 (future)
 
