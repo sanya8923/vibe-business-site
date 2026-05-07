@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Что такое RAG-агент простыми словами · Automate At</title>
+  <meta name="description" content="Бот, который отвечает по твоей базе знаний. Зачем нужны эмбеддинги и векторная база, если можно просто скормить документы ChatGPT.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+</head>
+<body class="aa-platform" data-aa-page="knowledge">
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner">
+
+      <!-- Breadcrumb -->
+      <nav class="aa-breadcrumb">
+        <a href="/automate-at/knowledge/">База знаний</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/knowledge/">AI-агенты</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <span class="aa-breadcrumb-current">Что такое RAG-агент</span>
+      </nav>
+
+      <!-- 2-col -->
+      <div class="aa-detail-grid">
+
+        <!-- LEFT: article -->
+        <article>
+          <header class="aa-detail-header">
+            <div class="aa-detail-header-pills">
+              <span class="aa-pill is-kind-module">Статья</span>
+              <span class="aa-pill" style="color: var(--teal); background: rgba(0,201,167,.06); border-color: rgba(0,201,167,.18);">AI-агенты</span>
+              <span class="aa-pill is-difficulty">7 мин чтения</span>
+            </div>
+            <h1 class="aa-detail-h1">Что такое RAG-агент простыми словами</h1>
+            <p class="aa-detail-lead">
+              Объясняю по-человечески: что такое RAG-агент, зачем он нужен и почему нельзя
+              просто <em>«загрузить документы в ChatGPT»</em>. Без жаргона, с примерами на
+              автосервисе и юр. агентстве.
+            </p>
+          </header>
+
+          <div class="aa-md-body">
+            <h2 id="zachem">Зачем вообще такой агент</h2>
+            <p>
+              Представь, у тебя салон красоты. Клиенты пишут в Telegram-бота:
+              <em>«А у вас есть процедура для ломких волос?»</em>, <em>«Сколько стоит
+              стрижка у мастера-колориста?»</em>, <em>«Когда работаете в субботу?»</em>
+            </p>
+            <p>
+              Ты не хочешь отвечать на эти вопросы вручную каждые 10 минут. Но и
+              FAQ-список из 50 пунктов клиент читать не будет. <strong>Нужен бот,
+              который отвечает как сотрудник</strong> — но который реально знает твоё
+              расписание, услуги и цены.
+            </p>
+            <p>
+              RAG-агент — это и есть такой бот.
+            </p>
+
+            <h2 id="kak-rabotaet">Как он работает в двух словах</h2>
+            <p>
+              Когда клиент пишет вопрос, бот:
+            </p>
+            <ol>
+              <li>
+                <strong>Ищет</strong> в твоих документах кусочки, которые подходят
+                по смыслу к вопросу. Не по совпадению слов, а по смыслу — это важно.
+              </li>
+              <li>
+                <strong>Подсовывает</strong> эти кусочки нейронке вместе с вопросом
+                клиента: «Вот тебе контекст, ответь нормально по нему».
+              </li>
+              <li>
+                <strong>Отдаёт</strong> ответ клиенту. Если не нашёл — честно говорит
+                «не знаю» и зовёт оператора.
+              </li>
+            </ol>
+            <p>
+              Все три шага — это и есть «RAG»: <em>Retrieval</em> (нашёл),
+              <em>Augmented</em> (подсунул), <em>Generation</em> (сгенерировал ответ).
+              Аббревиатура страшная, идея простая.
+            </p>
+
+            <blockquote>
+              Можно представить как библиотекаря: ты задал вопрос, он быстро глянул в
+              нужную полку, выдернул три книги и пересказал главное. Без библиотекаря
+              ты бы сам читал 50 книг — это и есть разница.
+            </blockquote>
+
+            <h2 id="pochemu-ne-chatgpt">Почему нельзя просто «скормить ChatGPT-у»</h2>
+            <p>
+              Звучит логично: загрузил все документы в чат, спрашиваешь. Но есть
+              проблемы:
+            </p>
+            <ul>
+              <li>
+                <strong>Лимиты контекста.</strong> У ChatGPT и других моделей есть
+                ограничение на размер «памяти». Если у тебя 100 страниц документов —
+                они туда часто не помещаются.
+              </li>
+              <li>
+                <strong>Дорого.</strong> Каждый запрос с большим контекстом стоит денег.
+                Если у тебя 1000 клиентов в день — это уже ощутимая статья расходов.
+              </li>
+              <li>
+                <strong>Медленно.</strong> Чем больше контекста — тем дольше думает.
+                Клиент в Telegram не будет ждать 30 секунд.
+              </li>
+              <li>
+                <strong>Точность хуже.</strong> Если в контексте 100 страниц «всего и
+                сразу», модель путается. С 3 релевантными — отвечает прицельнее.
+              </li>
+            </ul>
+            <p>
+              RAG-агент решает все 4 проблемы: достаёт только нужные 3 кусочка,
+              отдаёт их модели — она отвечает быстро, точно и дёшево.
+            </p>
+
+            <h2 id="iz-chego-sostoit">Из чего он состоит на практике</h2>
+            <p>
+              В n8n базовый RAG-агент — это 5 воркфлоу:
+            </p>
+            <ol>
+              <li><code>Ingestion</code> — загружает документы в векторную базу (один раз)</li>
+              <li><code>Master Agent</code> — само ядро бота: получает вопрос, ищет, отвечает</li>
+              <li><code>Telegram Gateway</code> — подключение к Telegram</li>
+              <li><code>Escalation</code> — эскалация к оператору когда бот не справился</li>
+              <li><code>Error Workflow</code> — глобальный обработчик падений</li>
+            </ol>
+            <p>
+              Это всё уже разработано в продукте каталога <a href="/rag-agent/">AI-01 RAG-агент</a>.
+              Берёшь, настраиваешь под клиента через конфигуратор, собираешь.
+            </p>
+
+            <h2 id="komu-podhodit">Кому подходит, а кому нет</h2>
+            <p>
+              <strong>Подходит</strong>, если у тебя:
+            </p>
+            <ul>
+              <li>База документов больше 5 страниц</li>
+              <li>Клиенты пишут одни и те же вопросы по 20 раз в день</li>
+              <li>Есть Telegram-бот или сайт куда подключать</li>
+              <li>Документы на одном языке (или базу можно разделить)</li>
+            </ul>
+            <p>
+              <strong>Не подходит</strong>, если:
+            </p>
+            <ul>
+              <li>База — это 5 пунктов в FAQ. Достаточно обычного бота с заготовками.</li>
+              <li>Нужно <em>принимать решения</em> (дать скидку, отменить заказ) — это уже
+                AI-агент с инструментами, не просто RAG.</li>
+              <li>Документы постоянно меняются <em>каждые 5 минут</em> — сложнее
+                поддерживать актуальность векторной базы.</li>
+            </ul>
+
+            <h2 id="dalshe">Что дальше</h2>
+            <p>
+              Если хочется сделать своего — открой <a href="/rag-agent/">конструктор RAG-агента</a>
+              в каталоге продуктов. Там опросник, по ответам подбираются нужные технологии,
+              на выходе — техзадание под твою задачу.
+            </p>
+            <p>
+              Если хочется сначала прокачать базу — глянь <a href="/automate-at/courses/M0/">M0</a>
+              в тренажёре. Там за 5 коротких задач разберёшься как работают воркфлоу в n8n —
+              без этого RAG будет казаться магией.
+            </p>
+          </div>
+
+          <!-- Author block -->
+          <div class="aa-author-block">
+            <div class="aa-author-avatar">A</div>
+            <div class="aa-author-info">
+              <span class="aa-author-name">Александр Шушлонов</span>
+              <span class="aa-author-meta">Автор школы · опубликовано 2026-04-28 · обновлено 2 дня назад</span>
+            </div>
+          </div>
+
+          <!-- Related -->
+          <div class="aa-detail-section">
+            <h2 class="aa-detail-section-h2">Похожее</h2>
+            <div class="aa-kb-grid">
+              <a class="aa-kb-card" href="/automate-at/knowledge/">
+                <div class="aa-kb-card-cover is-article">
+                  <div class="aa-kb-card-cover-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                  </div>
+                </div>
+                <div class="aa-kb-card-body">
+                  <div class="aa-kb-card-meta">
+                    <span class="aa-kb-card-type is-article">Статья</span>
+                    <span class="aa-kb-card-time">4 мин чтения</span>
+                  </div>
+                  <div class="aa-kb-card-title">Как выбрать модель эмбеддинга под задачу</div>
+                  <p class="aa-kb-card-excerpt">OpenAI vs DeepSeek vs локальные. Где работает дёшево, а где нужно платить за качество.</p>
+                  <div class="aa-kb-card-course">AI-агенты</div>
+                </div>
+              </a>
+              <a class="aa-kb-card" href="/automate-at/knowledge/">
+                <div class="aa-kb-card-cover">
+                  <div class="aa-kb-card-cover-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21"/></svg>
+                  </div>
+                </div>
+                <div class="aa-kb-card-body">
+                  <div class="aa-kb-card-meta">
+                    <span class="aa-kb-card-type is-video">Видео</span>
+                    <span class="aa-kb-card-time">12 мин видео</span>
+                  </div>
+                  <div class="aa-kb-card-title">Memory subnode + Vector Storage в n8n</div>
+                  <p class="aa-kb-card-excerpt">Архитектурный разбор: как сделать чтобы агент не забывал контекст. С примером Postgres + pgvector.</p>
+                  <div class="aa-kb-card-course">AI-агенты</div>
+                </div>
+              </a>
+              <a class="aa-kb-card" href="/automate-at/knowledge/">
+                <div class="aa-kb-card-cover is-article">
+                  <div class="aa-kb-card-cover-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </div>
+                </div>
+                <div class="aa-kb-card-body">
+                  <div class="aa-kb-card-meta">
+                    <span class="aa-kb-card-type is-guide">Гайд</span>
+                    <span class="aa-kb-card-time">10 мин чтения</span>
+                  </div>
+                  <div class="aa-kb-card-title">Гибридный поиск в RAG за 30 минут</div>
+                  <p class="aa-kb-card-excerpt">Базовый векторный поиск + BM25 + reranker. Зачем нужно, когда применять, как настроить в n8n.</p>
+                  <div class="aa-kb-card-course">AI-агенты</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- RIGHT: TOC -->
+        <aside class="aa-detail-side">
+          <div class="aa-toc">
+            <div class="aa-toc-h3">На странице</div>
+            <ul class="aa-toc-list" id="toc-list">
+              <li><a href="#zachem" class="is-active">Зачем такой агент</a></li>
+              <li><a href="#kak-rabotaet">Как работает</a></li>
+              <li><a href="#pochemu-ne-chatgpt">Почему не ChatGPT</a></li>
+              <li><a href="#iz-chego-sostoit">Из чего состоит</a></li>
+              <li><a href="#komu-podhodit">Кому подходит</a></li>
+              <li><a href="#dalshe">Что дальше</a></li>
+            </ul>
+          </div>
+
+          <div class="aa-side-card">
+            <div class="aa-side-card-h3">Полезно?</div>
+            <p class="aa-side-card-hint">
+              Помогло разобраться?
+            </p>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-ghost btn-sm" type="button">Да</button>
+              <button class="btn btn-ghost btn-sm" type="button">Нет, не очень</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor</span>
+        <span>Прототип v0.1</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  // Active TOC item via scroll
+  const links = document.querySelectorAll('#toc-list a');
+  const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')));
+  function update() {
+    const y = window.scrollY + 120;
+    let activeIdx = 0;
+    sections.forEach((s, i) => { if (s && s.offsetTop <= y) activeIdx = i; });
+    links.forEach((a, i) => a.classList.toggle('is-active', i === activeIdx));
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+
+</body>
+</html>

@@ -267,12 +267,12 @@
       </div>`;
 
     ctas.innerHTML = `
-      <a class="btn btn-primary" href="#">
+      <a class="btn btn-primary" href="/automate-at/tasks/M0-01/">
         Продолжить задачу
         ${ICON.arrowRight}
       </a>
-      <a class="btn btn-ghost" href="/automate-at/courses/">
-        Открыть модуль M1
+      <a class="btn btn-ghost" href="/automate-at/courses/M0/">
+        Открыть модуль M0
       </a>`;
   }
 
@@ -297,8 +297,9 @@
       const cls = m.isSuggestion ? 'aa-module-row is-suggestion' : 'aa-module-row';
       const pill = m.isSuggestion
         ? '<span class="aa-module-row-suggest-pill">Тебе сюда</span>' : '';
+      const moduleHref = '/automate-at/courses/' + m.code + '/';
       return `
-        <a class="${cls}" href="/automate-at/courses/">
+        <a class="${cls}" href="${m.code === 'M0' ? moduleHref : '/automate-at/courses/'}">
           <span class="aa-module-row-code">${escapeHtml(m.code)}</span>
           <span class="aa-module-row-title">${escapeHtml(m.title)}</span>
           ${pill}
@@ -341,7 +342,7 @@
       return;
     }
     root.innerHTML = ACTIVE_TASKS.map(t => `
-      <a class="aa-task-mini-card" href="#">
+      <a class="aa-task-mini-card" href="/automate-at/tasks/M0-01/">
         <span class="aa-task-mini-status is-${t.status}">${escapeHtml(STATUS_LABELS[t.status])}</span>
         <div class="aa-task-mini-title">
           <span class="aa-task-mini-code">${escapeHtml(t.code)}</span>
@@ -365,8 +366,8 @@
 
   function renderArticles() {
     const root = $('#articles-list');
-    root.innerHTML = ARTICLES.map(a => `
-      <a class="aa-article-mini-card" href="/automate-at/knowledge/">
+    root.innerHTML = ARTICLES.map((a, i) => `
+      <a class="aa-article-mini-card" href="${i === 0 ? '/automate-at/knowledge/chto-takoe-rag-agent/' : '/automate-at/knowledge/'}">
         <span class="aa-article-mini-tag">${escapeHtml(a.tag)}</span>
         <div class="aa-article-mini-title">${escapeHtml(a.title)}</div>
         <div class="aa-article-mini-meta">${escapeHtml(a.date)}</div>

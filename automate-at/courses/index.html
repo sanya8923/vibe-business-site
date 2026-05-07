@@ -82,8 +82,9 @@
     const root = document.getElementById('module-grid');
     root.innerHTML = MODULES.map(m => {
       const percent = m.total ? Math.round((m.done / m.total) * 100) : 0;
+      const href = m.code === 'M0' ? '/automate-at/courses/M0/' : '#';
       return `
-        <a class="aa-module-card" href="#">
+        <a class="aa-module-card" href="${href}">
           <div class="aa-module-card-head">
             <div class="aa-module-card-code">${escapeHtml(m.code)}</div>
             <span class="aa-module-card-status is-${m.status}">${escapeHtml(STATUS_LABELS[m.status])}</span>
