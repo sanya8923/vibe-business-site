@@ -285,6 +285,52 @@
           </div>
         </details>
 
+        <!-- Inline-статья: как создать первый триггер -->
+        <details class="aa-inline-article">
+          <summary>
+            <span class="aa-inline-article-icon">⚡</span>
+            <span class="aa-inline-article-title">Как создать свой первый триггер в n8n</span>
+            <span class="aa-inline-article-hint">статья · ~2 мин</span>
+            <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-inline-article-body">
+
+            <div class="aa-inline-article-video is-placeholder">
+              <div>
+                <div class="aa-inline-article-video-icon">▶</div>
+                <div class="aa-inline-article-video-label">Видео в разработке</div>
+                <div class="aa-inline-article-video-sub">Пока читай текст — видеоверсия появится позже.</div>
+              </div>
+            </div>
+
+            <div class="aa-md-body">
+              <p><strong>Триггер</strong> — это нода, с которой начинается воркфлоу. Без триггера воркфлоу не запустится сам — придётся каждый раз жать «Test workflow» вручную. Триггер ловит событие во внешнем мире (новое сообщение в Telegram, заполнение формы, расписание) и стартует цепочку.</p>
+              <ol>
+                <li>
+                  <p>В пустом воркфлоу нажми <em>+ Add first step…</em> — откроется панель добавления.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Пустой канвас n8n с кнопкой «Add first step»</div>
+                    </div>
+                  </figure>
+                </li>
+                <li>
+                  <p>Выбери раздел <strong>«On a trigger event»</strong> или ищи нужный триггер по названию (Telegram, Webhook, Schedule, Form).</p>
+                </li>
+                <li>
+                  <p>Подключи credentials (если нужны). Для Telegram — токен от <code>@BotFather</code>; для Webhook — credentials не нужны.</p>
+                </li>
+                <li>
+                  <p>Нажми <em>Listen for test event</em> и выполни действие во внешнем мире (отправь сообщение боту, открой форму, дождись расписания). Триггер поймает событие и покажет JSON в правой панели — это и есть Output.</p>
+                </li>
+              </ol>
+              <p>В этой задаче мы ставим <strong>Telegram Trigger</strong> с событием <code>Message</code>. Все остальные триггеры устроены по тому же принципу — отличается только источник события.</p>
+            </div>
+          </div>
+        </details>
+
         <!-- ШАГИ -->
         <div class="aa-md-body">
           <h2>Шаги: собираем workflow</h2>
@@ -367,6 +413,17 @@
           </div>
         </div>
 
+        <!-- WF-mini после шага 1: одна нода -->
+        <div class="aa-wf-mini">
+          <div class="aa-wf-mini-canvas">
+            <div class="aa-wf-mini-node is-trigger no-out">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Telegram Trigger</div>
+            </div>
+          </div>
+          <div class="aa-wf-mini-caption">После шага 1 — твой воркфлоу выглядит так</div>
+        </div>
+
         <!-- Шаг 2: IF -->
         <div class="aa-node-step">
           <div class="aa-node-step-head">
@@ -400,14 +457,58 @@
             <div class="aa-node-step-io">
               <div class="aa-node-step-io-col is-input">
                 <div class="aa-node-step-io-label">Input ←</div>
-                <div class="aa-node-step-io-note">JSON из Telegram Trigger (со полем <code>voice</code> или без него).</div>
+<pre>{
+  "message": {
+    "chat": { "id": 123456 },
+    "voice": {
+      "file_id": "ABC123"
+    }
+  }
+}</pre>
+                <div class="aa-node-step-io-note">JSON из Telegram Trigger.</div>
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">Output →</div>
-                <div class="aa-node-step-io-note">Две ветки: <code>true</code> и <code>false</code>. В каждую — свои данные.</div>
+                <div class="aa-wf-mini" style="margin: 0;">
+                  <div class="aa-wf-mini-canvas" style="padding: 16px; min-height: 76px;">
+                    <div class="aa-wf-mini-node is-decision">
+                      <div class="aa-wf-mini-node-icon">?</div>
+                      <div class="aa-wf-mini-node-name">IF</div>
+                      <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
+                    </div>
+                    <div class="aa-wf-mini-fork">
+                      <div class="aa-wf-mini-fork-row">
+                        <span class="aa-wf-mini-fork-conn"></span>
+                        <span class="aa-wf-mini-fork-tag is-yes">Да</span>
+                      </div>
+                      <div class="aa-wf-mini-fork-row">
+                        <span class="aa-wf-mini-fork-conn"></span>
+                        <span class="aa-wf-mini-fork-tag is-no">Нет</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="aa-node-step-io-note">У IF два выхода — данные пойдут по одной из веток.</div>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- WF-mini после шага 2: Trigger + IF -->
+        <div class="aa-wf-mini">
+          <div class="aa-wf-mini-canvas">
+            <div class="aa-wf-mini-node is-trigger">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Telegram Trigger</div>
+            </div>
+            <span class="aa-wf-mini-conn"></span>
+            <div class="aa-wf-mini-node is-decision">
+              <div class="aa-wf-mini-node-icon">?</div>
+              <div class="aa-wf-mini-node-name">IF</div>
+              <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
+            </div>
+          </div>
+          <div class="aa-wf-mini-caption">После шага 2 — добавили проверку</div>
         </div>
 
         <!-- Шаг 3: Get File -->
@@ -430,6 +531,60 @@
             </div>
             <p>Поле <code>File ID</code> можно перетащить мышкой из левой панели — это удобнее, чем писать руками.</p>
 
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">⚙</span>
+                <span class="aa-inline-article-title">Как выглядят настройки Get File в интерфейсе</span>
+                <span class="aa-inline-article-hint">статья · ~1 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Открой ноду — в центральной панели увидишь четыре поля:</p>
+                  <ul>
+                    <li><strong>Resource</strong> — что ты делаешь (File / Chat / Message…). Для скачивания файла — <code>File</code>.</li>
+                    <li><strong>Operation</strong> — какое действие. <code>Get</code> — забрать файл по идентификатору.</li>
+                    <li><strong>File ID</strong> — идентификатор файла из входящего сообщения. Перетащи поле мышкой из левой панели.</li>
+                    <li><strong>Download</strong> — переключатель <code>true</code>: только при включённом скачивании появятся бинарные данные на выходе. Если оставить <code>false</code>, нода вернёт только метаданные файла, без содержимого.</li>
+                  </ul>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Окно настроек ноды Telegram Get File с заполненными полями</div>
+                    </div>
+                  </figure>
+                </div>
+              </div>
+            </details>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">📦</span>
+                <span class="aa-inline-article-title">Что такое binary в n8n</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>В n8n каждый «item» (объект данных) состоит из двух частей:</p>
+                  <ul>
+                    <li><code>json</code> — обычные данные в формате JSON: текст, числа, объекты, массивы. Это всё, что можно прочитать глазами.</li>
+                    <li><code>binary</code> — бинарные данные: файлы, картинки, аудио, PDF. Это содержимое файла, его нельзя «распечатать» в JSON-виде. Хранится отдельным блоком.</li>
+                  </ul>
+                  <p>Когда нода Telegram Get File скачивает аудио — она кладёт его в <code>binary.data</code>. В правой панели Output ты увидишь не текст, а <strong>превью</strong>: имя файла, mime-тип, размер.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Output Get File: вкладка Binary с файлом voice.oga</div>
+                    </div>
+                  </figure>
+                  <p><strong>Важно:</strong> ноды, которые работают с файлами (OpenAI Transcribe, конвертеры, отправка вложений), читают именно <code>binary</code>, а не <code>json</code>. Если передаёшь файл — убедись, что bin-блок есть.</p>
+                </div>
+              </div>
+            </details>
+
             <div class="aa-node-step-io">
               <div class="aa-node-step-io-col is-input">
                 <div class="aa-node-step-io-label">Input ←</div>
@@ -443,18 +598,46 @@
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">Output →</div>
-<pre>{
-  "binary": {
-    "data": {
-      "fileName": "voice.oga",
-      "mimeType": "audio/ogg"
-    }
-  }
-}</pre>
-                <div class="aa-node-step-io-note">Появился блок <code>binary</code> — это и есть файл. До этого шага его не было.</div>
+                <div class="aa-binary-preview">
+                  <div class="aa-binary-preview-icon">🎵</div>
+                  <div class="aa-binary-preview-meta">
+                    <span class="aa-binary-preview-tag">binary · data</span>
+                    <div class="aa-binary-preview-row">
+                      <span class="aa-binary-preview-key">fileName</span>
+                      <span class="aa-binary-preview-val">voice.oga</span>
+                    </div>
+                    <div class="aa-binary-preview-row">
+                      <span class="aa-binary-preview-key">mimeType</span>
+                      <span class="aa-binary-preview-val">audio/ogg</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="aa-node-step-io-note">Появился блок <code>binary</code> — это и есть файл. В JSON он не виден, в правой панели — превью.</div>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- WF-mini после шага 3: Trigger → IF → Get File (true) -->
+        <div class="aa-wf-mini">
+          <div class="aa-wf-mini-canvas">
+            <div class="aa-wf-mini-node is-trigger">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Trigger</div>
+            </div>
+            <span class="aa-wf-mini-conn"></span>
+            <div class="aa-wf-mini-node is-decision">
+              <div class="aa-wf-mini-node-icon">?</div>
+              <div class="aa-wf-mini-node-name">IF</div>
+              <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
+            </div>
+            <span class="aa-wf-mini-conn"></span>
+            <div class="aa-wf-mini-node is-getfile">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Get File</div>
+            </div>
+          </div>
+          <div class="aa-wf-mini-caption">После шага 3 — true-ветка, скачали аудиофайл</div>
         </div>
 
         <!-- Шаг 4: OpenAI Transcribe -->
@@ -475,21 +658,63 @@
             </div>
             <p>Поле <code>Input Data Field Name</code> по умолчанию <code>data</code> — это имя бинарного свойства, которое Telegram Get File создаёт при скачивании. Если у тебя другое — измени.</p>
 
-            <div class="aa-callout-tip is-warn">
-              <div class="aa-callout-tip-icon">⚠</div>
-              <div class="aa-callout-tip-body">
-                <div class="aa-callout-tip-label">Лимит файла</div>
-                <div class="aa-callout-tip-title">Whisper принимает файлы до 25 MB</div>
-                <div class="aa-callout-tip-text">
-                  <p>Голосовые сообщения в Telegram обычно гораздо меньше — здесь это не проблема. Но для длинных аудио (M5-02) и видео (M5-03) лимит станет ограничением, и придётся резать файлы.</p>
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">🗣</span>
+                <span class="aa-inline-article-title">Что такое Whisper</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p><strong>Whisper</strong> — это модель распознавания речи от OpenAI. Принимает аудио на входе, отдаёт текст на выходе. Поддерживает 90+ языков, включая русский.</p>
+                  <p>В ноде <em>OpenAI</em> с операцией <code>Audio Transcribe</code> запрос идёт именно в Whisper — n8n не использует другие движки для этой операции.</p>
+                  <p>Что про неё стоит знать:</p>
+                  <ul>
+                    <li>Принимает форматы <code>mp3</code>, <code>mp4</code>, <code>m4a</code>, <code>wav</code>, <code>webm</code>, <code>oga</code> (то, что присылает Telegram).</li>
+                    <li>Сама определяет язык — указывать вручную не обязательно.</li>
+                    <li>Возвращает только текст. Без таймкодов, без разделения дикторов (для этого есть отдельные модели).</li>
+                  </ul>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Окно настроек OpenAI ноды с операцией Audio Transcribe</div>
+                    </div>
+                  </figure>
+
+                  <div class="aa-callout-tip is-warn" style="margin-top: 14px;">
+                    <div class="aa-callout-tip-icon">⚠</div>
+                    <div class="aa-callout-tip-body">
+                      <div class="aa-callout-tip-label">Лимит файла</div>
+                      <div class="aa-callout-tip-title">Whisper принимает файлы до 25 MB</div>
+                      <div class="aa-callout-tip-text">
+                        <p>Голосовые сообщения в Telegram обычно гораздо меньше — здесь это не проблема. Но для длинных аудио (M5-02) и видео (M5-03) лимит станет ограничением, и придётся резать файлы.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </details>
 
             <div class="aa-node-step-io">
               <div class="aa-node-step-io-col is-input">
                 <div class="aa-node-step-io-label">Input ←</div>
-                <div class="aa-node-step-io-note">Бинарный файл <code>binary.data</code> из предыдущего шага.</div>
+                <div class="aa-binary-preview">
+                  <div class="aa-binary-preview-icon">🎵</div>
+                  <div class="aa-binary-preview-meta">
+                    <span class="aa-binary-preview-tag">binary · data</span>
+                    <div class="aa-binary-preview-row">
+                      <span class="aa-binary-preview-key">fileName</span>
+                      <span class="aa-binary-preview-val">voice.oga</span>
+                    </div>
+                    <div class="aa-binary-preview-row">
+                      <span class="aa-binary-preview-key">mimeType</span>
+                      <span class="aa-binary-preview-val">audio/ogg</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="aa-node-step-io-note">Бинарный файл из предыдущего шага.</div>
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">Output →</div>
@@ -500,6 +725,22 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- WF-mini после шага 4: Get File → OpenAI -->
+        <div class="aa-wf-mini">
+          <div class="aa-wf-mini-canvas">
+            <div class="aa-wf-mini-node is-getfile">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Get File</div>
+            </div>
+            <span class="aa-wf-mini-conn"></span>
+            <div class="aa-wf-mini-node is-ai">
+              <div class="aa-wf-mini-node-icon">AI</div>
+              <div class="aa-wf-mini-node-name">OpenAI Transcribe</div>
+            </div>
+          </div>
+          <div class="aa-wf-mini-caption">После шага 4 — крупный план: файл → текст</div>
         </div>
 
         <!-- Шаг 5: Send Message -->
@@ -520,6 +761,34 @@
               </ul>
             </div>
             <p>В <em>Options</em> найди и <strong>выключи</strong> «Append n8n Attribution» — твоему боту это лишнее.</p>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">⚙</span>
+                <span class="aa-inline-article-title">Как выглядят настройки Send Message в интерфейсе</span>
+                <span class="aa-inline-article-hint">статья · ~1 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Открой ноду — в центральной панели три ключевых поля и блок <em>Options</em> снизу:</p>
+                  <ul>
+                    <li><strong>Resource</strong> <code>Message</code> · <strong>Operation</strong> <code>Send Message</code> — это две стандартные настройки, отвечающие за «отправить ответ».</li>
+                    <li><strong>Chat ID</strong> — куда отправлять. Бери из исходного триггера: <code>{{ $("Telegram Trigger").item.json.message.chat.id }}</code>. Если возьмёшь его из текущего шага — в ветке false его может не быть.</li>
+                    <li><strong>Text</strong> — что отправлять. Из ветки <em>true</em> подставляй <code>{{ $json.text }}</code> (транскрипт), из ветки <em>false</em> — статичный текст «Отправь голосовое».</li>
+                    <li><strong>Additional Fields → Parse Mode</strong> — переключи на <code>HTML</code>, чтобы работали HTML-теги (нужно для копируемого текста).</li>
+                    <li><strong>Options → Append n8n Attribution</strong> — выключи. По умолчанию n8n добавляет в конец сообщения свою подпись, в работающем боте это не нужно.</li>
+                  </ul>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Настройки Telegram Send Message с включённым HTML и выключенной атрибуцией</div>
+                    </div>
+                  </figure>
+                </div>
+              </div>
+            </details>
 
             <div class="aa-callout-tip">
               <div class="aa-callout-tip-icon">💡</div>
@@ -544,6 +813,22 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- WF-mini после шага 5: OpenAI → Send Message (true) -->
+        <div class="aa-wf-mini">
+          <div class="aa-wf-mini-canvas">
+            <div class="aa-wf-mini-node is-ai">
+              <div class="aa-wf-mini-node-icon">AI</div>
+              <div class="aa-wf-mini-node-name">OpenAI Transcribe</div>
+            </div>
+            <span class="aa-wf-mini-conn"></span>
+            <div class="aa-wf-mini-node is-output no-out">
+              <div class="aa-wf-mini-node-icon">TG</div>
+              <div class="aa-wf-mini-node-name">Send Message</div>
+            </div>
+          </div>
+          <div class="aa-wf-mini-caption">После шага 5 — финал true-ветки: текст уходит обратно в чат</div>
         </div>
 
         <!-- DoD -->

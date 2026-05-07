@@ -1219,3 +1219,230 @@
   [data-aa-task="M5-01"] .aa-flow-vert-merge-right { left: 50%; transform: translateX(-50%); }
   [data-aa-task="M5-01"] .aa-flow-vert-split-label { position: static; display: inline-block; margin: 4px auto; }
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   wf-mini — узкая полоса воркфлоу в стиле n8n-canvas
+   ════════════════════════════════════════════════════════════════ */
+
+[data-aa-task="M5-01"] .aa-wf-mini {
+  margin: 18px 0 6px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 1.4px) 0 0 / 16px 16px,
+    #0d0f12;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 22px 22px 18px;
+  min-height: 88px;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px 9px 11px;
+  background: #1d1f24;
+  border: 1px solid #2c2e36;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node-icon {
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  display: grid; place-items: center;
+  font-family: var(--fm);
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-trigger .aa-wf-mini-node-icon { background: #2AA0E0; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-decision .aa-wf-mini-node-icon { background: #FFA64D; color: #2a1a05; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-getfile .aa-wf-mini-node-icon { background: #2AA0E0; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-ai .aa-wf-mini-node-icon { background: #10A37F; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-output .aa-wf-mini-node-icon { background: #2AA0E0; }
+[data-aa-task="M5-01"] .aa-wf-mini-node-name {
+  font-family: var(--fb);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #E8E8EA;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+}
+
+/* connectors: маленькие точки на сторонах ноды */
+[data-aa-task="M5-01"] .aa-wf-mini-node::before,
+[data-aa-task="M5-01"] .aa-wf-mini-node::after {
+  content: '';
+  position: absolute;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #555861;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node::before { left: -4px; }
+[data-aa-task="M5-01"] .aa-wf-mini-node::after { right: -4px; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-trigger::before { display: none; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.no-out::after { display: none; }
+
+/* connector line между нодами */
+[data-aa-task="M5-01"] .aa-wf-mini-conn {
+  width: 32px;
+  height: 2px;
+  background: #555861;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* IF две точки на выходе (true/false) */
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-decision::after { display: none; }
+[data-aa-task="M5-01"] .aa-wf-mini-node.is-decision .aa-wf-mini-node-outs {
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node-outs span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #555861;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-node-outs span.is-yes { background: #34D399; }
+[data-aa-task="M5-01"] .aa-wf-mini-node-outs span.is-no  { background: #F87171; }
+
+/* fork — две ветки от IF к двум следующим нодам */
+[data-aa-task="M5-01"] .aa-wf-mini-fork {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 18px;
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-fork-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-fork-tag {
+  font-family: var(--fm);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+[data-aa-task="M5-01"] .aa-wf-mini-fork-tag.is-yes {
+  color: #34D399;
+  background: rgba(52,211,153,.12);
+  border: 1px solid rgba(52,211,153,.3);
+}
+[data-aa-task="M5-01"] .aa-wf-mini-fork-tag.is-no {
+  color: #F87171;
+  background: rgba(248,113,113,.12);
+  border: 1px solid rgba(248,113,113,.3);
+}
+[data-aa-task="M5-01"] .aa-wf-mini-fork-conn {
+  width: 22px; height: 2px;
+  background: #555861;
+  flex-shrink: 0;
+}
+
+/* подпись внизу полосы */
+[data-aa-task="M5-01"] .aa-wf-mini-caption {
+  padding: 8px 16px;
+  background: rgba(0,0,0,.35);
+  border-top: 1px solid var(--border);
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile — wf-mini может скроллиться по горизонтали */
+@media (max-width: 540px) {
+  [data-aa-task="M5-01"] .aa-wf-mini-canvas {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   binary-preview — визуальная карточка бинарного файла
+   (вместо JSON в Input/Output где речь про binary)
+   ════════════════════════════════════════════════════════════════ */
+
+[data-aa-task="M5-01"] .aa-binary-preview {
+  background: #0F0F11;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-icon {
+  width: 44px; height: 44px;
+  border-radius: 8px;
+  background: rgba(0,201,167,.10);
+  border: 1px solid rgba(0,201,167,.28);
+  color: var(--teal);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-tag {
+  font-family: var(--fm);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 700;
+  align-self: flex-start;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-key {
+  color: var(--muted);
+  font-family: var(--fm);
+  font-size: 11px;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-binary-preview-val {
+  color: var(--text);
+  font-family: var(--fm);
+  font-size: 12px;
+  word-break: break-all;
+}
