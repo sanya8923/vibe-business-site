@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M5-01 Базовый транскрибатор · Automate At</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+</head>
+<body class="aa-platform" data-aa-page="tasks">
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner">
+
+      <!-- Breadcrumb -->
+      <nav class="aa-breadcrumb">
+        <a href="/automate-at/courses/">Курсы</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/courses/">Тренажёр n8n</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/courses/">M5 · Бот-транскрибатор</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <span class="aa-breadcrumb-current">M5-01</span>
+      </nav>
+
+      <!-- Status -->
+      <div class="aa-task-status-row">
+        <span class="aa-status-pill-big is-not-started">К выполнению</span>
+      </div>
+
+      <!-- Header -->
+      <header class="aa-detail-header">
+        <h1 class="aa-detail-h1">
+          <span class="aa-detail-h1-code">M5-01</span>
+          Бот принимает голосовое — отвечает текстом
+        </h1>
+        <div class="aa-detail-header-pills">
+          <span class="aa-pill is-phase-intern">Интерн</span>
+          <span class="aa-pill is-kind-module">тренажёр</span>
+          <span class="aa-pill is-difficulty">сложность 1/5</span>
+          <span class="aa-pill is-free">free</span>
+        </div>
+        <p class="aa-detail-lead">
+          Делаем простую автоматизацию: пользователь отправляет боту голосовое сообщение → n8n превращает голос в текст → бот отправляет этот текст обратно в чат. На первый взгляд всё просто — но именно эта задача показывает, что между нодами всегда передаются <strong>данные</strong>, и контролировать надо именно их.
+        </p>
+      </header>
+
+      <!-- Action card -->
+      <div class="aa-action-card is-inline">
+        <div class="aa-action-card-text-block">
+          <div class="aa-action-card-eyebrow">К выполнению</div>
+          <div class="aa-action-card-title">Создай воркфлоу в n8n и собирай</div>
+          <p class="aa-action-card-text">
+            В правом верхнем углу n8n — кнопка <em>New workflow</em>. Назови его <code>M5-01 Транскрибатор</code> и собирай по шагам ниже. Когда готов — жми «Сдать на ревью».
+          </p>
+          <div class="aa-action-card-meta">
+            wf_id: будет создан после первого сохранения
+          </div>
+        </div>
+        <div class="aa-action-card-actions">
+          <a class="btn btn-primary" href="https://n8n.school.vibe-business.site/" target="_blank" rel="noopener">
+            Открыть n8n →
+          </a>
+          <button class="btn btn-ghost btn-sm" type="button">Сдать на ревью</button>
+        </div>
+      </div>
+
+      <!-- Что нужно знать -->
+      <div class="aa-side-card is-full aa-task-prereq">
+        <div class="aa-side-card-h3">Что нужно знать</div>
+        <ul class="aa-side-card-list">
+          <li class="is-ok">Telegram-бот создан через @BotFather</li>
+          <li class="is-ok">OpenAI-ключ выдан школой</li>
+          <li class="is-pending">Telegram-credential в n8n настроен</li>
+        </ul>
+        <div class="aa-side-card-hint">
+          Если бот ещё не создан — посмотри статью «Как создать бота в Telegram» в первом шаге ниже. Это занимает 2 минуты.
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="aa-tabs">
+        <button class="aa-tabs-tab is-active" data-tab="desc">Описание</button>
+        <button class="aa-tabs-tab" data-tab="comments">
+          Комментарии
+          <span class="aa-tabs-tab-count">0</span>
+        </button>
+        <button class="aa-tabs-tab" data-tab="history">История</button>
+      </div>
+
+      <!-- Tab: Описание -->
+      <div class="aa-tab-content is-active" data-tab-content="desc">
+
+        <!-- Вход / Выход -->
+        <div class="aa-io-box">
+          <div class="aa-io-box-row">
+            <span class="aa-io-box-key">Вход</span>
+            <span class="aa-io-box-val">голосовое сообщение в Telegram</span>
+          </div>
+          <div class="aa-io-box-row">
+            <span class="aa-io-box-key">Выход</span>
+            <span class="aa-io-box-val">текст транскрипта в ответном сообщении</span>
+          </div>
+        </div>
+
+        <!-- Минимальная схема -->
+        <div class="aa-md-body">
+          <h2>Минимальная мысль урока</h2>
+          <p>
+            На первый взгляд автоматизация выглядит так — три ноды в линию:
+          </p>
+        </div>
+        <div class="aa-flow-diagram">
+          <div class="aa-flow-diagram-row">
+            <span class="aa-flow-node is-trigger"><span class="aa-flow-node-icon">TG</span>Telegram Trigger</span>
+            <span class="aa-flow-arrow">→</span>
+            <span class="aa-flow-node"><span class="aa-flow-node-icon">AI</span>OpenAI Transcribe</span>
+            <span class="aa-flow-arrow">→</span>
+            <span class="aa-flow-node is-output"><span class="aa-flow-node-icon">TG</span>Telegram Send Message</span>
+          </div>
+        </div>
+        <div class="aa-md-body">
+          <p>
+            Это базовая идея. Но в реальности такой схемы недостаточно — между этими шагами нужно добавить ещё <strong>два важных узла</strong>. Разберёмся почему.
+          </p>
+
+          <h2>Почему простой схемы недостаточно</h2>
+        </div>
+
+        <!-- Проблема 1: file_id vs файл -->
+        <div class="aa-callout-tip is-warn">
+          <div class="aa-callout-tip-icon">⚠</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Проблема 1</div>
+            <div class="aa-callout-tip-title">Telegram не передаёт сам аудиофайл</div>
+            <div class="aa-callout-tip-text">
+              <p>Telegram Trigger принимает сообщение и возвращает только <strong>служебную информацию</strong> о нём. В этой информации есть идентификатор файла — <code>file_id</code>.</p>
+              <p>Telegram Trigger как бы говорит: «Мне прислали голосовое, вот номер этого файла». А OpenAI не умеет распознавать «номер файла» — ему нужен сам аудиофайл.</p>
+              <p>Значит, между Trigger и OpenAI нужен дополнительный узел — <strong>Telegram Get File</strong>. Он берёт <code>file_id</code> и скачивает настоящий аудиофайл.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 2: любой контент vs только голос -->
+        <div class="aa-callout-tip is-warn">
+          <div class="aa-callout-tip-icon">⚠</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Проблема 2</div>
+            <div class="aa-callout-tip-title">Telegram Trigger срабатывает на любое сообщение</div>
+            <div class="aa-callout-tip-text">
+              <p>Триггер ловит всё подряд: текст, фото, стикеры, документы, голосовые. А наша автоматизация умеет работать только с голосом.</p>
+              <p>Если пользователь отправит, например, текст — следующий шаг начнёт искать голосовой файл, не найдёт его, и весь воркфлоу уйдёт в ошибку.</p>
+              <p>Чтобы этого не происходило, нужен <strong>фильтр</strong>. Он проверяет: в сообщении есть голос — идём дальше; нет — бот вежливо отвечает «Отправь голосовое». Роль фильтра возьмёт на себя нода <strong>IF</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Итоговая схема -->
+        <div class="aa-md-body">
+          <h2>Итоговая схема</h2>
+          <p>После уточнения логики цепочка выглядит так:</p>
+        </div>
+        <div class="aa-flow-diagram">
+          <div class="aa-flow-diagram-row">
+            <span class="aa-flow-node is-trigger"><span class="aa-flow-node-icon">TG</span>Telegram Trigger</span>
+            <span class="aa-flow-arrow">→</span>
+            <span class="aa-flow-node is-decision"><span class="aa-flow-node-icon">IF</span>Это голос?</span>
+          </div>
+          <div class="aa-flow-branch">
+            <div class="aa-flow-branch-row">
+              <span class="aa-flow-branch-label is-yes">Да</span>
+              <span class="aa-flow-arrow">→</span>
+              <span class="aa-flow-node"><span class="aa-flow-node-icon">TG</span>Get File</span>
+              <span class="aa-flow-arrow">→</span>
+              <span class="aa-flow-node"><span class="aa-flow-node-icon">AI</span>OpenAI Transcribe</span>
+              <span class="aa-flow-arrow">→</span>
+              <span class="aa-flow-node is-output"><span class="aa-flow-node-icon">TG</span>Send Message</span>
+            </div>
+            <div class="aa-flow-branch-row">
+              <span class="aa-flow-branch-label is-no">Нет</span>
+              <span class="aa-flow-arrow">→</span>
+              <span class="aa-flow-node is-output"><span class="aa-flow-node-icon">TG</span>Send Message «Отправь голосовое»</span>
+            </div>
+          </div>
+        </div>
+        <div class="aa-md-body">
+          <p>Простыми словами: бот получил сообщение → проверил, голос ли это → если да, скачал файл, распознал и отправил текст; если нет, попросил прислать голосовое.</p>
+        </div>
+
+        <!-- Inline-статья: 3 зоны узла -->
+        <details class="aa-inline-article" open>
+          <summary>
+            <span class="aa-inline-article-icon">🧭</span>
+            <span class="aa-inline-article-title">Прежде чем собирать — научись читать ноду</span>
+            <span class="aa-inline-article-hint">статья · ~2 мин</span>
+            <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-inline-article-body">
+
+            <div class="aa-inline-article-video is-placeholder">
+              <div>
+                <div class="aa-inline-article-video-icon">▶</div>
+                <div class="aa-inline-article-video-label">Видео в разработке</div>
+                <div class="aa-inline-article-video-sub">Пока читай текст — видеоверсия появится позже.</div>
+              </div>
+            </div>
+
+            <div class="aa-md-body">
+              <p>Когда ты открываешь любой узел в n8n, ты видишь три зоны. Если научишься их различать — поймёшь n8n за один вечер. Если нет — будешь долго гадать, почему «не работает».</p>
+            </div>
+
+            <div class="aa-node-zones">
+              <div class="aa-node-zone is-input">
+                <div class="aa-node-zone-label">Слева</div>
+                <div class="aa-node-zone-title">Input — что пришло</div>
+                <div class="aa-node-zone-text">Что узел получил с предыдущего шага. Всегда JSON.</div>
+              </div>
+              <div class="aa-node-zone is-center">
+                <div class="aa-node-zone-label">Центр</div>
+                <div class="aa-node-zone-title">Настройки</div>
+                <div class="aa-node-zone-text">Здесь ты говоришь узлу, что делать: тип операции, какие поля брать, как себя вести.</div>
+              </div>
+              <div class="aa-node-zone is-output">
+                <div class="aa-node-zone-label">Справа</div>
+                <div class="aa-node-zone-title">Output — что вернёт</div>
+                <div class="aa-node-zone-text">Результат работы узла. То, что пойдёт дальше по цепочке.</div>
+              </div>
+            </div>
+
+            <div class="aa-md-body">
+              <p><strong>Важный принцип:</strong> каждый узел берёт данные слева → обрабатывает → отдаёт результат направо. Если ты не понимаешь, что слева или что справа — ты не контролируешь процесс.</p>
+            </div>
+          </div>
+        </details>
+
+        <!-- ШАГИ -->
+        <div class="aa-md-body">
+          <h2>Шаги: собираем workflow</h2>
+        </div>
+
+        <!-- Шаг 1: Telegram Trigger -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">1</span>
+            <span class="aa-node-step-title">Telegram Trigger</span>
+            <span class="aa-node-step-tag">trigger</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делает:</strong> ловит любое сообщение от пользователя.</p>
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что настраиваем</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Event</strong> <code>Message</code></li>
+              </ul>
+            </div>
+            <p>Больше ничего не нужно. Перед использованием — создай бота в Telegram через <code>@BotFather</code>.</p>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">📖</span>
+                <span class="aa-inline-article-title">Как создать бота в Telegram через BotFather</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-inline-article-video is-placeholder">
+                  <div>
+                    <div class="aa-inline-article-video-icon">▶</div>
+                    <div class="aa-inline-article-video-label">Видео в разработке</div>
+                  </div>
+                </div>
+                <div class="aa-md-body">
+                  <ol>
+                    <li><p>Открой Telegram, найди <code>@BotFather</code> и нажми <em>Start</em>.</p></li>
+                    <li><p>Отправь команду <code>/newbot</code>. BotFather попросит имя бота и его username (должен заканчиваться на <code>bot</code>).</p></li>
+                    <li>
+                      <p>В ответ ты получишь <strong>токен</strong> — длинная строка вида <code>123:ABC...</code>. Это пароль твоего бота, не показывай его никому.</p>
+                      <figure class="aa-inline-article-figure">
+                        <div class="aa-inline-article-screenshot is-placeholder">
+                          <div class="aa-inline-article-screenshot-icon">📸</div>
+                          <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                          <div class="aa-inline-article-screenshot-sub">Окно BotFather с готовым токеном бота</div>
+                        </div>
+                        <figcaption>Так выглядит ответ BotFather с токеном.</figcaption>
+                      </figure>
+                    </li>
+                    <li><p>В n8n открой ноду Telegram Trigger → Credentials → Create new → вставь токен. Готово.</p></li>
+                  </ol>
+                  <p style="margin-top:12px;">Подробнее: <a href="https://wiki.vibe-business.site/books/nacalo-raboty-instrukcii/page/kak-sozdat-bota-v-telegrame" target="_blank" rel="noopener">статья в полной wiki</a>.</p>
+                </div>
+              </div>
+            </details>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Input ←</div>
+                <div class="aa-node-step-io-note">У триггера нет входа — он сам стартует цепочку при получении сообщения.</div>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Output →</div>
+<pre>{
+  "message": {
+    "chat": { "id": 123456 },
+    "voice": {
+      "file_id": "ABC123"
+    }
+  }
+}</pre>
+                <div class="aa-node-step-io-note">Если сообщение не голосовое — поля <code>voice</code> не будет.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 2: IF -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">2</span>
+            <span class="aa-node-step-title">IF — это голос?</span>
+            <span class="aa-node-step-tag">decision</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делает:</strong> проверяет, есть ли в сообщении голосовой файл.</p>
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что настраиваем</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Value 1</strong> <code>{{ $json.message.voice }}</code></li>
+                <li><strong>Operation</strong> <code>Is Not Empty</code></li>
+              </ul>
+            </div>
+            <p>Если голос есть — поток идёт по ветке <em>true</em>. Если нет — по ветке <em>false</em>: добавь Telegram Send Message с подсказкой пользователю.</p>
+
+            <div class="aa-callout-tip">
+              <div class="aa-callout-tip-icon">💡</div>
+              <div class="aa-callout-tip-body">
+                <div class="aa-callout-tip-label">На заметку</div>
+                <div class="aa-callout-tip-title">Способов фильтрации больше одного</div>
+                <div class="aa-callout-tip-text">
+                  <p>В M5-02 мы будем расширять воркфлоу на несколько типов файлов (audio, video, photo). И тогда станет понятно, что <code>IF</code> — самый простой выбор для одного условия, но не лучший, когда условий три-четыре. Тогда мы перейдём на <code>Switch</code>.</p>
+                  <p>Видео по теме: <a href="https://youtu.be/c6-zVMGyQ48" target="_blank" rel="noopener">сравнение IF / Filter / Switch</a>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Input ←</div>
+                <div class="aa-node-step-io-note">JSON из Telegram Trigger (со полем <code>voice</code> или без него).</div>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Output →</div>
+                <div class="aa-node-step-io-note">Две ветки: <code>true</code> и <code>false</code>. В каждую — свои данные.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 3: Get File -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">3</span>
+            <span class="aa-node-step-title">Telegram Get File</span>
+            <span class="aa-node-step-tag">в ветке true</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делает:</strong> берёт <code>file_id</code> из сообщения и скачивает реальный аудиофайл с серверов Telegram.</p>
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что настраиваем</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Resource</strong> <code>File</code></li>
+                <li><strong>Operation</strong> <code>Get</code></li>
+                <li><strong>File ID</strong> <code>{{ $json.message.voice.file_id }}</code></li>
+                <li><strong>Download</strong> <code>true</code></li>
+              </ul>
+            </div>
+            <p>Поле <code>File ID</code> можно перетащить мышкой из левой панели — это удобнее, чем писать руками.</p>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Input ←</div>
+<pre>{
+  "message": {
+    "voice": {
+      "file_id": "ABC123"
+    }
+  }
+}</pre>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Output →</div>
+<pre>{
+  "binary": {
+    "data": {
+      "fileName": "voice.oga",
+      "mimeType": "audio/ogg"
+    }
+  }
+}</pre>
+                <div class="aa-node-step-io-note">Появился блок <code>binary</code> — это и есть файл. До этого шага его не было.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 4: OpenAI Transcribe -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">4</span>
+            <span class="aa-node-step-title">OpenAI — Audio Transcribe</span>
+            <span class="aa-node-step-tag">в ветке true</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делает:</strong> отправляет аудиофайл в Whisper. Модель принимает бинарные данные и возвращает текст.</p>
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что настраиваем</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Operation</strong> <code>Audio Transcribe</code></li>
+                <li><strong>Input Data Field</strong> <code>data</code></li>
+              </ul>
+            </div>
+            <p>Поле <code>Input Data Field Name</code> по умолчанию <code>data</code> — это имя бинарного свойства, которое Telegram Get File создаёт при скачивании. Если у тебя другое — измени.</p>
+
+            <div class="aa-callout-tip is-warn">
+              <div class="aa-callout-tip-icon">⚠</div>
+              <div class="aa-callout-tip-body">
+                <div class="aa-callout-tip-label">Лимит файла</div>
+                <div class="aa-callout-tip-title">Whisper принимает файлы до 25 MB</div>
+                <div class="aa-callout-tip-text">
+                  <p>Голосовые сообщения в Telegram обычно гораздо меньше — здесь это не проблема. Но для длинных аудио (M5-02) и видео (M5-03) лимит станет ограничением, и придётся резать файлы.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Input ←</div>
+                <div class="aa-node-step-io-note">Бинарный файл <code>binary.data</code> из предыдущего шага.</div>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Output →</div>
+<pre>{
+  "text": "Привет, как дела"
+}</pre>
+                <div class="aa-node-step-io-note">Готовый транскрипт.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 5: Send Message -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">5</span>
+            <span class="aa-node-step-title">Telegram Send Message</span>
+            <span class="aa-node-step-tag">обе ветки</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делает:</strong> отправляет ответ пользователю в тот же чат, откуда пришло сообщение.</p>
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что настраиваем (ветка true — отправляем транскрипт)</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>chat_id</strong> <code>{{ $("Telegram Trigger").item.json.message.chat.id }}</code></li>
+                <li><strong>text</strong> <code>{{ $json.text }}</code></li>
+                <li><strong>parse_mode</strong> <code>HTML</code></li>
+              </ul>
+            </div>
+            <p>В <em>Options</em> найди и <strong>выключи</strong> «Append n8n Attribution» — твоему боту это лишнее.</p>
+
+            <div class="aa-callout-tip">
+              <div class="aa-callout-tip-icon">💡</div>
+              <div class="aa-callout-tip-body">
+                <div class="aa-callout-tip-label">Stretch внутри задачи</div>
+                <div class="aa-callout-tip-title">Сделай транскрипт копируемым в Telegram</div>
+                <div class="aa-callout-tip-text">
+                  <p>В Telegram текст можно сделать «копируемым по тапу» — пользователь нажимает и текст моментально оказывается в буфере. Есть <strong>два HTML-способа</strong>: одним из них пользуйся в <code>parse_mode=HTML</code>.</p>
+                  <p>Найди в интернете «как в HTML сделать текст копируемым» — выбери способ по вкусу и применяй в поле <code>text</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Input ←</div>
+                <div class="aa-node-step-io-note">Текст из OpenAI Transcribe (ветка true) или подсказка для пользователя (ветка false).</div>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Output →</div>
+                <div class="aa-node-step-io-note">Подтверждение Telegram, что сообщение отправлено.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DoD -->
+        <div class="aa-dod-block">
+          <div class="aa-dod-block-h2">Готов? Проверь себя</div>
+          <p class="aa-dod-block-lead">Когда все три пункта — отправляй на ревью.</p>
+          <ul class="aa-dod-list">
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">Голосовое сообщение транскрибируется и ответ приходит в тот же чат.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">Если пришло не голосовое сообщение — пользователь получает понятный ответ, воркфлоу не падает.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">Текст транскрипта приходит в копируемом формате (по тапу попадает в буфер).</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Test cases -->
+        <div class="aa-md-body aa-test-cases-block">
+          <h2>Прогони тест-кейсы</h2>
+          <table class="aa-test-cases">
+            <thead>
+              <tr><th>Вход</th><th>Ожидаем</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Голосовое: «Привет, как дела?»</td>
+                <td>Ответ: копируемый транскрипт текста</td>
+              </tr>
+              <tr>
+                <td>Текстовое сообщение «Привет»</td>
+                <td>Ответ: подсказка «отправь голосовое», воркфлоу не падает</td>
+              </tr>
+              <tr>
+                <td>Стикер</td>
+                <td>То же — подсказка про голосовое</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Финальная подсказка от автора -->
+        <div class="aa-callout-tip">
+          <div class="aa-callout-tip-icon">★</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Ключевая ошибка новичков</div>
+            <div class="aa-callout-tip-title">Смотри на данные, не только на ноды</div>
+            <div class="aa-callout-tip-text">
+              <p>На каждом шаге задавай себе три вопроса:</p>
+              <ul>
+                <li>что у меня сейчас в левой панели?</li>
+                <li>что появилось в правой?</li>
+                <li>что я передаю дальше?</li>
+              </ul>
+              <p>Если ты это контролируешь — ты реально понимаешь n8n. Если нет — будешь долго гадать, почему «не работает».</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stretch -->
+        <details class="aa-stretch">
+          <summary>
+            <span class="aa-stretch-title">Хочешь больше? Опциональные шаги</span>
+            <span class="aa-stretch-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-md-body">
+            <ul>
+              <li>Добавь поддержку отдельных аудиофайлов (<code>audio</code>) — это другое поле в объекте Telegram update, не <code>voice</code>.</li>
+              <li>Подсветь это в IF: проверь не только <code>voice</code>, но и <code>audio</code>. Прежде чем добавлять — посмотри что Telegram присылает в каждом случае.</li>
+              <li>
+                Подробнее про выражения в n8n:
+                <a href="https://wiki.vibe-business.site/books/n8n-patterny-i-priemy/page/javascript-vyrazeniia-v-n8n-polnyi-gaid-po-operatoram" target="_blank" rel="noopener">
+                  JavaScript-выражения в n8n
+                </a>.
+              </li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- Tab: Комментарии -->
+      <div class="aa-tab-content" data-tab-content="comments">
+        <div class="aa-md-body" style="text-align: center; padding: 40px 20px; color: var(--muted);">
+          Здесь появятся комментарии к этой задаче — твои вопросы, ответы агента и подсказки. Пока пусто.
+        </div>
+      </div>
+
+      <!-- Tab: История -->
+      <div class="aa-tab-content" data-tab-content="history">
+        <div class="aa-history">
+          <div class="aa-history-item is-active">
+            <div class="aa-history-item-date">сейчас</div>
+            <div class="aa-history-item-text">Задача <strong>открыта</strong> — статус «К выполнению».</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- В этом модуле -->
+      <section class="aa-side-card is-full aa-bottom-section">
+        <div class="aa-side-card-h3">В этом модуле</div>
+        <div class="aa-in-module-list aa-in-module-list-grid">
+          <a class="aa-in-module-row is-current" href="/automate-at/tasks/M5-01/">
+            <span class="aa-in-module-row-status is-progress">●</span>
+            <span class="aa-in-module-row-code">M5-01</span>
+            <span class="aa-in-module-row-title">Базовый транскрибатор</span>
+          </a>
+          <a class="aa-in-module-row" href="#">
+            <span class="aa-in-module-row-status">○</span>
+            <span class="aa-in-module-row-code">M5-02</span>
+            <span class="aa-in-module-row-title">Расширение форматов: Switch + OCR</span>
+          </a>
+          <a class="aa-in-module-row" href="#">
+            <span class="aa-in-module-row-status">○</span>
+            <span class="aa-in-module-row-code">M5-03</span>
+            <span class="aa-in-module-row-title">Видео + кастомная логика</span>
+          </a>
+          <a class="aa-in-module-row" href="#">
+            <span class="aa-in-module-row-status">○</span>
+            <span class="aa-in-module-row-code">M5-04</span>
+            <span class="aa-in-module-row-title">Память: логирование и хранение</span>
+          </a>
+          <a class="aa-in-module-row" href="#">
+            <span class="aa-in-module-row-status">○</span>
+            <span class="aa-in-module-row-code">M5-05</span>
+            <span class="aa-in-module-row-title">Кнопки, доступ и TL;DR</span>
+          </a>
+          <a class="aa-in-module-row" href="#">
+            <span class="aa-in-module-row-status">○</span>
+            <span class="aa-in-module-row-code">M5-06</span>
+            <span class="aa-in-module-row-title">Статистика: /stats</span>
+          </a>
+        </div>
+        <a class="aa-mini-block-link" href="/automate-at/courses/" style="margin-top: 6px;">
+          Открыть все 6 задач M5 →
+        </a>
+      </section>
+
+      <!-- Помощь -->
+      <section class="aa-side-card is-full aa-bottom-section aa-help-block">
+        <div class="aa-side-card-h3">Помощь</div>
+        <p class="aa-side-card-hint">
+          Застрял на каком-то шаге? Спроси в общем чате — обычно отвечают в течение часа. Не стесняйся показывать скриншоты канваса и вывод нод.
+        </p>
+        <a class="btn btn-ghost btn-sm" href="https://t.me/profy_conveyor" target="_blank" rel="noopener">
+          Написать в чат
+        </a>
+      </section>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor</span>
+        <span>Прототип v0.1</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  // Tabs
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if (!tab) return;
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.aa-tabs-tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === id));
+    document.querySelectorAll('[data-tab-content]').forEach(c => c.classList.toggle('is-active', c.dataset.tabContent === id));
+  });
+
+  // DoD checklist
+  document.querySelectorAll('.aa-dod-item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', e => {
+      e.target.closest('.aa-dod-item').classList.toggle('is-checked', e.target.checked);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
