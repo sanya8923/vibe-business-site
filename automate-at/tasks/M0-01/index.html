@@ -115,15 +115,161 @@
           <p>
             Встроенный чат n8n — появляется прямо в интерфейсе, без внешних мессенджеров. Добавь ноду — и чат сразу доступен для тестирования. Ничего настраивать не нужно.
           </p>
-          <p class="aa-context-links">
-            Не знаком с терминологией?
-            <a href="https://wiki.vibe-business.site/books/n8n-patterny-i-priemy/page/slovar-n8n-vse-osnovnye-poniatiia-dlia-nacinaiushhix-nNw" target="_blank" rel="noopener">📖 Словарь n8n</a>
-            <a href="https://wiki.vibe-business.site/books/n8n-patterny-i-priemy/page/tipy-nod-v-n8n-kakie-byvaiut-i-kak-ix-naxodit" target="_blank" rel="noopener">📖 Типы нод</a>
-            <a href="https://wiki.vibe-business.site/books/nacalo-raboty-instrukcii/page/m0-01-sobiraem-ai-catbota-s-xarakterom" target="_blank" rel="noopener">📖 Пошаговая сборка воркфлоу</a>
-          </p>
-          <blockquote>
-            <strong>Как открыть чат.</strong> Когда Chat Trigger добавлен в воркфлоу, в левом нижнем углу канваса появляется кнопка «Chat». Нажми на неё или используй горячую клавишу <code>L</code> — откроется окно чата для тестирования. Чтобы бот ответил, воркфлоу должен быть в режиме тестирования (кнопка <em>Test workflow</em>) или активирован.
-          </blockquote>
+        </div>
+
+        <!-- Inline-статья: как добавить ноду -->
+        <details class="aa-inline-article">
+          <summary>
+            <span class="aa-inline-article-icon">📖</span>
+            <span class="aa-inline-article-title">Как добавить свою первую ноду в n8n</span>
+            <span class="aa-inline-article-hint">статья · ~2 мин</span>
+            <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-inline-article-body">
+
+            <!-- Видео (заглушка) -->
+            <div class="aa-inline-article-video is-placeholder">
+              <div>
+                <div class="aa-inline-article-video-icon">▶</div>
+                <div class="aa-inline-article-video-label">Видео в разработке</div>
+                <div class="aa-inline-article-video-sub">Сейчас читай текст — видеоверсия появится позже.</div>
+              </div>
+            </div>
+
+            <div class="aa-md-body">
+              <ol>
+                <li>
+                  <p><strong>Открой воркфлоу.</strong> Зайди на <code>n8n.school.vibe-business.site</code>, авторизуйся и создай новый воркфлоу кнопкой <em>New workflow</em>.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Главный экран n8n с кнопкой «New workflow»</div>
+                    </div>
+                    <figcaption>Главный экран n8n. Кнопка «New workflow» — справа сверху.</figcaption>
+                  </figure>
+                </li>
+
+                <li>
+                  <p><strong>Открой панель добавления.</strong> На пустом канвасе посередине — большая кнопка «<em>+ Add first step…</em>». Нажми её. Справа выезжает панель со списком всех нод.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Пустой канвас и кнопка «Add first step»</div>
+                    </div>
+                    <figcaption>Пустой канвас. Большая кнопка «+» — точка входа.</figcaption>
+                  </figure>
+                </li>
+
+                <li>
+                  <p><strong>Найди нужную ноду.</strong> В строке поиска вверху панели введи название — например <code>Chat Trigger</code>. Список фильтруется на лету. Можно искать на русском («чат») или на английском.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Панель добавления нод с поиском «Chat Trigger»</div>
+                    </div>
+                    <figcaption>Панель «Add node» открыта справа. В поиске — «Chat Trigger».</figcaption>
+                  </figure>
+                </li>
+
+                <li>
+                  <p><strong>Кликни по ноде.</strong> Она появится на канвасе. Двойной клик по ноде откроет её настройки.</p>
+                </li>
+
+                <li>
+                  <p><strong>Соедини со следующей нодой.</strong> Наведись на правый край предыдущей ноды — появится «+». Нажми, и снова откроется панель добавления, но уже для связанной ноды.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Добавление второй ноды через «+» на правой стороне первой</div>
+                    </div>
+                    <figcaption>Кнопка «+» на правом крае ноды — добавляет следующую в цепочку.</figcaption>
+                  </figure>
+                </li>
+              </ol>
+
+              <p style="margin-top: 14px;">
+                Подробнее в полной базе знаний:
+                <a href="https://wiki.vibe-business.site/books/n8n-patterny-i-priemy/page/slovar-n8n-vse-osnovnye-poniatiia-dlia-nacinaiushhix-nNw" target="_blank" rel="noopener">словарь n8n</a> ·
+                <a href="https://wiki.vibe-business.site/books/n8n-patterny-i-priemy/page/tipy-nod-v-n8n-kakie-byvaiut-i-kak-ix-naxodit" target="_blank" rel="noopener">типы нод</a> ·
+                <a href="https://wiki.vibe-business.site/books/nacalo-raboty-instrukcii/page/m0-01-sobiraem-ai-catbota-s-xarakterom" target="_blank" rel="noopener">пошаговая сборка M0-01</a>
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <!-- Inline-статья: как открыть чат -->
+        <details class="aa-inline-article">
+          <summary>
+            <span class="aa-inline-article-icon">💬</span>
+            <span class="aa-inline-article-title">Как открыть чат в n8n</span>
+            <span class="aa-inline-article-hint">статья · ~1 мин</span>
+            <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-inline-article-body">
+
+            <div class="aa-inline-article-video is-placeholder">
+              <div>
+                <div class="aa-inline-article-video-icon">▶</div>
+                <div class="aa-inline-article-video-label">Видео в разработке</div>
+                <div class="aa-inline-article-video-sub">Пока читаешь текст — видеоверсия появится позже.</div>
+              </div>
+            </div>
+
+            <div class="aa-md-body">
+              <ol>
+                <li>
+                  <p><strong>Добавь в воркфлоу ноду Chat Trigger.</strong> Без этой ноды панель чата не появится — она привязана именно к ней.</p>
+                </li>
+
+                <li>
+                  <p><strong>Найди кнопку «Chat» в левом нижнем углу.</strong> После добавления Chat Trigger в углу канваса появляется маленькая кнопка <em>Chat</em>. Нажми на неё — откроется окно чата.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Кнопка «Chat» в левом нижнем углу канваса</div>
+                    </div>
+                    <figcaption>Кнопка «Chat» появляется только если в воркфлоу есть Chat Trigger.</figcaption>
+                  </figure>
+                </li>
+
+                <li>
+                  <p><strong>Альтернатива — горячая клавиша <code>L</code>.</strong> Открывает чат мгновенно, без поиска кнопки.</p>
+                </li>
+
+                <li>
+                  <p><strong>Запусти воркфлоу в режиме теста.</strong> Внизу канваса есть кнопка <em>Test workflow</em>. Жми её перед каждой проверкой — иначе бот не ответит. Альтернатива — активировать воркфлоу тумблером справа сверху, тогда он работает постоянно.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Кнопка «Test workflow» внизу канваса</div>
+                    </div>
+                    <figcaption>«Test workflow» запускает воркфлоу один раз для проверки.</figcaption>
+                  </figure>
+                </li>
+
+                <li>
+                  <p><strong>Пиши сообщение в чате.</strong> В открывшейся панели введи текст и нажми Enter. Воркфлоу выполнится, бот ответит в этой же панели.</p>
+                  <figure class="aa-inline-article-figure">
+                    <div class="aa-inline-article-screenshot is-placeholder">
+                      <div class="aa-inline-article-screenshot-icon">📸</div>
+                      <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                      <div class="aa-inline-article-screenshot-sub">Окно чата с диалогом «привет → ответ бота»</div>
+                    </div>
+                    <figcaption>Так выглядит работающий чат с ответом бота.</figcaption>
+                  </figure>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </details>
+
+        <div class="aa-md-body">
 
           <h3>2. OpenAI (Message a Model)</h3>
           <p>

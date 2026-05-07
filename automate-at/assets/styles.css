@@ -2629,3 +2629,228 @@
 @media (max-width: 540px) {
   .aa-in-module-list-grid { grid-template-columns: 1fr; }
 }
+
+
+/* ============================================================
+   Inline article — раскрывающаяся статья прямо внутри задачи
+   с видео-плейсхолдером и скринами с подписями.
+   Используется вместо «связанных материалов», когда понятие
+   надо объяснить по месту.
+   ============================================================ */
+
+.aa-inline-article {
+  margin: 16px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color .15s ease;
+}
+.aa-inline-article:hover { border-color: var(--border-hi); }
+
+.aa-inline-article > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+  transition: background .15s ease;
+}
+.aa-inline-article > summary::-webkit-details-marker { display: none; }
+.aa-inline-article > summary:hover { background: rgba(0,201,167,.04); }
+
+.aa-inline-article-icon {
+  width: 32px; height: 32px;
+  flex-shrink: 0;
+  display: grid; place-items: center;
+  background: rgba(0,201,167,.10);
+  border: 1px solid rgba(0,201,167,.22);
+  border-radius: 8px;
+  color: var(--teal);
+  font-size: 16px;
+}
+.aa-inline-article-title {
+  flex: 1;
+  font-family: var(--fd);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.005em;
+  line-height: 1.3;
+  min-width: 0;
+}
+.aa-inline-article-hint {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.aa-inline-article-arrow {
+  font-size: 16px;
+  color: var(--muted);
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+.aa-inline-article[open] > summary .aa-inline-article-arrow { transform: rotate(180deg); }
+.aa-inline-article[open] > summary {
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,201,167,.03);
+}
+
+.aa-inline-article-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Видео-плейсхолдер */
+.aa-inline-article-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(0,201,167,.08), transparent 65%),
+    rgba(255,255,255,.02);
+  border: 1px dashed var(--border-hi);
+}
+.aa-inline-article-video.is-placeholder { gap: 8px; }
+.aa-inline-article-video-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(0,201,167,.12);
+  border: 1.5px solid rgba(0,201,167,.3);
+  color: var(--teal);
+  font-size: 22px;
+  padding-left: 4px;
+  margin-bottom: 8px;
+}
+.aa-inline-article-video-label {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+.aa-inline-article-video-sub {
+  font-size: 12px;
+  color: var(--dim);
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Скрин-плейсхолдер */
+.aa-inline-article-figure {
+  margin: 10px 0;
+}
+.aa-inline-article-screenshot {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,.015),
+      rgba(255,255,255,.015) 8px,
+      rgba(255,255,255,.03) 8px,
+      rgba(255,255,255,.03) 16px
+    ),
+    rgba(255,255,255,.02);
+  border: 1px dashed var(--border-hi);
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 16px;
+}
+.aa-inline-article-screenshot.is-real {
+  background: var(--card);
+  border-style: solid;
+  padding: 0;
+}
+.aa-inline-article-screenshot.is-real img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+.aa-inline-article-screenshot-icon {
+  font-size: 22px;
+  color: var(--muted);
+  opacity: .6;
+}
+.aa-inline-article-screenshot-label {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+.aa-inline-article-screenshot-sub {
+  font-size: 12px;
+  color: var(--dim);
+  text-align: center;
+  max-width: 360px;
+  line-height: 1.4;
+}
+.aa-inline-article-figure figcaption {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Текст в body статьи — компактнее обычного md-body */
+.aa-inline-article-body .aa-md-body { padding: 0; }
+.aa-inline-article-body .aa-md-body h4 {
+  font-family: var(--fd);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 14px 0 6px;
+  letter-spacing: -.005em;
+}
+.aa-inline-article-body .aa-md-body p:first-child { margin-top: 0; }
+.aa-inline-article-body .aa-md-body ol {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.aa-inline-article-body .aa-md-body ol > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 36px;
+  margin: 0;
+}
+.aa-inline-article-body .aa-md-body ol > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(0,201,167,.10);
+  border: 1px solid rgba(0,201,167,.25);
+  color: var(--teal);
+  font-family: var(--fm);
+  font-weight: 700;
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+}
