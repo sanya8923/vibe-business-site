@@ -413,15 +413,10 @@
           </div>
         </div>
 
-        <!-- WF-mini после шага 1: одна нода -->
-        <div class="aa-wf-mini">
-          <div class="aa-wf-mini-canvas">
-            <div class="aa-wf-mini-node is-trigger no-out">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Telegram Trigger</div>
-            </div>
-          </div>
-          <div class="aa-wf-mini-caption">После шага 1 — твой воркфлоу выглядит так</div>
+        <!-- WF-shot после шага 1: одна нода (скриншот из n8n) -->
+        <div class="aa-wf-shot">
+          <img src="/automate-at/tasks/M5-01/screenshots/wf-step-1.png" alt="Воркфлоу после шага 1: одна нода Telegram Trigger">
+          <div class="aa-wf-shot-caption">После шага 1 — твой воркфлоу выглядит так</div>
         </div>
 
         <!-- Шаг 2: IF -->
@@ -469,46 +464,19 @@
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">Output →</div>
-                <div class="aa-wf-mini" style="margin: 0;">
-                  <div class="aa-wf-mini-canvas" style="padding: 16px; min-height: 76px;">
-                    <div class="aa-wf-mini-node is-decision">
-                      <div class="aa-wf-mini-node-icon">?</div>
-                      <div class="aa-wf-mini-node-name">IF</div>
-                      <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
-                    </div>
-                    <div class="aa-wf-mini-fork">
-                      <div class="aa-wf-mini-fork-row">
-                        <span class="aa-wf-mini-fork-conn"></span>
-                        <span class="aa-wf-mini-fork-tag is-yes">Да</span>
-                      </div>
-                      <div class="aa-wf-mini-fork-row">
-                        <span class="aa-wf-mini-fork-conn"></span>
-                        <span class="aa-wf-mini-fork-tag is-no">Нет</span>
-                      </div>
-                    </div>
-                  </div>
+                <div class="aa-wf-shot">
+                  <img src="/automate-at/tasks/M5-01/screenshots/wf-step-2.png" alt="IF с двумя выходами true и false">
                 </div>
-                <div class="aa-node-step-io-note">У IF два выхода — данные пойдут по одной из веток.</div>
+                <div class="aa-node-step-io-note">У IF два выхода — true и false. Данные пойдут по одной из веток.</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- WF-mini после шага 2: Trigger + IF -->
-        <div class="aa-wf-mini">
-          <div class="aa-wf-mini-canvas">
-            <div class="aa-wf-mini-node is-trigger">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Telegram Trigger</div>
-            </div>
-            <span class="aa-wf-mini-conn"></span>
-            <div class="aa-wf-mini-node is-decision">
-              <div class="aa-wf-mini-node-icon">?</div>
-              <div class="aa-wf-mini-node-name">IF</div>
-              <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
-            </div>
-          </div>
-          <div class="aa-wf-mini-caption">После шага 2 — добавили проверку</div>
+        <!-- WF-shot после шага 2: Trigger + IF -->
+        <div class="aa-wf-shot">
+          <img src="/automate-at/tasks/M5-01/screenshots/wf-step-2.png" alt="Воркфлоу после шага 2: Telegram Trigger и IF">
+          <div class="aa-wf-shot-caption">После шага 2 — добавили проверку «это голосовое?»</div>
         </div>
 
         <!-- Шаг 3: Get File -->
@@ -618,26 +586,10 @@
           </div>
         </div>
 
-        <!-- WF-mini после шага 3: Trigger → IF → Get File (true) -->
-        <div class="aa-wf-mini">
-          <div class="aa-wf-mini-canvas">
-            <div class="aa-wf-mini-node is-trigger">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Trigger</div>
-            </div>
-            <span class="aa-wf-mini-conn"></span>
-            <div class="aa-wf-mini-node is-decision">
-              <div class="aa-wf-mini-node-icon">?</div>
-              <div class="aa-wf-mini-node-name">IF</div>
-              <span class="aa-wf-mini-node-outs"><span class="is-yes"></span><span class="is-no"></span></span>
-            </div>
-            <span class="aa-wf-mini-conn"></span>
-            <div class="aa-wf-mini-node is-getfile">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Get File</div>
-            </div>
-          </div>
-          <div class="aa-wf-mini-caption">После шага 3 — true-ветка, скачали аудиофайл</div>
+        <!-- WF-shot после шага 3: Trigger → IF → Get File (true) -->
+        <div class="aa-wf-shot">
+          <img src="/automate-at/tasks/M5-01/screenshots/wf-step-3.png" alt="Воркфлоу после шага 3: Trigger, IF и Get File в true-ветке">
+          <div class="aa-wf-shot-caption">После шага 3 — true-ветка идёт на Get File</div>
         </div>
 
         <!-- Шаг 4: OpenAI Transcribe -->
@@ -727,20 +679,10 @@
           </div>
         </div>
 
-        <!-- WF-mini после шага 4: Get File → OpenAI -->
-        <div class="aa-wf-mini">
-          <div class="aa-wf-mini-canvas">
-            <div class="aa-wf-mini-node is-getfile">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Get File</div>
-            </div>
-            <span class="aa-wf-mini-conn"></span>
-            <div class="aa-wf-mini-node is-ai">
-              <div class="aa-wf-mini-node-icon">AI</div>
-              <div class="aa-wf-mini-node-name">OpenAI Transcribe</div>
-            </div>
-          </div>
-          <div class="aa-wf-mini-caption">После шага 4 — крупный план: файл → текст</div>
+        <!-- WF-shot после шага 4: Get File → OpenAI -->
+        <div class="aa-wf-shot">
+          <img src="/automate-at/tasks/M5-01/screenshots/wf-step-4.png" alt="Get File и OpenAI Transcribe — крупный план распознавания">
+          <div class="aa-wf-shot-caption">После шага 4 — крупный план: файл уходит в Whisper, обратно приходит текст</div>
         </div>
 
         <!-- Шаг 5: Send Message -->
@@ -815,20 +757,10 @@
           </div>
         </div>
 
-        <!-- WF-mini после шага 5: OpenAI → Send Message (true) -->
-        <div class="aa-wf-mini">
-          <div class="aa-wf-mini-canvas">
-            <div class="aa-wf-mini-node is-ai">
-              <div class="aa-wf-mini-node-icon">AI</div>
-              <div class="aa-wf-mini-node-name">OpenAI Transcribe</div>
-            </div>
-            <span class="aa-wf-mini-conn"></span>
-            <div class="aa-wf-mini-node is-output no-out">
-              <div class="aa-wf-mini-node-icon">TG</div>
-              <div class="aa-wf-mini-node-name">Send Message</div>
-            </div>
-          </div>
-          <div class="aa-wf-mini-caption">После шага 5 — финал true-ветки: текст уходит обратно в чат</div>
+        <!-- WF-shot после шага 5: OpenAI → Send Message (true) -->
+        <div class="aa-wf-shot">
+          <img src="/automate-at/tasks/M5-01/screenshots/wf-step-5.png" alt="OpenAI Transcribe и Telegram Send Message — финал true-ветки">
+          <div class="aa-wf-shot-caption">После шага 5 — финал true-ветки: транскрипт уходит обратно в чат</div>
         </div>
 
         <!-- DoD -->

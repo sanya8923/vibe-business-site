@@ -1446,3 +1446,38 @@
   font-size: 12px;
   word-break: break-all;
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   wf-shot — реальные скриншоты воркфлоу из n8n (вместо CSS-mock)
+   ════════════════════════════════════════════════════════════════ */
+
+[data-aa-task="M5-01"] .aa-wf-shot {
+  margin: 18px 0 6px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0d0f12;
+}
+[data-aa-task="M5-01"] .aa-wf-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+[data-aa-task="M5-01"] .aa-wf-shot-caption {
+  padding: 8px 16px;
+  background: rgba(0,0,0,.35);
+  border-top: 1px solid var(--border);
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* В Output ячейке шага — без верхнего margin, занимает всю ширину */
+[data-aa-task="M5-01"] .aa-node-step-io-col .aa-wf-shot {
+  margin: 0;
+}
