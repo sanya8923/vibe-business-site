@@ -1,0 +1,1221 @@
+/* ════════════════════════════════════════════════════════════════
+   M5-01 — local design pass.
+   Только то, что специфично для этой задачи.
+   Все правки скоупированы через [data-aa-task="M5-01"].
+   ════════════════════════════════════════════════════════════════ */
+
+[data-aa-task="M5-01"] .aa-node-step-figure {
+  margin: 0 0 16px;
+  padding: 14px 16px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    #0d0f12;
+  display: flex;
+  justify-content: center;
+}
+[data-aa-task="M5-01"] .aa-node-step-figure img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 280px;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,.45));
+}
+
+/* Inline node glyph in the step head — small node thumbnail next to title */
+[data-aa-task="M5-01"] .aa-node-step-head { gap: 10px; flex-wrap: wrap; }
+[data-aa-task="M5-01"] .aa-node-step-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+[data-aa-task="M5-01"] .aa-node-step-glyph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.45));
+}
+
+[data-aa-task="M5-01"] {
+  /* Локальные семантические токены — переиспользуем глобальные */
+  --m5-trigger:  #5BC0EB;     /* info — синий: триггер/вход */
+  --m5-decision: #FFA64D;     /* warn — оранжевый: решение */
+  --m5-action:   #00C9A7;     /* teal — действие */
+  --m5-output:   #DBFF4A;     /* accent — выход */
+  --m5-danger:   #FF6B6B;
+  --m5-rail:     rgba(255,255,255,.08);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Ширина и ритм
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-main-inner { max-width: 1080px; gap: 0; }
+
+[data-aa-task="M5-01"] .aa-breadcrumb { margin-bottom: 18px; }
+
+/* ────────────────────────────────────────────────────────────────
+   HERO: status + h1 + lead + meta как единый интегрированный блок
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-task-status-row { margin: 0 0 10px; }
+
+[data-aa-task="M5-01"] .aa-status-pill-big {
+  letter-spacing: .14em;
+  font-size: 10.5px;
+  padding: 7px 14px 7px 12px;
+  text-transform: uppercase;
+}
+
+[data-aa-task="M5-01"] .aa-detail-header {
+  margin-bottom: 0;
+  gap: 14px;
+}
+[data-aa-task="M5-01"] .aa-detail-h1 {
+  font-size: clamp(28px, 3.6vw, 40px);
+  letter-spacing: -.025em;
+  line-height: 1.1;
+  align-items: baseline;
+  gap: 12px 14px;
+}
+[data-aa-task="M5-01"] .aa-detail-h1-code {
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: rgba(219,255,74,.08);
+  border: 1px solid rgba(219,255,74,.2);
+  color: var(--accent);
+  letter-spacing: .04em;
+  position: relative;
+  top: -4px;
+}
+[data-aa-task="M5-01"] .aa-detail-header-pills { gap: 6px; }
+[data-aa-task="M5-01"] .aa-detail-lead {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 720px;
+  text-wrap: pretty;
+}
+[data-aa-task="M5-01"] .aa-detail-lead strong { color: var(--text); }
+
+/* ────────────────────────────────────────────────────────────────
+   ACTION CARD — отдельная плотная плашка как primary CTA
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-action-card.is-inline {
+  margin: 26px 0 0;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(219,255,74,.06), transparent 60%),
+    var(--card-hi);
+  border: 1px solid rgba(219,255,74,.18);
+  align-items: center;
+  gap: 22px;
+}
+[data-aa-task="M5-01"] .aa-action-card.is-inline::before {
+  display: none;
+}
+[data-aa-task="M5-01"] .aa-action-card-eyebrow {
+  color: var(--accent);
+  letter-spacing: .14em;
+  font-size: 10.5px;
+}
+[data-aa-task="M5-01"] .aa-action-card-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 8px;
+  vertical-align: middle;
+  box-shadow: 0 0 0 4px rgba(219,255,74,.15);
+}
+[data-aa-task="M5-01"] .aa-action-card-title {
+  font-size: 19px;
+  letter-spacing: -.012em;
+  margin-bottom: 6px;
+}
+[data-aa-task="M5-01"] .aa-action-card-text { font-size: 13.5px; line-height: 1.55; }
+[data-aa-task="M5-01"] .aa-action-card-meta {
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dim, var(--muted));
+  margin-top: 10px;
+}
+[data-aa-task="M5-01"] .aa-action-card-actions { min-width: 220px; gap: 10px; }
+[data-aa-task="M5-01"] .aa-action-card-actions .btn-primary {
+  font-weight: 600;
+  letter-spacing: .005em;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   PREREQ — компактнее, как чипы
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-task-prereq {
+  margin: 18px 0 30px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.015);
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-h3 {
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list {
+  gap: 8px 8px;
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+  font-size: 12.5px;
+  list-style: none;
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li::before {
+  content: '○';
+  font-size: 12px;
+  color: var(--muted);
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li.is-ok {
+  border-color: rgba(0,201,167,.25);
+  background: rgba(0,201,167,.06);
+  color: var(--text);
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li.is-ok::before {
+  content: '✓';
+  color: var(--teal);
+  font-weight: 700;
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li.is-pending {
+  border-color: rgba(255,166,77,.22);
+  color: var(--text);
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-list li.is-pending::before {
+  content: '◔';
+  color: var(--warn);
+}
+[data-aa-task="M5-01"] .aa-task-prereq .aa-side-card-hint {
+  margin-top: 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  padding-left: 0;
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   TABS — крупнее, с подсветкой active
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-tabs {
+  margin: 4px 0 22px;
+  border-bottom: 1px solid var(--border);
+}
+[data-aa-task="M5-01"] .aa-tabs-tab {
+  padding: 12px 4px;
+  margin-right: 24px;
+  font-size: 13px;
+  letter-spacing: -.005em;
+  border-bottom: 2px solid transparent;
+  position: relative;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   IO BOX — плотная Вход/Выход карточка
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-io-box {
+  margin: 24px 0 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  border-radius: 0;
+}
+[data-aa-task="M5-01"] .aa-io-box-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-io-box-row:first-child { border-left: 2px solid var(--m5-trigger); }
+[data-aa-task="M5-01"] .aa-io-box-row:last-child  { border-left: 2px solid var(--m5-output); }
+[data-aa-task="M5-01"] .aa-io-box-key {
+  letter-spacing: .14em;
+  font-size: 10px;
+  width: auto;
+  color: var(--muted);
+}
+[data-aa-task="M5-01"] .aa-io-box-row:first-child .aa-io-box-key { color: var(--m5-trigger); }
+[data-aa-task="M5-01"] .aa-io-box-row:last-child  .aa-io-box-key { color: var(--m5-output); }
+[data-aa-task="M5-01"] .aa-io-box-val {
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--text);
+}
+@media (max-width: 720px) {
+  [data-aa-task="M5-01"] .aa-io-box { grid-template-columns: 1fr; }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   MD-BODY — типографика секции
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-md-body h2 {
+  font-size: 22px;
+  letter-spacing: -.018em;
+  margin: 38px 0 12px;
+  position: relative;
+  padding-left: 14px;
+}
+[data-aa-task="M5-01"] .aa-md-body h2::before {
+  content: '';
+  position: absolute;
+  left: 0; top: .35em;
+  width: 4px; height: .85em;
+  border-radius: 2px;
+  background: var(--accent);
+}
+[data-aa-task="M5-01"] .aa-md-body p { line-height: 1.65; }
+
+/* ────────────────────────────────────────────────────────────────
+   FLOW DIAGRAM — настоящие «ноды n8n»
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-flow-diagram {
+  margin: 18px 0 24px;
+  padding: 28px 24px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(219,255,74,.04), transparent 60%),
+    var(--card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+[data-aa-task="M5-01"] .aa-flow-diagram::before {
+  /* dotted canvas pattern as backdrop */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 14px 14px;
+  opacity: .6;
+  pointer-events: none;
+}
+[data-aa-task="M5-01"] .aa-flow-diagram > * { position: relative; }
+
+[data-aa-task="M5-01"] .aa-flow-diagram-row {
+  gap: 6px;
+  justify-content: center;
+}
+
+[data-aa-task="M5-01"] .aa-flow-node {
+  padding: 10px 14px 10px 10px;
+  border-radius: 10px;
+  background: var(--card-hi);
+  border: 1px solid var(--border-hi);
+  font-family: var(--fb);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  gap: 10px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.03) inset,
+    0 8px 18px rgba(0,0,0,.18);
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-flow-node-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+/* Trigger — синий с «всплеском» слева */
+[data-aa-task="M5-01"] .aa-flow-node.is-trigger {
+  border-color: rgba(91,192,235,.35);
+  background: linear-gradient(180deg, rgba(91,192,235,.08), rgba(91,192,235,.02));
+}
+[data-aa-task="M5-01"] .aa-flow-node.is-trigger::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: -1px; bottom: -1px;
+  width: 4px;
+  border-radius: 10px 0 0 10px;
+  background: var(--m5-trigger);
+  box-shadow: 0 0 12px rgba(91,192,235,.5);
+}
+
+/* Decision — оранжевый ромб */
+[data-aa-task="M5-01"] .aa-flow-node.is-decision {
+  border-color: rgba(255,166,77,.35);
+  background: linear-gradient(180deg, rgba(255,166,77,.08), rgba(255,166,77,.02));
+}
+[data-aa-task="M5-01"] .aa-flow-node.is-decision::after {
+  content: '?';
+  position: absolute;
+  right: 8px; top: -7px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--warn);
+  color: #1a1410;
+  font-family: var(--fm);
+  font-size: 10px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+/* Output — лаймовый */
+[data-aa-task="M5-01"] .aa-flow-node.is-output {
+  border-color: rgba(219,255,74,.3);
+  background: linear-gradient(180deg, rgba(219,255,74,.06), rgba(219,255,74,.01));
+}
+
+/* Стрелки — толстые, с маркером */
+[data-aa-task="M5-01"] .aa-flow-arrow {
+  font-size: 0;
+  width: 28px;
+  height: 2px;
+  background: var(--border-hi);
+  position: relative;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-flow-arrow::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: var(--border-hi);
+  border-right: 0;
+}
+
+/* Ветка ДА/НЕТ */
+[data-aa-task="M5-01"] .aa-flow-branch {
+  margin: 14px 0 0 30px;
+  padding-left: 24px;
+  position: relative;
+  gap: 14px;
+  border-left: 2px dashed rgba(255,255,255,.12);
+}
+[data-aa-task="M5-01"] .aa-flow-branch-row {
+  position: relative;
+  padding: 6px 0;
+  align-items: center;
+  gap: 8px;
+}
+[data-aa-task="M5-01"] .aa-flow-branch-row::before {
+  content: '';
+  position: absolute;
+  left: -24px; top: 50%;
+  width: 22px; height: 2px;
+  background: rgba(255,255,255,.12);
+}
+[data-aa-task="M5-01"] .aa-flow-branch-label {
+  font-size: 9.5px;
+  padding: 4px 9px;
+  letter-spacing: .14em;
+  font-weight: 700;
+  border-radius: 5px;
+}
+
+@media (max-width: 720px) {
+  [data-aa-task="M5-01"] .aa-flow-diagram { padding: 20px 14px; }
+  [data-aa-task="M5-01"] .aa-flow-arrow { width: 18px; }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   CALLOUT TIP
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-callout-tip {
+  margin: 22px 0;
+  padding: 18px 20px 18px 22px;
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 10px;
+  background: var(--card);
+  gap: 16px;
+}
+[data-aa-task="M5-01"] .aa-callout-tip-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 0;
+}
+[data-aa-task="M5-01"] .aa-callout-tip-label {
+  font-size: 9.5px;
+  letter-spacing: .16em;
+  margin-bottom: 6px;
+}
+[data-aa-task="M5-01"] .aa-callout-tip-title {
+  font-size: 16px;
+  letter-spacing: -.012em;
+  margin-bottom: 8px;
+}
+[data-aa-task="M5-01"] .aa-callout-tip-text { font-size: 14px; line-height: 1.6; color: var(--muted); }
+[data-aa-task="M5-01"] .aa-callout-tip-text p { color: var(--muted); }
+[data-aa-task="M5-01"] .aa-callout-tip-text strong { color: var(--text); }
+
+/* tip default — teal */
+[data-aa-task="M5-01"] .aa-callout-tip:not(.is-warn) {
+  border-left-color: var(--teal);
+}
+[data-aa-task="M5-01"] .aa-callout-tip:not(.is-warn) .aa-callout-tip-icon {
+  background: rgba(0,201,167,.12);
+  color: var(--teal);
+  border: 1px solid rgba(0,201,167,.3);
+}
+[data-aa-task="M5-01"] .aa-callout-tip:not(.is-warn) .aa-callout-tip-label { color: var(--teal); }
+
+/* warn */
+[data-aa-task="M5-01"] .aa-callout-tip.is-warn {
+  background: linear-gradient(180deg, rgba(255,166,77,.045), rgba(255,166,77,.01));
+  border-color: rgba(255,166,77,.22);
+  border-left-color: var(--warn);
+}
+[data-aa-task="M5-01"] .aa-callout-tip.is-warn .aa-callout-tip-icon {
+  background: rgba(255,166,77,.12);
+  color: var(--warn);
+  border: 1px solid rgba(255,166,77,.35);
+}
+[data-aa-task="M5-01"] .aa-callout-tip.is-warn .aa-callout-tip-label { color: var(--warn); }
+
+/* ────────────────────────────────────────────────────────────────
+   INLINE ARTICLE — закрытое выглядит как «карточка-ссылка»
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-inline-article {
+  margin: 18px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.012);
+  overflow: hidden;
+}
+[data-aa-task="M5-01"] .aa-inline-article > summary {
+  padding: 14px 18px;
+  gap: 14px;
+  align-items: center;
+}
+[data-aa-task="M5-01"] .aa-inline-article-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: rgba(0,201,167,.08);
+  border: 1px solid rgba(0,201,167,.22);
+  font-size: 16px;
+}
+[data-aa-task="M5-01"] .aa-inline-article-title {
+  font-size: 14.5px;
+  letter-spacing: -.005em;
+}
+[data-aa-task="M5-01"] .aa-inline-article-hint {
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  color: var(--muted);
+  background: rgba(255,255,255,.03);
+  padding: 4px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+[data-aa-task="M5-01"] .aa-inline-article[open] {
+  background: var(--card);
+  border-color: var(--border-hi);
+}
+[data-aa-task="M5-01"] .aa-inline-article[open] > summary {
+  background: rgba(0,201,167,.04);
+  border-bottom: 1px solid var(--border);
+}
+[data-aa-task="M5-01"] .aa-inline-article-body {
+  padding: 22px 24px 24px;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   NODE ZONES (3 колонки «как читать ноду»)
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-node-zones {
+  margin: 18px 0;
+  gap: 10px;
+}
+[data-aa-task="M5-01"] .aa-node-zone {
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+}
+[data-aa-task="M5-01"] .aa-node-zone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+[data-aa-task="M5-01"] .aa-node-zone.is-input::before    { background: var(--m5-trigger); }
+[data-aa-task="M5-01"] .aa-node-zone.is-center::before   { background: var(--accent); }
+[data-aa-task="M5-01"] .aa-node-zone.is-output::before   { background: var(--teal); }
+[data-aa-task="M5-01"] .aa-node-zone-label {
+  font-size: 10px;
+  letter-spacing: .16em;
+  margin-bottom: 8px;
+}
+[data-aa-task="M5-01"] .aa-node-zone-title {
+  font-size: 14.5px;
+  letter-spacing: -.005em;
+  margin-bottom: 6px;
+}
+[data-aa-task="M5-01"] .aa-node-zone-text { font-size: 12.5px; line-height: 1.55; }
+
+/* ────────────────────────────────────────────────────────────────
+   NODE STEP — карточка шага
+   Левая «рельса» с номером, тег справа, JSON-блоки выровнены.
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-node-step {
+  margin: 18px 0;
+  padding: 22px 22px 22px 64px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-node-step::before {
+  /* левая «вертикаль воркфлоу», соединяющая шаги */
+  content: '';
+  position: absolute;
+  left: 31px;
+  top: -18px; bottom: -18px;
+  width: 1px;
+  background: var(--m5-rail);
+  z-index: 0;
+}
+[data-aa-task="M5-01"] .aa-node-step:first-of-type::before { top: 30px; }
+[data-aa-task="M5-01"] .aa-node-step:last-of-type::before  { bottom: 30px; }
+
+[data-aa-task="M5-01"] .aa-node-step-head {
+  margin-bottom: 14px;
+  position: relative;
+  align-items: center;
+}
+[data-aa-task="M5-01"] .aa-node-step-num {
+  position: absolute;
+  left: -46px;
+  top: -2px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--card-hi);
+  border: 1px solid rgba(219,255,74,.35);
+  color: var(--accent);
+  font-family: var(--fm);
+  font-weight: 700;
+  font-size: 13px;
+  z-index: 1;
+  box-shadow: 0 0 0 4px var(--card);
+}
+[data-aa-task="M5-01"] .aa-node-step-title {
+  font-size: 18px;
+  letter-spacing: -.012em;
+}
+[data-aa-task="M5-01"] .aa-node-step-tag {
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  padding: 4px 9px;
+  border-radius: 5px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+[data-aa-task="M5-01"] .aa-node-step-body { font-size: 14px; }
+[data-aa-task="M5-01"] .aa-node-step-body p { color: var(--muted); }
+
+/* config-блок: ключ-значение */
+[data-aa-task="M5-01"] .aa-node-step-config {
+  margin: 14px 0;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+[data-aa-task="M5-01"] .aa-node-step-config-label {
+  padding: 10px 14px;
+  margin: 0;
+  background: rgba(255,255,255,.025);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: .14em;
+}
+[data-aa-task="M5-01"] .aa-node-step-config-list { padding: 6px 0; }
+[data-aa-task="M5-01"] .aa-node-step-config-list li {
+  padding: 8px 14px;
+  align-items: baseline;
+  border-bottom: 1px dashed var(--border);
+}
+[data-aa-task="M5-01"] .aa-node-step-config-list li:last-child { border-bottom: none; }
+[data-aa-task="M5-01"] .aa-node-step-config-list li strong {
+  color: var(--muted);
+  font-weight: 500;
+  min-width: 110px;
+}
+[data-aa-task="M5-01"] .aa-node-step-config-list li code {
+  background: rgba(219,255,74,.05);
+  border-color: rgba(219,255,74,.18);
+  color: var(--accent);
+}
+
+/* IO колонки */
+[data-aa-task="M5-01"] .aa-node-step-io {
+  gap: 8px;
+  margin-top: 16px;
+}
+[data-aa-task="M5-01"] .aa-node-step-io-col {
+  background: var(--card-hi);
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-node-step-io-col.is-input  { border-top: 2px solid var(--m5-trigger); }
+[data-aa-task="M5-01"] .aa-node-step-io-col.is-output { border-top: 2px solid var(--teal); }
+[data-aa-task="M5-01"] .aa-node-step-io-label {
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+[data-aa-task="M5-01"] .aa-node-step-io-col pre {
+  background: #0a0d12;
+  border: 1px solid rgba(255,255,255,.04);
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.55;
+  border-radius: 8px;
+  color: #c8d3e1;
+  overflow-x: auto;
+}
+[data-aa-task="M5-01"] .aa-node-step-io-note {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+@media (max-width: 720px) {
+  [data-aa-task="M5-01"] .aa-node-step { padding: 18px 16px 18px 52px; }
+  [data-aa-task="M5-01"] .aa-node-step::before { left: 25px; }
+  [data-aa-task="M5-01"] .aa-node-step-num { left: -38px; width: 28px; height: 28px; font-size: 12px; }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   DOD-чеклист — крупные «карточки» с ¦ слева
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-dod-block {
+  margin: 36px 0 24px;
+  padding: 26px 26px 22px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(0,201,167,.06), transparent 55%),
+    var(--card);
+  border: 1px solid rgba(0,201,167,.22);
+}
+[data-aa-task="M5-01"] .aa-dod-block::before {
+  background: var(--teal);
+  opacity: .8;
+  width: 3px;
+}
+[data-aa-task="M5-01"] .aa-dod-block-h2 {
+  font-size: 20px;
+  letter-spacing: -.015em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-aa-task="M5-01"] .aa-dod-block-h2::before {
+  content: 'DoD';
+  font-family: var(--fm);
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 5px;
+  background: rgba(0,201,167,.12);
+  color: var(--teal);
+  border: 1px solid rgba(0,201,167,.3);
+}
+[data-aa-task="M5-01"] .aa-dod-block-lead { font-size: 13.5px; line-height: 1.55; }
+
+[data-aa-task="M5-01"] .aa-dod-item label {
+  padding: 14px 16px;
+  background: rgba(255,255,255,.02);
+}
+[data-aa-task="M5-01"] .aa-dod-item label:hover {
+  background: rgba(0,201,167,.04);
+  border-color: rgba(0,201,167,.25);
+}
+[data-aa-task="M5-01"] .aa-dod-item-text { font-size: 14px; line-height: 1.55; }
+
+/* ────────────────────────────────────────────────────────────────
+   TEST CASES — две колонки с «→» между
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-test-cases-block { margin: 28px 0; }
+[data-aa-task="M5-01"] .aa-test-cases {
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+[data-aa-task="M5-01"] .aa-test-cases thead th {
+  background: rgba(255,255,255,.02);
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  padding: 10px 16px;
+  color: var(--muted);
+}
+[data-aa-task="M5-01"] .aa-test-cases tbody td {
+  padding: 14px 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  vertical-align: top;
+}
+[data-aa-task="M5-01"] .aa-test-cases tbody td:first-child {
+  width: 45%;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-test-cases tbody td:first-child::after {
+  content: '→';
+  position: absolute;
+  right: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 10px;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   STRETCH (необязательное)
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-stretch {
+  margin: 24px 0;
+  border: 1px dashed rgba(219,255,74,.25);
+  background: rgba(219,255,74,.02);
+}
+[data-aa-task="M5-01"] .aa-stretch summary { padding: 14px 18px; }
+[data-aa-task="M5-01"] .aa-stretch summary:hover { background: rgba(219,255,74,.05); }
+
+/* ────────────────────────────────────────────────────────────────
+   В этом модуле — путь по задачам
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-bottom-section {
+  margin-top: 36px;
+  padding: 22px 24px;
+  background: var(--card);
+  border-radius: 14px;
+}
+[data-aa-task="M5-01"] .aa-bottom-section .aa-side-card-h3 {
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+[data-aa-task="M5-01"] .aa-in-module-list-grid {
+  gap: 6px !important;
+  grid-template-columns: 1fr !important;
+  display: flex !important;
+  flex-direction: column;
+}
+[data-aa-task="M5-01"] .aa-in-module-row {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.015);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  transition: all .15s ease;
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-in-module-row:hover {
+  background: rgba(255,255,255,.04);
+  border-color: var(--border-hi);
+  transform: translateX(2px);
+}
+[data-aa-task="M5-01"] .aa-in-module-row.is-current {
+  background: rgba(219,255,74,.06);
+  border-color: rgba(219,255,74,.25);
+}
+[data-aa-task="M5-01"] .aa-in-module-row-status {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-hi);
+  display: grid;
+  place-items: center;
+  font-size: 0;
+  color: transparent;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-in-module-row-status.is-progress {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(219,255,74,.15);
+}
+[data-aa-task="M5-01"] .aa-in-module-row-code {
+  font-family: var(--fm);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .04em;
+  width: 52px;
+  flex-shrink: 0;
+}
+[data-aa-task="M5-01"] .aa-in-module-row.is-current .aa-in-module-row-code { color: var(--accent); }
+[data-aa-task="M5-01"] .aa-in-module-row-title {
+  font-size: 14px;
+  color: var(--text);
+  flex: 1;
+}
+[data-aa-task="M5-01"] .aa-in-module-row.is-current .aa-in-module-row-title { font-weight: 600; }
+
+/* ────────────────────────────────────────────────────────────────
+   HELP block — внизу
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-help-block {
+  margin-top: 20px;
+  background: rgba(255,255,255,.015);
+  border: 1px dashed var(--border);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   FOOTER — приглушённее
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-platform-footer {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  opacity: .7;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   COMMENTS / HISTORY — таб-плейсхолдеры
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-tab-content[data-tab-content="comments"] .aa-md-body,
+[data-aa-task="M5-01"] .aa-history {
+  margin-top: 8px;
+}
+[data-aa-task="M5-01"] .aa-history-item {
+  position: relative;
+  padding: 14px 18px 14px 36px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+[data-aa-task="M5-01"] .aa-history-item::before {
+  content: '';
+  position: absolute;
+  left: 16px; top: 22px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  opacity: .5;
+}
+[data-aa-task="M5-01"] .aa-history-item.is-active::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(219,255,74,.15);
+  opacity: 1;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   VERTICAL FLOW — Итоговая схема
+   ──────────────────────────────────────────────────────────────── */
+[data-aa-task="M5-01"] .aa-flow-vert {
+  --flow-line: rgba(255,255,255,.16);
+  --flow-line-strong: rgba(255,255,255,.28);
+  position: relative;
+  padding: 26px 18px 28px;
+  margin: 16px 0 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    #0d0f12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+[data-aa-task="M5-01"] .aa-flow-vert-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+[data-aa-task="M5-01"] .aa-flow-vert-node {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 18px 10px;
+  min-width: 180px;
+  max-width: 260px;
+  background: linear-gradient(180deg, #1c2026, #161a20);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  text-align: center;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  font-family: var(--fm);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .04em;
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  margin-bottom: 4px;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.2;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-trigger {
+  border-color: color-mix(in oklab, var(--m5-trigger) 55%, transparent);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35),
+              0 0 0 1px color-mix(in oklab, var(--m5-trigger) 25%, transparent),
+              inset 0 1px 0 rgba(255,255,255,.04);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-trigger .aa-flow-vert-node-icon {
+  background: color-mix(in oklab, var(--m5-trigger) 22%, #0d0f12);
+  color: var(--m5-trigger);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m5-trigger) 40%, transparent);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-decision {
+  border-color: color-mix(in oklab, var(--m5-decision) 55%, transparent);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35),
+              0 0 0 1px color-mix(in oklab, var(--m5-decision) 25%, transparent),
+              inset 0 1px 0 rgba(255,255,255,.04);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-decision .aa-flow-vert-node-icon {
+  background: color-mix(in oklab, var(--m5-decision) 22%, #0d0f12);
+  color: var(--m5-decision);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m5-decision) 40%, transparent);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-output {
+  border-color: color-mix(in oklab, var(--m5-output) 40%, transparent);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-output .aa-flow-vert-node-icon {
+  background: color-mix(in oklab, var(--m5-output) 18%, #0d0f12);
+  color: var(--m5-output);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m5-output) 35%, transparent);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-final {
+  border-color: color-mix(in oklab, var(--m5-action) 55%, transparent);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35),
+              0 0 0 1px color-mix(in oklab, var(--m5-action) 25%, transparent),
+              inset 0 1px 0 rgba(255,255,255,.04);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-node.is-final .aa-flow-vert-node-icon {
+  background: color-mix(in oklab, var(--m5-action) 22%, #0d0f12);
+  color: var(--m5-action);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m5-action) 40%, transparent);
+  font-size: 14px;
+}
+
+/* Vertical trunk between trigger and IF */
+[data-aa-task="M5-01"] .aa-flow-vert-trunk {
+  width: 2px;
+  height: 28px;
+  background: var(--flow-line);
+  margin: 0;
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-trunk::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -1px;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--flow-line-strong);
+}
+
+/* Split: from IF -> two branches */
+[data-aa-task="M5-01"] .aa-flow-vert-split {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  height: 50px;
+  margin: 0 auto;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split::before {
+  /* short vertical out of IF */
+  content: "";
+  position: absolute;
+  left: 50%; top: 0;
+  width: 2px; height: 14px;
+  background: var(--flow-line);
+  transform: translateX(-50%);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split::after {
+  /* horizontal bus connecting branches */
+  content: "";
+  position: absolute;
+  left: 25%; right: 25%;
+  top: 14px;
+  height: 2px;
+  background: var(--flow-line);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split-left,
+[data-aa-task="M5-01"] .aa-flow-vert-split-right {
+  position: absolute;
+  top: 14px;
+  width: 2px;
+  height: 36px;
+  background: var(--flow-line);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split-left { left: 25%; }
+[data-aa-task="M5-01"] .aa-flow-vert-split-right { left: 75%; transform: translateX(-2px); }
+[data-aa-task="M5-01"] .aa-flow-vert-split-left::after,
+[data-aa-task="M5-01"] .aa-flow-vert-split-right::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -1px;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--flow-line-strong);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split-label {
+  position: absolute;
+  top: 18px;
+  font-family: var(--fm);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #0d0f12;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split-label.is-yes {
+  left: calc(25% + 12px);
+  color: var(--m5-output);
+  border: 1px solid color-mix(in oklab, var(--m5-output) 45%, transparent);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-split-label.is-no {
+  left: calc(75% + 12px);
+  transform: translateX(-100%);
+  margin-left: -12px;
+  color: var(--m5-danger);
+  border: 1px solid color-mix(in oklab, var(--m5-danger) 45%, transparent);
+}
+
+/* Two columns of nodes */
+[data-aa-task="M5-01"] .aa-flow-vert-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+  align-items: stretch;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  height: 100%;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-fill {
+  width: 2px;
+  flex: 1 1 auto;
+  min-height: 24px;
+  background: var(--flow-line);
+}
+[data-aa-task="M5-01"] .aa-flow-vert-arrow {
+  width: 2px;
+  height: 16px;
+  background: var(--flow-line);
+  position: relative;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -1px;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--flow-line-strong);
+}
+
+/* Merge: SVG-based П-connector under both branches into the final node */
+[data-aa-task="M5-01"] .aa-flow-vert-merge {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  height: 60px;
+  margin: 0 auto;
+}
+[data-aa-task="M5-01"] .aa-flow-vert-merge svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile: collapse to single column */
+@media (max-width: 720px) {
+  [data-aa-task="M5-01"] .aa-flow-vert-cols { grid-template-columns: 1fr; }
+  [data-aa-task="M5-01"] .aa-flow-vert-split,
+  [data-aa-task="M5-01"] .aa-flow-vert-merge { max-width: 100%; height: 40px; }
+  [data-aa-task="M5-01"] .aa-flow-vert-split::after,
+  [data-aa-task="M5-01"] .aa-flow-vert-merge::before { left: 50%; right: auto; width: 2px; height: 1px; }
+  [data-aa-task="M5-01"] .aa-flow-vert-split-left,
+  [data-aa-task="M5-01"] .aa-flow-vert-split-right,
+  [data-aa-task="M5-01"] .aa-flow-vert-merge-left,
+  [data-aa-task="M5-01"] .aa-flow-vert-merge-right { left: 50%; transform: translateX(-50%); }
+  [data-aa-task="M5-01"] .aa-flow-vert-split-label { position: static; display: inline-block; margin: 4px auto; }
+}

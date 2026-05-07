@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/automate-at/assets/styles.css">
+  <link rel="stylesheet" href="/automate-at/tasks/M5-01/m5-01.css">
 </head>
-<body class="aa-platform" data-aa-page="tasks">
+<body class="aa-platform" data-aa-page="tasks" data-aa-task="M5-01">
 
 <div class="aa-shell">
   <main class="aa-main">
@@ -164,27 +165,74 @@
           <h2>Итоговая схема</h2>
           <p>После уточнения логики цепочка выглядит так:</p>
         </div>
-        <div class="aa-flow-diagram">
-          <div class="aa-flow-diagram-row">
-            <span class="aa-flow-node is-trigger"><span class="aa-flow-node-icon">TG</span>Telegram Trigger</span>
-            <span class="aa-flow-arrow">→</span>
-            <span class="aa-flow-node is-decision"><span class="aa-flow-node-icon">IF</span>Это голос?</span>
+        <div class="aa-flow-vert" data-aa-task-flow="final" aria-label="Итоговая схема воркфлоу">
+          <!-- Trigger -->
+          <div class="aa-flow-vert-row is-single">
+            <span class="aa-flow-vert-node is-trigger">
+              <span class="aa-flow-vert-node-icon">TG</span>
+              <span class="aa-flow-vert-node-label">Telegram Trigger</span>
+              <span class="aa-flow-vert-node-sub">любое сообщение</span>
+            </span>
           </div>
-          <div class="aa-flow-branch">
-            <div class="aa-flow-branch-row">
-              <span class="aa-flow-branch-label is-yes">Да</span>
-              <span class="aa-flow-arrow">→</span>
-              <span class="aa-flow-node"><span class="aa-flow-node-icon">TG</span>Get File</span>
-              <span class="aa-flow-arrow">→</span>
-              <span class="aa-flow-node"><span class="aa-flow-node-icon">AI</span>OpenAI Transcribe</span>
-              <span class="aa-flow-arrow">→</span>
-              <span class="aa-flow-node is-output"><span class="aa-flow-node-icon">TG</span>Send Message</span>
+          <div class="aa-flow-vert-trunk" aria-hidden="true"></div>
+          <!-- IF -->
+          <div class="aa-flow-vert-row is-single">
+            <span class="aa-flow-vert-node is-decision">
+              <span class="aa-flow-vert-node-icon">IF</span>
+              <span class="aa-flow-vert-node-label">Это голос?</span>
+            </span>
+          </div>
+          <!-- Split -->
+          <div class="aa-flow-vert-split" aria-hidden="true">
+            <div class="aa-flow-vert-split-left"></div>
+            <div class="aa-flow-vert-split-right"></div>
+            <span class="aa-flow-vert-split-label is-yes">Да</span>
+            <span class="aa-flow-vert-split-label is-no">Нет</span>
+          </div>
+          <!-- Two columns -->
+          <div class="aa-flow-vert-cols">
+            <div class="aa-flow-vert-col">
+              <span class="aa-flow-vert-node">
+                <span class="aa-flow-vert-node-icon">TG</span>
+                <span class="aa-flow-vert-node-label">Get File</span>
+                <span class="aa-flow-vert-node-sub">скачать аудиофайл</span>
+              </span>
+              <span class="aa-flow-vert-arrow" aria-hidden="true"></span>
+              <span class="aa-flow-vert-node">
+                <span class="aa-flow-vert-node-icon">AI</span>
+                <span class="aa-flow-vert-node-label">OpenAI Transcribe</span>
+                <span class="aa-flow-vert-node-sub">аудио → текст</span>
+              </span>
+              <span class="aa-flow-vert-arrow" aria-hidden="true"></span>
+              <span class="aa-flow-vert-node is-output">
+                <span class="aa-flow-vert-node-icon">TG</span>
+                <span class="aa-flow-vert-node-label">Send Message</span>
+                <span class="aa-flow-vert-node-sub">транскрипт в чат</span>
+              </span>
             </div>
-            <div class="aa-flow-branch-row">
-              <span class="aa-flow-branch-label is-no">Нет</span>
-              <span class="aa-flow-arrow">→</span>
-              <span class="aa-flow-node is-output"><span class="aa-flow-node-icon">TG</span>Send Message «Отправь голосовое»</span>
+            <div class="aa-flow-vert-col">
+              <span class="aa-flow-vert-node is-output">
+                <span class="aa-flow-vert-node-icon">TG</span>
+                <span class="aa-flow-vert-node-label">Send Message</span>
+                <span class="aa-flow-vert-node-sub">«Отправь голосовое»</span>
+              </span>
+              <span class="aa-flow-vert-fill" aria-hidden="true"></span>
             </div>
+          </div>
+          <!-- Merge: SVG path that joins both branches into the final node -->
+          <div class="aa-flow-vert-merge" aria-hidden="true">
+            <svg viewBox="0 0 720 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 180 0 L 180 30 L 540 30 L 540 0 M 360 30 L 360 54" stroke="rgba(255,255,255,.28)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <polygon points="356,52 364,52 360,60" fill="rgba(255,255,255,.45)"/>
+            </svg>
+          </div>
+          <!-- Final -->
+          <div class="aa-flow-vert-row is-single">
+            <span class="aa-flow-vert-node is-final">
+              <span class="aa-flow-vert-node-icon">✓</span>
+              <span class="aa-flow-vert-node-label">Готово</span>
+              <span class="aa-flow-vert-node-sub">пользователь получил ответ</span>
+            </span>
           </div>
         </div>
         <div class="aa-md-body">
@@ -247,6 +295,9 @@
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">1</span>
             <span class="aa-node-step-title">Telegram Trigger</span>
+            <span class="aa-node-step-glyph" aria-hidden="true">
+              <img src="/automate-at/tasks/M5-01/telegram-trigger-node-icon.png" alt="">
+            </span>
             <span class="aa-node-step-tag">trigger</span>
           </div>
           <div class="aa-node-step-body">
