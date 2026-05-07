@@ -224,11 +224,22 @@
     applyTheme(saved);
   }
 
+  // ─── Favicon injection ──────────────────────────────────────
+  function ensureFavicon() {
+    if (document.querySelector('link[rel="icon"]')) return;
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/svg+xml';
+    link.href = '/automate-at/assets/favicon.svg';
+    document.head.appendChild(link);
+  }
+
   // ─── Boot ────────────────────────────────────────────────────
   function init() {
     if (document.documentElement.dataset.aaShellInjected === '1') return;
     document.documentElement.dataset.aaShellInjected = '1';
 
+    ensureFavicon();
     initTheme();
 
     const shell = document.querySelector('.aa-shell');

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M0-01 Знакомство с n8n · Automate At</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+</head>
+<body class="aa-platform" data-aa-page="tasks">
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner">
+
+      <!-- Breadcrumb -->
+      <nav class="aa-breadcrumb">
+        <a href="/automate-at/courses/">Курсы</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/courses/">Тренажёр n8n</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/courses/M0/">M0 · Старт</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <span class="aa-breadcrumb-current">M0-01</span>
+      </nav>
+
+      <!-- Status pill big -->
+      <div style="margin-bottom: 14px;">
+        <span class="aa-status-pill-big is-progress">В работе</span>
+      </div>
+
+      <!-- Header -->
+      <header class="aa-detail-header">
+        <h1 class="aa-detail-h1">
+          <span class="aa-detail-h1-code">M0-01</span>
+          Знакомство с n8n: первый воркфлоу
+        </h1>
+        <div class="aa-detail-header-pills">
+          <span class="aa-pill is-phase-intern">Интерн</span>
+          <span class="aa-pill is-kind-module">модуль</span>
+          <span class="aa-pill is-difficulty">сложность 1</span>
+          <span class="aa-pill is-free">free</span>
+        </div>
+      </header>
+
+      <!-- 2-col body -->
+      <div class="aa-detail-grid">
+
+        <!-- LEFT -->
+        <div>
+
+          <!-- Tabs -->
+          <div class="aa-tabs">
+            <button class="aa-tabs-tab is-active" data-tab="desc">Описание</button>
+            <button class="aa-tabs-tab" data-tab="comments">
+              Комментарии
+              <span class="aa-tabs-tab-count">3</span>
+            </button>
+            <button class="aa-tabs-tab" data-tab="history">История</button>
+          </div>
+
+          <!-- Tab: Описание -->
+          <div class="aa-tab-content is-active" data-tab-content="desc">
+            <div class="aa-md-body">
+              <h2>Что делаем</h2>
+              <p>
+                Соберём первый рабочий воркфлоу в n8n. По кнопке <strong>Test workflow</strong>
+                воркфлоу запускается, идёт в HTTP-ноду, забирает там JSON и возвращает его.
+                Простейшая цепочка из двух нод — но это база, без которой дальше никак.
+              </p>
+
+              <h2>Что должно получиться</h2>
+              <p>
+                После сдачи задачи у тебя в n8n должен быть воркфлоу из двух нод:
+              </p>
+              <ul>
+                <li><code>Manual Trigger</code> — запускается по кнопке</li>
+                <li><code>HTTP Request</code> — делает <code>GET</code> на тестовый эндпоинт <code>https://httpbin.org/get</code></li>
+              </ul>
+              <p>
+                После запуска во второй ноде в выходных данных должен прийти JSON
+                со структурой <code>{ "args": {}, "headers": {...}, "url": "..." }</code>.
+                Проверь что воркфлоу <strong>работает</strong> — это главное.
+              </p>
+
+              <h2>Шаги</h2>
+              <ol>
+                <li>Зайди в n8n по логину справа.</li>
+                <li>Создай новый воркфлоу. Назови его <code>M0-01 Первый WF</code>.</li>
+                <li>Добавь Manual Trigger.</li>
+                <li>После триггера добавь HTTP Request, метод <code>GET</code>, URL <code>https://httpbin.org/get</code>.</li>
+                <li>Нажми «Test workflow». Должно зелёное «выполнено».</li>
+                <li>Открой выходные данные HTTP Request — посмотри JSON.</li>
+                <li>Сохрани воркфлоу. Сдай на ревью кнопкой справа.</li>
+              </ol>
+
+              <h2>Если застрял</h2>
+              <blockquote>
+                Если кнопка «Test workflow» серая — значит воркфлоу пустой. Проверь, что обе
+                ноды на canvas и соединены линией. Если HTTP Request падает с ошибкой — в Settings
+                ноды поставь Timeout 10000 ms.
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- Tab: Комментарии -->
+          <div class="aa-tab-content" data-tab-content="comments">
+            <div class="aa-comment-list">
+              <div class="aa-comment is-mentor">
+                <div class="aa-comment-avatar">А</div>
+                <div class="aa-comment-body">
+                  <div class="aa-comment-head">
+                    <span class="aa-comment-author">Александр</span>
+                    <span class="aa-comment-role">ментор</span>
+                    <span class="aa-comment-date">сегодня · 14:32</span>
+                  </div>
+                  <div class="aa-comment-text">
+                    <p>
+                      Отлично! Воркфлоу работает, JSON возвращается. Единственное — переименуй
+                      HTTP Request ноду на что-нибудь понятное, например <code>Get test data</code>.
+                      Потом, когда будет 10 нод, ты не будешь ломать голову что куда.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="aa-comment is-student">
+                <div class="aa-comment-avatar">Я</div>
+                <div class="aa-comment-body">
+                  <div class="aa-comment-head">
+                    <span class="aa-comment-author">Я</span>
+                    <span class="aa-comment-role">студент</span>
+                    <span class="aa-comment-date">сегодня · 14:18</span>
+                  </div>
+                  <div class="aa-comment-text">
+                    <p>
+                      Сделал) HTTP Request возвращает JSON, но я не понял где у него настройки
+                      retry — это нормально что без них работает?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="aa-comment is-agent">
+                <div class="aa-comment-avatar">AI</div>
+                <div class="aa-comment-body">
+                  <div class="aa-comment-head">
+                    <span class="aa-comment-author">Помощник</span>
+                    <span class="aa-comment-role">агент</span>
+                    <span class="aa-comment-date">вчера · 22:14</span>
+                  </div>
+                  <div class="aa-comment-text">
+                    <p>
+                      Подсказка: в HTTP Request есть вкладка <strong>Settings</strong> справа —
+                      там можно включить Continue On Fail, чтобы воркфлоу не падал на сетевых
+                      ошибках. На M0-01 это не нужно, но для следующих задач пригодится.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form class="aa-comment-form" onsubmit="return false;">
+              <textarea placeholder="Спрашивай или показывай где застрял…"></textarea>
+              <div class="aa-comment-form-actions">
+                <button class="btn btn-ghost btn-sm" type="button">Прикрепить файл</button>
+                <button class="btn btn-primary btn-sm" type="submit">Отправить</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Tab: История -->
+          <div class="aa-tab-content" data-tab-content="history">
+            <div class="aa-history">
+              <div class="aa-history-item is-active">
+                <div class="aa-history-item-date">сегодня · 14:32</div>
+                <div class="aa-history-item-text">Комментарий от <strong>Александра</strong>: «Переименуй HTTP-ноду…»</div>
+              </div>
+              <div class="aa-history-item">
+                <div class="aa-history-item-date">сегодня · 14:18</div>
+                <div class="aa-history-item-text">Отправлена <strong>на ревью</strong></div>
+              </div>
+              <div class="aa-history-item">
+                <div class="aa-history-item-date">сегодня · 13:55</div>
+                <div class="aa-history-item-text">Воркфлоу <strong>протестирован</strong> в n8n — выполнено</div>
+              </div>
+              <div class="aa-history-item">
+                <div class="aa-history-item-date">сегодня · 13:42</div>
+                <div class="aa-history-item-text"><strong>Начата</strong> работа над задачей</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT (sticky) -->
+        <aside class="aa-detail-side">
+
+          <!-- Action card -->
+          <div class="aa-action-card">
+            <div class="aa-action-card-eyebrow">В работе</div>
+            <div class="aa-action-card-title">Открой воркфлоу в n8n и доделай</div>
+            <p class="aa-action-card-text">
+              В правом верхнем углу n8n — твой воркфлоу <code>M0-01 Первый WF</code>.
+              Когда готов — жми «Сдать на ревью».
+            </p>
+            <div class="aa-action-card-actions">
+              <a class="btn btn-primary" href="https://n8n.school.vibe-business.site/" target="_blank" rel="noopener">
+                Открыть в n8n →
+              </a>
+              <button class="btn btn-ghost btn-sm" type="button">Сдать на ревью</button>
+            </div>
+            <div class="aa-action-card-meta">
+              wf_id: <code>1AbcDeFgHi2J3kL</code>
+            </div>
+          </div>
+
+          <!-- Что нужно знать -->
+          <div class="aa-side-card">
+            <div class="aa-side-card-h3">Что нужно знать</div>
+            <ul class="aa-side-card-list">
+              <li class="is-ok">Аккаунт в n8n активен</li>
+              <li class="is-ok">Telegram-бот подключён (для следующих задач)</li>
+              <li class="is-pending">Свой клиент / реальная задача (опционально)</li>
+            </ul>
+            <div class="aa-side-card-hint">
+              Telegram нужен только в M0-05. Для этой задачи достаточно n8n.
+            </div>
+          </div>
+
+          <!-- Связанные материалы -->
+          <div class="aa-side-card">
+            <div class="aa-side-card-h3">Связанные материалы</div>
+            <a class="aa-linked-row" href="/automate-at/knowledge/chto-takoe-rag-agent/">
+              <span class="aa-linked-row-code">📖</span>
+              <span class="aa-linked-row-title">Что такое нода в n8n</span>
+            </a>
+            <a class="aa-linked-row" href="/automate-at/knowledge/chto-takoe-rag-agent/">
+              <span class="aa-linked-row-code">📖</span>
+              <span class="aa-linked-row-title">HTTP Request — основы</span>
+            </a>
+            <a class="aa-linked-row" href="/automate-at/knowledge/chto-takoe-rag-agent/">
+              <span class="aa-linked-row-code">🎬</span>
+              <span class="aa-linked-row-title">Видео: первый воркфлоу за 10 минут</span>
+            </a>
+            <div class="aa-side-card-hint">
+              Это рекомендации — не обязательны для сдачи.
+            </div>
+          </div>
+
+          <!-- В этом модуле -->
+          <div class="aa-side-card">
+            <div class="aa-side-card-h3">В этом модуле</div>
+            <div class="aa-in-module-list">
+              <a class="aa-in-module-row is-current" href="/automate-at/tasks/M0-01/">
+                <span class="aa-in-module-row-status is-progress">●</span>
+                <span class="aa-in-module-row-code">M0-01</span>
+                <span class="aa-in-module-row-title">Знакомство с n8n: первый воркфлоу</span>
+              </a>
+              <a class="aa-in-module-row" href="#">
+                <span class="aa-in-module-row-status is-done">✓</span>
+                <span class="aa-in-module-row-code">M0-02</span>
+                <span class="aa-in-module-row-title">Триггеры: запускаем воркфлоу по событию</span>
+              </a>
+              <a class="aa-in-module-row" href="#">
+                <span class="aa-in-module-row-status">○</span>
+                <span class="aa-in-module-row-code">M0-03</span>
+                <span class="aa-in-module-row-title">Соединение нод: данные между ними</span>
+              </a>
+              <a class="aa-in-module-row" href="#">
+                <span class="aa-in-module-row-status">○</span>
+                <span class="aa-in-module-row-code">M0-04</span>
+                <span class="aa-in-module-row-title">Тестирование: запуск и проверка</span>
+              </a>
+              <a class="aa-in-module-row" href="#">
+                <span class="aa-in-module-row-status">○</span>
+                <span class="aa-in-module-row-code">M0-05</span>
+                <span class="aa-in-module-row-title">Первый бот: сообщение → ответ</span>
+              </a>
+            </div>
+            <a class="aa-mini-block-link" href="/automate-at/courses/M0/" style="margin-top: 6px;">
+              Открыть модуль M0 →
+            </a>
+          </div>
+
+          <!-- Помощь -->
+          <div class="aa-side-card">
+            <div class="aa-side-card-h3">Помощь</div>
+            <p class="aa-side-card-hint">
+              Застрял? Спроси в общем чате — обычно отвечают в течение часа.
+            </p>
+            <a class="btn btn-ghost btn-sm" href="https://t.me/profy_conveyor" target="_blank" rel="noopener">
+              Написать в чат
+            </a>
+          </div>
+
+        </aside>
+      </div>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor</span>
+        <span>Прототип v0.1</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if (!tab) return;
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.aa-tabs-tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === id));
+    document.querySelectorAll('[data-tab-content]').forEach(c => c.classList.toggle('is-active', c.dataset.tabContent === id));
+  });
+})();
+</script>
+
+</body>
+</html>
