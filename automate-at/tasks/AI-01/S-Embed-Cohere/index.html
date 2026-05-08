@@ -528,14 +528,15 @@
               <div class="aa-inline-article-body">
                 <div class="aa-md-body">
                   <p>Все коллекции в школьном Qdrant именуются по шаблону:</p>
-                  <pre style="background:#0a0e1a;padding:10px;border-radius:6px;font-size:13px;"><code>&lt;student_id&gt;-&lt;product&gt;-&lt;что_хранится&gt;</code></pre>
+                  <pre style="background:#0a0e1a;padding:10px;border-radius:6px;font-size:13px;"><code>&lt;student_id&gt;-&lt;что_хранится&gt;</code></pre>
                   <p>Примеры:</p>
                   <ul>
-                    <li><code>c01-kb-agent</code> — у студента <code>c01</code>, продукт AI-01 (RAG-агент), хранится база знаний.</li>
-                    <li><code>c12-faq-bot</code> — студент <code>c12</code>, продукт FAQ-бот.</li>
+                    <li><code>c01-kb-agent</code> — у студента <code>c01</code> хранится база знаний агента.</li>
+                    <li><code>c12-faq-bot</code> — у студента <code>c12</code> данные FAQ-бота.</li>
+                    <li><code>c07-products</code> — у студента <code>c07</code> каталог товаров.</li>
                   </ul>
                   <p><strong>Зачем:</strong> на одном Qdrant-инстансе живут коллекции всех студентов. Префикс <code>student_id</code> исключает пересечения. Никогда не используй чужой prefix — увидишь чужие данные или сломаешь чужую коллекцию.</p>
-                  <p>Свой <code>student_id</code> найдёшь в <em>«Мои Credentials»</em> в личном кабинете. Имя коллекции, которое ты создал в базовом агенте AI-01, дублируется в трёх местах: workflow загрузки (Qdrant Insert), workflow агента (Qdrant KB sub-нода), Product Config. При смене embedding-провайдера достаточно сохранить то же имя коллекции — пересоздать её с новой размерностью.</p>
+                  <p>Свой <code>student_id</code> найдёшь в <em>«Мои Credentials»</em> в личном кабинете. Имя коллекции, которое ты задал при создании агента, обычно дублируется в нескольких местах: в нодах <code>Qdrant Insert</code> (workflow загрузки), в sub-ноде <code>Qdrant KB</code> (workflow агента), а также в конфиге продукта (если используется DataTable-конфиг). При смене embedding-провайдера достаточно сохранить то же имя коллекции — пересоздать её с новой размерностью.</p>
                 </div>
               </div>
             </details>
@@ -629,7 +630,15 @@
               </summary>
               <div class="aa-inline-article-body">
                 <div class="aa-md-body">
-                  <p>В n8n AI-ноды устроены как <strong>«родитель + дети»</strong>. Родитель — основная нода (Qdrant Insert, AI Agent, Vector Store Tool…). Дети — sub-ноды, которые подключаются к кружкам на нижней стороне родителя. Каждая sub-нода — это «поставщик ресурса» для родителя:</p>
+                  <p>В n8n AI-ноды устроены как <strong>«родитель + дети»</strong>. Родитель — основная нода (Qdrant Insert, AI Agent, Vector Store Tool…). Дети — sub-ноды, которые подключаются к специальным кружкам на нижней стороне родителя. Каждая sub-нода — это «поставщик ресурса» для родителя.</p>
+
+                  <div class="aa-inline-article-screenshot">
+                    <div class="aa-inline-article-screenshot-icon">📷</div>
+                    <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                    <div class="aa-inline-article-screenshot-sub">AI Agent с подключёнными sub-нодами на нижних кружках: Chat Model, Memory, Tool — родитель сверху, дети снизу.</div>
+                  </div>
+
+                  <h4>Какие бывают sub-ноды</h4>
                   <ul>
                     <li><strong>Embeddings *</strong> — поставляет векторы (OpenAI / Cohere / Voyage / bge…).</li>
                     <li><strong>Document Loader</strong> — поставляет «нарезанные» куски документа.</li>
@@ -637,18 +646,38 @@
                     <li><strong>Memory</strong> — поставляет историю диалога для AI Agent.</li>
                     <li><strong>Tool</strong> — поставляет инструменты, которые AI Agent может вызвать.</li>
                   </ul>
-                  <p>Когда родитель работает (например, Qdrant Insert получил файл и собирается записать в БД), он по очереди обращается к sub-нодам: «дай мне чанки», «переведи каждый чанк в вектор». Sub-ноды отвечают, родитель собирает результат.</p>
+                  <p>Когда родитель запускается (например, Qdrant Insert получил файл и собирается записать его в БД), он по очереди обращается к sub-нодам: «дай мне чанки», «переведи каждый чанк в вектор». Sub-ноды отвечают, родитель собирает результат.</p>
 
                   <h4>Как заменить sub-ноду</h4>
                   <ol>
-                    <li>Открой родительскую ноду (двойной клик).</li>
-                    <li>В правой панели найди sub-ноду нужного типа (например, существующая <em>Embeddings OpenAI</em>).</li>
-                    <li>Нажми <strong>×</strong> на sub-ноде — она отсоединится от родителя.</li>
-                    <li>Нажми <strong>+</strong> на том же кружке (например, <em>Add document embedding</em>) → выбери новую sub-ноду из списка.</li>
-                    <li>Заполни параметры новой sub-ноды (credential, модель, режим).</li>
+                    <li>
+                      <p>Открой родительскую ноду двойным кликом. В правой панели увидишь подключённые sub-ноды на нижних кружках.</p>
+                    </li>
+                    <li>
+                      <p>Найди sub-ноду, которую хочешь заменить (например, существующая <em>Embeddings OpenAI</em>). Нажми <strong>×</strong> возле её имени — она отсоединится от родителя.</p>
+                      <div class="aa-inline-article-screenshot">
+                        <div class="aa-inline-article-screenshot-icon">📷</div>
+                        <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                        <div class="aa-inline-article-screenshot-sub">Курсор над × возле sub-ноды Embeddings OpenAI на родительской ноде.</div>
+                      </div>
+                    </li>
+                    <li>
+                      <p>На освободившемся кружке появится <strong>+</strong> (например, <em>Add document embedding</em>). Нажми — откроется список доступных sub-нод нужного типа.</p>
+                      <div class="aa-inline-article-screenshot">
+                        <div class="aa-inline-article-screenshot-icon">📷</div>
+                        <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                        <div class="aa-inline-article-screenshot-sub">Список выбора sub-ноды Embeddings: OpenAI, Cohere, HuggingFace, Mistral и т.д.</div>
+                      </div>
+                    </li>
+                    <li>
+                      <p>Выбери новую sub-ноду — она автоматически подключится к родителю на освободившемся кружке.</p>
+                    </li>
+                    <li>
+                      <p>Заполни параметры новой sub-ноды (credential, модель, режим). Сохрани workflow.</p>
+                    </li>
                   </ol>
 
-                  <p><strong>Важно:</strong> если родитель используется в нескольких местах (одна и та же sub-нода вшита в две разные ноды Qdrant Insert) — заменить нужно в каждом месте отдельно. Sub-ноды локальны для родителя, не разделяются.</p>
+                  <p><strong>Важно:</strong> если родитель используется в нескольких местах (например, в воркфлоу две ноды Qdrant Insert — для txt и pdf — и каждая имеет свою sub-ноду Embeddings) — заменить нужно в каждом родителе отдельно. Sub-ноды локальны для своего родителя, между нодами не разделяются.</p>
                 </div>
               </div>
             </details>
@@ -730,25 +759,53 @@
               </summary>
               <div class="aa-inline-article-body">
                 <div class="aa-md-body">
-                  <p>Когда AI-агент собран в n8n, его поведение определяется множеством параметров: какая модель LLM, какая коллекция в Qdrant, какой системный промпт, какой логировать в БД. Эти параметры можно «зашить» прямо в ноды воркфлоу, но тогда любая правка требует открыть редактор, найти ноду, поменять и опубликовать новую версию воркфлоу.</p>
-                  <p><strong>DataTable-конфиг</strong> — это альтернативный способ. Параметры лежат отдельно, в специальной таблице (<code>DataTable</code>) внутри n8n. Воркфлоу при запуске читает строку конфига и подставляет значения в свои ноды на лету.</p>
+                  <p>Поведение AI-агента в n8n определяется множеством параметров: какая модель LLM, какая коллекция в Qdrant, какой системный промпт, в какую БД писать логи. Эти параметры можно «зашить» прямо в ноды воркфлоу — но тогда любая правка требует открыть редактор, найти ноду, поменять и опубликовать новую версию.</p>
+                  <p><strong>DataTable-конфиг</strong> — альтернативный способ. Параметры лежат отдельно, в специальной таблице (<code>DataTable</code>) внутри n8n. Воркфлоу при запуске читает строку конфига и подставляет значения в свои ноды на лету.</p>
+
+                  <h4>Как это выглядит</h4>
+                  <p>Создаётся отдельная таблица <code>DataTable</code> (например, <code>Agent Config</code>) с двумя колонками:</p>
+                  <ul>
+                    <li><code>key</code> — идентификатор строки конфига (например, <code>main</code>, <code>support</code>, <code>telegram</code>).</li>
+                    <li><code>config</code> — строка JSON со всеми параметрами агента.</li>
+                  </ul>
+                  <p>Внутри <code>config</code> лежит обычный JSON с понятной структурой:</p>
+
+                  <div class="aa-setup-step-curl" style="margin-top:8px;">
+                    <div class="aa-setup-step-curl-header">
+                      <span>config (JSON-string)</span>
+                    </div>
+<pre>{
+  "agent": {
+    "system_prompt": "Ты помощник интернет-магазина. Отвечай вежливо и по делу.",
+    "model": "gpt-4.1-mini",
+    "temperature": 0.3
+  },
+  "qdrant": {
+    "collection": "my-knowledge-base",
+    "embedding_model": "text-embedding-3-small"
+  },
+  "log_table": "agent_logs"
+}</pre>
+                  </div>
+
+                  <p>Каждое поле — это параметр одной из нод агента: системный промпт уйдёт в AI Agent, модель — туда же, имя коллекции — в Qdrant KB sub-ноду, имя таблицы логов — в Postgres Insert.</p>
 
                   <h4>Что это даёт</h4>
                   <ul>
                     <li><strong>Правка без редактирования воркфлоу.</strong> Хочешь сменить системный промпт — открой DataTable, поменяй ячейку, сохрани. Воркфлоу перезагружать не нужно — он подхватит новое значение при следующем запуске.</li>
-                    <li><strong>Один воркфлоу — много продуктов или каналов.</strong> Можно запустить тот же воркфлоу под несколько разных конфигураций — каждая в своей строке таблицы.</li>
+                    <li><strong>Один воркфлоу — много конфигураций.</strong> Можно запустить тот же воркфлоу под несколько разных контекстов: разные продукты, разные каналы (Telegram / web / WhatsApp), разные клиенты — каждый в своей строке таблицы.</li>
                     <li><strong>История изменений.</strong> Версии конфига видны в одном месте, легче откатить ошибочную правку.</li>
                   </ul>
 
-                  <h4>Пример: как работает чтение конфига</h4>
-                  <p>В нашем агенте AI-01 при запуске workflow агента происходит:</p>
+                  <h4>Как работает чтение конфига при запуске агента</h4>
                   <ol>
-                    <li>Триггер передаёт <code>channel</code> (например <code>telegram</code>) и сообщение пользователя.</li>
-                    <li>Нода <strong>Get rows</strong> читает строку из DataTable <code>[AI-01] Channel Config</code> по <code>channel = telegram</code>. Получает channel-config (системный промпт, модель, температура).</li>
-                    <li>Из channel-config берёт <code>product_id</code>. Вторая <strong>Get rows</strong> читает <code>[AI-01] Product Config</code> по этому id. Получает product-config (qdrant, embedding, chat memory, log table, escalation).</li>
-                    <li>Нода <strong>Set</strong> сливает оба конфига в плоский JSON. Дальше AI Agent и его sub-ноды (Qdrant KB, Postgres Chat Memory) берут параметры из этого JSON.</li>
+                    <li>Триггер запускает workflow агента (новое сообщение от пользователя).</li>
+                    <li>Нода <strong>Get rows</strong> читает строку из <code>DataTable</code> по ключу (например, <code>key = main</code>). Получает <code>config</code> в виде строки.</li>
+                    <li>Нода <strong>Set</strong> парсит JSON и раскладывает поля по плоским переменным: <code>system_prompt</code>, <code>model</code>, <code>collection</code>, <code>log_table</code>, …</li>
+                    <li>AI Agent и его sub-ноды (Qdrant KB, Postgres Chat Memory) ссылаются на эти переменные через n8n-выражения вида <code>{{$json.system_prompt}}</code>. При каждом запуске берётся актуальное значение из таблицы.</li>
                   </ol>
-                  <p><strong>В этой задаче</strong> ты меняешь параметры внутри Product Config (embedding_provider, embedding_model, embedding_dimensions). При следующем запуске workflow агента эти значения автоматически подтянутся в ноды агента — менять что-то ещё в воркфлоу не нужно.</p>
+
+                  <p><strong>В сложных продуктах</strong> конфиг можно разделить на два уровня — <em>product config</em> (то, что общее для всего продукта: база знаний, embedding, логи) и <em>channel config</em> (то, что меняется по каналам: промпт, модель, лимит длины ответа). Workflow тогда делает два последовательных Get rows и сливает результаты — это шаблон, который ты увидишь в этой задаче.</p>
                 </div>
               </div>
             </details>
