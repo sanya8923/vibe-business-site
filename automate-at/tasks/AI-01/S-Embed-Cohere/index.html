@@ -56,7 +56,7 @@
           <div class="aa-action-card-eyebrow">Стретч к задаче AI-01</div>
           <div class="aa-action-card-title">Модифицируй два существующих воркфлоу</div>
           <p class="aa-action-card-text">
-            Твой базовый AI-01 уже работает. Ничего не удаляй — только заменяй sub-ноды и обновляй конфиг.
+            Твой базовый AI-01 уже работает. Ничего не удаляй — только заменяй sub-ноды и обновляй Product Config.
           </p>
         </div>
         <div class="aa-action-card-actions">
@@ -72,7 +72,7 @@
         <div class="aa-side-card-h3">Что должно быть готово</div>
         <ul class="aa-side-card-list">
           <li class="is-ok">AI-01 базовый выполнен (задачи AI-01-01..06) — бот работает в Telegram</li>
-          <li class="is-ok">WF1 загружает файлы в Qdrant, WF2 отвечает через агента</li>
+          <li class="is-ok"><strong>WF1: Chat Trigger Ingestion Pipeline</strong> загружает файлы в Qdrant, <strong>WF2: KB Master Agent</strong> отвечает через агента</li>
           <li class="is-pending">Аккаунт Cohere — создадим в шаге 0 ниже</li>
         </ul>
         <div class="aa-side-card-hint">
@@ -129,10 +129,51 @@
           </div>
         </div>
 
+        <!-- Cohere overview article (placed BEFORE arch-diff so student understands tool first) -->
+        <details class="aa-inline-article" data-article-slug="cohere-overview-and-models">
+          <summary>
+            <span class="aa-inline-article-icon">🎓</span>
+            <span class="aa-inline-article-title">Cohere — что это, какие модели, зачем разный input_type</span>
+            <span class="aa-inline-article-hint">статья · ~3 мин</span>
+            <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-inline-article-body">
+            <div class="aa-md-body">
+              <p><strong>Cohere</strong> — компания, которая делает языковые модели для бизнеса. Главный конкурент OpenAI и Anthropic. Их сильная сторона — мультиязычность: модели понимают 100+ языков примерно одинаково хорошо. У OpenAI русский всегда «второй сорт» после английского, у Cohere — наравне.</p>
+              <p>У Cohere три семейства моделей:</p>
+              <ul>
+                <li><strong>Embed</strong> — превращает текст в вектор (числовое представление смысла). Используется в RAG для поиска по смыслу. Это то, что мы будем менять в задаче.</li>
+                <li><strong>Rerank</strong> — берёт топ-50 результатов поиска и переранжирует их по точности. Отдельный стретч <code>S-Retrieval-Rerank</code>.</li>
+                <li><strong>Chat</strong> — генеративная модель для ответов агента (аналог gpt-4). Мы её сейчас не используем, у нас OpenAI.</li>
+              </ul>
+
+              <h4>Почему модель <code>embed-v4.0</code></h4>
+              <p>Это текущая флагманская embedding-модель Cohere для мультиязычного поиска. Что нам в ней важно:</p>
+              <ul>
+                <li><strong>+:</strong> Понимает русский на уровне с английским. Морфология, синонимы, разговорные формы — всё ок.</li>
+                <li><strong>+:</strong> Поддерживает <em>Matryoshka embeddings</em> — можно укоротить вектор до 256/512/1024 чисел без сильной потери точности.</li>
+                <li><strong>+:</strong> Отдельные режимы для документов и запросов (см. ниже про <code>input_type</code>).</li>
+                <li><strong>−:</strong> Размерность 1024 (у OpenAI 1536) — нельзя смешивать векторы. Старую коллекцию придётся пересоздать.</li>
+                <li><strong>−:</strong> Свободный лимит — 1000 запросов в месяц. Для тестов хватает, для прода нужен платный план.</li>
+              </ul>
+              <p>Через 6–12 месяцев Cohere выпустит новую версию (v5, v6…). Логика выбора останется той же: лучший мультиязычный recall + поддержка input_type. Конкретный номер версии меняется, принцип нет.</p>
+
+              <h4>Зачем разный <code>input_type</code> в WF1 и WF2</h4>
+              <p>Cohere специально обучила модель так, чтобы документы и вопросы к ним «тяготели» друг к другу в векторном пространстве — но при условии, что они обрабатываются через правильный режим:</p>
+              <ul>
+                <li><code>search_document</code> — для индексации документов. Используется в WF1 (когда грузим файлы в KB).</li>
+                <li><code>search_query</code> — для поисковых запросов. Используется в WF2 (когда пользователь спрашивает агента).</li>
+              </ul>
+              <p>Если поставить везде <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10%.</p>
+              <p><strong>Мнемоника:</strong> WF1 загружает <em>документы</em> → <code>search_document</code>. WF2 ищет по <em>запросу пользователя</em> → <code>search_query</code>.</p>
+            </div>
+          </div>
+        </details>
+
         <!-- Architecture БЫЛО → СТАЛО -->
         <div class="aa-md-body">
           <h2>Что меняется в воркфлоу</h2>
-          <p>Два воркфлоу содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между ними.</p>
+          <p>Два воркфлоу содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между WF1 и WF2.</p>
         </div>
 
         <div class="aa-arch-diff">
@@ -169,7 +210,7 @@
             <div class="aa-callout-tip-label">Главная тонкость</div>
             <div class="aa-callout-tip-title">В WF1 и WF2 параметр <code>Input Type</code> разный</div>
             <div class="aa-callout-tip-text">
-              <p>В WF1 ставим <strong>search_document</strong> — это режим для индексации документов. В WF2 ставим <strong>search_query</strong> — это режим для поиска по запросу пользователя. Если поставить везде одинаково — качество поиска упадёт на 5–10%. Разбор причины — в статье ниже.</p>
+              <p>В WF1 ставим <strong>search_document</strong> — это режим для индексации документов. В WF2 ставим <strong>search_query</strong> — режим для поискового запроса пользователя. Если поставить везде одинаково — качество поиска упадёт на 5–10%. Разбор причины — в статье «Cohere — что это» выше.</p>
             </div>
           </div>
         </div>
@@ -252,7 +293,8 @@
               <div class="aa-setup-step-title">Создай credential в n8n</div>
               <div class="aa-setup-step-text">
                 Нужно сохранить API key в n8n как credential, чтобы использовать его в нодах.
-                Итоговый результат — credential с такими полями:
+                Назови credential <strong>Cohere API</strong> — ноды будут искать его по этому имени.
+                Итоговый результат:
                 <div class="aa-setup-step-credential" style="margin-top:10px;">
                   <div class="aa-setup-step-credential-row">
                     <div class="aa-setup-step-credential-key">Credential name</div>
@@ -268,20 +310,21 @@
                   </div>
                 </div>
 
-                <details class="aa-inline-article" style="margin-top: 12px;">
+                <details class="aa-inline-article" data-article-slug="n8n-credential-header-auth" style="margin-top: 12px;">
                   <summary>
                     <span class="aa-inline-article-icon">🔑</span>
-                    <span class="aa-inline-article-title">Пошаговая инструкция: добавить Header Auth credential в n8n</span>
+                    <span class="aa-inline-article-title">Как добавить Header Auth credential в n8n</span>
                     <span class="aa-inline-article-hint">статья · ~3 мин</span>
                     <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
                   </summary>
                   <div class="aa-inline-article-body">
                     <div class="aa-md-body">
+                      <p>Header Auth — универсальный тип credential в n8n для сервисов, которые принимают API-ключ через HTTP-заголовок <code>Authorization</code> (Cohere, Voyage, OpenRouter и многие другие).</p>
                       <ol>
                         <li>
-                          <p>В левом меню n8n нажми <strong>Settings</strong> (шестерёнка) → <strong>Credentials</strong>.</p>
+                          <p>В левом меню n8n нажми <strong>Credentials</strong>.</p>
                           <figure class="aa-inline-article-figure">
-                            <img src="screenshots/step-creds-menu.png" alt="Вкладка Credentials на главной n8n — кнопка Create credential" loading="lazy" style="border-radius:8px;width:100%;">
+                            <img src="screenshots/step-creds-menu.png" alt="Вкладка Credentials в n8n — кнопка Create credential" loading="lazy" style="border-radius:8px;width:100%;">
                           </figure>
                         </li>
                         <li>
@@ -296,12 +339,12 @@
                         <li>
                           <p>Заполни поля:</p>
                           <ul>
-                            <li><strong>Credential name:</strong> <code>Cohere API</code> (именно так — ноды будут искать по этому имени)</li>
-                            <li><strong>Name:</strong> <code>Authorization</code></li>
-                            <li><strong>Value:</strong> <code>Bearer твой-api-key</code> (подставь ключ из шага 0.2, пробел между Bearer и ключом обязателен)</li>
+                            <li><strong>Credential name:</strong> <code>&lt;имя_сервиса&gt;</code> — задача-носитель скажет конкретное имя (например, <code>Cohere API</code>). Ноды будут искать credential по этому имени.</li>
+                            <li><strong>Name:</strong> <code>Authorization</code> — это имя HTTP-заголовка, его не меняй.</li>
+                            <li><strong>Value:</strong> <code>Bearer &lt;твой-api-key&gt;</code> — подставь ключ от сервиса. Пробел между <code>Bearer</code> и ключом обязателен.</li>
                           </ul>
                           <figure class="aa-inline-article-figure">
-                            <img src="screenshots/step-creds-form.png" alt="Заполненная форма Header Auth: имя Cohere API, Name=Authorization, Value=Bearer ключ" loading="lazy" style="border-radius:8px;width:100%;">
+                            <img src="screenshots/step-creds-form.png" alt="Заполненная форма Header Auth — имя credential, Name=Authorization, Value=Bearer ключ" loading="lazy" style="border-radius:8px;width:100%;">
                           </figure>
                         </li>
                         <li>
@@ -309,8 +352,34 @@
                         </li>
                       </ol>
                       <hr style="border-color:var(--border);margin:14px 0;">
-                      <p><strong>Почему Header Auth, а не «Cohere API»?</strong><br>
-                      Cohere Embedding API принимает ключ через HTTP-заголовок <code>Authorization: Bearer ключ</code>. Header Auth — это именно такой универсальный способ. В некоторых версиях n8n есть встроенный тип <em>Cohere API</em> — если видишь его в поиске, используй его: он удобнее. Если нет — Header Auth работает одинаково хорошо.</p>
+                      <p><strong>Где взять API-ключ?</strong> Возможны два варианта:</p>
+                      <ul>
+                        <li><strong>Школьные сервисы</strong> (LiteLLM-прокси, школьный Qdrant Master, общие OpenAI/Anthropic) — ключ лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>. Открой её — скопируй нужный ключ.</li>
+                        <li><strong>Внешние сервисы под твою задачу</strong> (Cohere, Voyage, своя OpenAI-подписка) — регистрируешься сам, ключ получаешь в дашборде сервиса. Это описано в шагах задачи.</li>
+                      </ul>
+                      <p><strong>Почему именно Header Auth?</strong> Это универсальный способ передать <code>Authorization: Bearer ключ</code> в любую HTTP-ноду. В некоторых версиях n8n есть встроенный тип под конкретный сервис (например, <em>Cohere API</em>) — если он есть, используй его, удобнее. Если нет — Header Auth работает одинаково хорошо.</p>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="aa-inline-article" data-article-slug="my-credentials-in-platform" style="margin-top: 8px;">
+                  <summary>
+                    <span class="aa-inline-article-icon">🗝</span>
+                    <span class="aa-inline-article-title">Раздел «Мои Credentials» в личном кабинете школы</span>
+                    <span class="aa-inline-article-hint">статья · ~1 мин</span>
+                    <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+                  </summary>
+                  <div class="aa-inline-article-body">
+                    <div class="aa-md-body">
+                      <p>В личном кабинете школы (этой платформе) есть раздел <strong>«Мои Credentials»</strong>. Там лежат школьные ключи и параметры доступа, которые ты можешь использовать в своих воркфлоу:</p>
+                      <ul>
+                        <li><strong>Qdrant Master</strong> — API-ключ для школьного Qdrant (для DELETE-запросов, прямых HTTP-вызовов).</li>
+                        <li><strong>OpenAI / Anthropic / DeepSeek</strong> — школьные ключи через LiteLLM-прокси.</li>
+                        <li><strong>student_id</strong> — твой идентификатор (например, <code>c01</code>), нужен для имени Qdrant-коллекции.</li>
+                        <li><strong>Postgres</strong> — реквизиты школьной БД для логов и chat memory.</li>
+                      </ul>
+                      <p>Внешние сервисы (Cohere, Voyage, Mem0 и т.п.) под свои задачи студент регистрирует сам — их ключи в школьный раздел не попадают.</p>
+                      <p>Если нужного ключа нет в «Мои Credentials» или ключ не работает — пиши в чат <a href="https://t.me/profy_conveyor" target="_blank" rel="noopener">@profy_conveyor</a>.</p>
                     </div>
                   </div>
                 </details>
@@ -336,7 +405,62 @@
           <div class="aa-node-step-body">
             <p><strong>Почему первым:</strong> Qdrant хранит коллекцию с фиксированной размерностью. OpenAI делал векторы на 1536 чисел, Cohere — на 1024. Эти два формата несовместимы. Если сначала поменяешь ноды, а потом попытаешься загрузить файл — Qdrant вернёт ошибку. Поэтому сначала удаляем старую коллекцию, создаём новую, а потом меняем ноды.</p>
 
-            <details class="aa-inline-article">
+            <details class="aa-inline-article" data-article-slug="qdrant-overview">
+              <summary>
+                <span class="aa-inline-article-icon">🧭</span>
+                <span class="aa-inline-article-title">Что такое Qdrant и как с ним работать в n8n</span>
+                <span class="aa-inline-article-hint">статья · ~3 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p><strong>Qdrant</strong> — векторная база данных. В обычной БД ты ищешь по точному совпадению («где имя = Иван»). В Qdrant ты ищешь по смыслу — «найди документы, похожие на этот текст».</p>
+                  <p>Чтобы это работало, документы и запросы предварительно прогоняются через embedding-модель (OpenAI, Cohere, bge…). Модель превращает текст в вектор — список из 1024 / 1536 / 768 чисел. Похожий смысл = близкие векторы. Qdrant умеет быстро находить «ближайшие» векторы к заданному.</p>
+
+                  <h4>Структура хранения</h4>
+                  <ul>
+                    <li><strong>Коллекция</strong> — это «таблица» в Qdrant. У неё фиксированная размерность векторов и метрика расстояния. Поменять размерность нельзя — только пересоздать коллекцию.</li>
+                    <li><strong>Точка (point)</strong> — одна запись внутри коллекции: <code>id</code> + вектор + произвольный JSON-payload (например, <code>{ "filename": "manual.pdf", "page": 4 }</code>).</li>
+                    <li><strong>Search</strong> — отдай вектор запроса, получи топ-N ближайших точек с их payload'ами.</li>
+                  </ul>
+
+                  <h4>Ноды Qdrant в n8n</h4>
+                  <p>В стандартной поставке n8n работает с Qdrant через три «AI-родителя»:</p>
+                  <ul>
+                    <li><strong>Qdrant Insert</strong> — кладёт чанки текста в коллекцию (используется в WF ingestion). Подключает sub-ноды Embeddings (откуда брать векторы) и Document Loader (откуда брать текст).</li>
+                    <li><strong>Qdrant KB</strong> (как Tool у AI Agent) — даёт агенту инструмент «искать по базе знаний». Тоже подключает sub-ноду Embeddings — обязательно ту же модель, что и при Insert.</li>
+                    <li><strong>HTTP Request</strong> — для всего остального: создать/удалить коллекцию, посмотреть статистику, очистить точки. Прямые REST-вызовы Qdrant API.</li>
+                  </ul>
+
+                  <h4>Школьная инфра</h4>
+                  <p>Школа держит общий Qdrant-инстанс на <code>https://qdrant.school.vibe-business.site</code>. У каждого студента свои коллекции — имена изолированы префиксом <code>student_id</code>. Master-ключ для прямых HTTP-вызовов лежит в разделе <em>«Мои Credentials»</em> в личном кабинете.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="aa-inline-article" data-article-slug="qdrant-collection-naming">
+              <summary>
+                <span class="aa-inline-article-icon">🏷</span>
+                <span class="aa-inline-article-title">Правила именования Qdrant-коллекций в школе</span>
+                <span class="aa-inline-article-hint">статья · ~1 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Все коллекции в школьном Qdrant именуются по шаблону:</p>
+                  <pre style="background:#0a0e1a;padding:10px;border-radius:6px;font-size:13px;"><code>&lt;student_id&gt;-&lt;product&gt;-&lt;что_хранится&gt;</code></pre>
+                  <p>Примеры:</p>
+                  <ul>
+                    <li><code>c01-kb-agent</code> — у студента <code>c01</code>, продукт AI-01 (RAG-агент), хранится база знаний.</li>
+                    <li><code>c12-faq-bot</code> — студент <code>c12</code>, продукт FAQ-бот.</li>
+                  </ul>
+                  <p><strong>Зачем:</strong> на одном Qdrant-инстансе живут коллекции всех студентов. Префикс <code>student_id</code> исключает пересечения. Никогда не используй чужой prefix — увидишь чужие данные или сломаешь чужую коллекцию.</p>
+                  <p>Свой <code>student_id</code> найдёшь в <em>«Мои Credentials»</em> в личном кабинете. Имя коллекции, которое ты создал в базовом агенте AI-01, дублируется в трёх местах: WF1 (Qdrant Insert), WF2 (Qdrant KB sub-нода), Product Config. При смене embedding-провайдера достаточно сохранить то же имя коллекции — пересоздать её с новой размерностью.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="aa-inline-article" data-article-slug="qdrant-dimensions-incompatible">
               <summary>
                 <span class="aa-inline-article-icon">📐</span>
                 <span class="aa-inline-article-title">Почему нельзя смешивать векторы разной размерности</span>
@@ -356,33 +480,68 @@
                   <p><strong>Что делать:</strong></p>
                   <ol>
                     <li>Удалить старую коллекцию (все векторы пропадут).</li>
-                    <li>Создать новую с <code>size: 1024</code>. Это делается автоматически при первом insert'е через ноду Qdrant Insert.</li>
-                    <li>Перезалить все файлы KB через WF1 — теперь они запишутся с правильными 1024-мерными векторами.</li>
+                    <li>Создать новую с правильной размерностью. Это делается автоматически при первом insert'е через ноду Qdrant Insert.</li>
+                    <li>Перезалить все файлы KB через WF ingestion — теперь они запишутся с правильными векторами.</li>
                   </ol>
-                  <p><strong>Боятся ли потери данных?</strong> Нет. KB — это производное от твоих исходных файлов. Файлы у тебя есть, WF1 умеет их грузить. Удаление коллекции = «очисти индекс», а не «удали документы».</p>
+                  <p><strong>Бояться потери данных?</strong> Нет. KB — это производное от твоих исходных файлов. Файлы у тебя есть, WF1 умеет их грузить. Удаление коллекции = «очисти индекс», а не «удали документы».</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="aa-inline-article" data-article-slug="qdrant-delete-collection">
+              <summary>
+                <span class="aa-inline-article-icon">🗑</span>
+                <span class="aa-inline-article-title">Как удалить Qdrant-коллекцию через HTTP Request (с Import from cURL)</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>В n8n нет отдельной ноды «Qdrant Delete Collection» — используем универсальный <strong>HTTP Request</strong>. Сделать это можно за минуту через функцию <em>Import from cURL</em>.</p>
+                  <ol>
+                    <li>
+                      <p>В любом sandbox-воркфлоу добавь ноду <strong>HTTP Request</strong> (или открой существующую). В правом верхнем углу настроек ноды нажми <strong>Import from cURL</strong>.</p>
+                    </li>
+                    <li>
+                      <p>Вставь в открывшееся поле curl-команду:</p>
+                      <pre style="background:#0a0e1a;padding:10px;border-radius:6px;font-size:12px;"><code>curl -X DELETE \
+  https://qdrant.school.vibe-business.site/collections/&lt;имя_твоей_коллекции&gt; \
+  -H "api-key: &lt;Qdrant Master ключ&gt;"</code></pre>
+                      <p>n8n автоматически распарсит curl и заполнит метод (<code>DELETE</code>), URL и заголовок.</p>
+                    </li>
+                    <li>
+                      <p>Подставь свои значения:</p>
+                      <ul>
+                        <li><code>&lt;имя_твоей_коллекции&gt;</code> — имя коллекции, которую ты создал в базовом агенте AI-01 (например, <code>c01-kb-agent</code>). Скопируй из своего <code>Product Config.qdrant.collection</code>.</li>
+                        <li><code>&lt;Qdrant Master ключ&gt;</code> — лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>. Можно использовать сохранённый в n8n credential <code>Qdrant Master</code> (Generic Header Auth) — тогда поле Header не нужно заполнять вручную.</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <p>Нажми <strong>Execute step</strong>. Ожидаемый ответ — JSON <code>{"result": true, "status": "ok"}</code>.</p>
+                    </li>
+                    <li>
+                      <p>Удали HTTP Request ноду или оставь в sandbox-воркфлоу — она нужна была одноразово, в продакшн-воркфлоу её не нужно.</p>
+                    </li>
+                  </ol>
+                  <p><strong>Безопасность:</strong> DELETE действительно удаляет коллекцию — вместе со всеми векторами. Сохранённые в Qdrant payload'ы пропадут. Файлы-источники, из которых строилась KB, остаются у тебя — просто перезалей их.</p>
                 </div>
               </div>
             </details>
 
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Как удалить коллекцию через Qdrant HTTP Request</div>
-              <p>Самый простой способ — выполни HTTP Request прямо в n8n (один раз, вручную, без сохранения в WF):</p>
-              <ul class="aa-node-step-config-list">
-                <li><strong>Method</strong> <code>DELETE</code></li>
-                <li><strong>URL</strong> <code>https://qdrant.school.vibe-business.site/collections/c01-kb-agent</code></li>
-                <li><strong>Header</strong> <code>api-key: &lt;твой Qdrant Master ключ&gt;</code></li>
-              </ul>
-              <p style="font-size:13px;color:var(--muted);">Замени <code>c01</code> на свой student_id. Qdrant Master credentials лежат в n8n — ключ смотри там.</p>
+              <div class="aa-node-step-config-label">Что конкретно сделать</div>
+              <p style="font-size:13px;color:var(--muted);">Удали свою текущую коллекцию через HTTP Request — детали в раскрывайке выше.</p>
+              <p style="font-size:13px;color:var(--muted);">Имя коллекции возьми из своего <code>Product Config.qdrant.collection</code> (то самое имя, которое ты задал в базовом агенте AI-01-02). После удаления оно останется тем же — просто следующий запуск WF1 пересоздаст коллекцию автоматически с новой размерностью.</p>
             </div>
 
             <div class="aa-node-step-io">
               <div class="aa-node-step-io-col is-input">
                 <div class="aa-node-step-io-label">До удаления</div>
-                <div class="aa-node-step-io-note">Коллекция <code>c01-kb-agent</code> с векторами 1536d. Файлы KB уже залиты через OpenAI embedding.</div>
+                <div class="aa-node-step-io-note">Коллекция <code>&lt;твоё_имя&gt;</code> с векторами 1536d. Файлы KB уже залиты через OpenAI embedding.</div>
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">После удаления</div>
-                <div class="aa-node-step-io-note">Коллекции нет. При следующем запуске WF1 — Qdrant Insert создаст новую с размерностью 1024 (под Cohere). Сохранять старые данные не нужно.</div>
+                <div class="aa-node-step-io-note">Коллекции нет. При следующем запуске WF1 нода Qdrant Insert создаст её заново с размерностью 1024 (под Cohere). Старые данные не нужны.</div>
               </div>
             </div>
           </div>
@@ -392,8 +551,7 @@
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">2</span>
-            <span class="aa-node-step-title">WF1 — замени Embeddings OpenAI → Cohere</span>
-            <span class="aa-node-step-tag">Chat Trigger Ingestion</span>
+            <span class="aa-node-step-title">WF1: Chat Trigger Ingestion Pipeline — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
             <p><strong>Что делаем:</strong> в нодах <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> есть sub-нода <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
@@ -404,14 +562,45 @@
               <span class="aa-subnode-change-new">Embeddings Cohere (embed-v4.0)</span>
             </div>
 
+            <details class="aa-inline-article" data-article-slug="n8n-subnode-concept">
+              <summary>
+                <span class="aa-inline-article-icon">🔀</span>
+                <span class="aa-inline-article-title">Что такое sub-нода в n8n и как её заменить</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>В n8n AI-ноды устроены как <strong>«родитель + дети»</strong>. Родитель — основная нода (Qdrant Insert, AI Agent, Vector Store Tool…). Дети — sub-ноды, которые подключаются к кружкам на нижней стороне родителя. Каждая sub-нода — это «поставщик ресурса» для родителя:</p>
+                  <ul>
+                    <li><strong>Embeddings *</strong> — поставляет векторы (OpenAI / Cohere / Voyage / bge…).</li>
+                    <li><strong>Document Loader</strong> — поставляет «нарезанные» куски документа.</li>
+                    <li><strong>Text Splitter</strong> — внутри Document Loader, разбивает на чанки.</li>
+                    <li><strong>Memory</strong> — поставляет историю диалога для AI Agent.</li>
+                    <li><strong>Tool</strong> — поставляет инструменты, которые AI Agent может вызвать.</li>
+                  </ul>
+                  <p>Когда родитель работает (например, Qdrant Insert получил файл и собирается записать в БД), он по очереди обращается к sub-нодам: «дай мне чанки», «переведи каждый чанк в вектор». Sub-ноды отвечают, родитель собирает результат.</p>
+
+                  <h4>Как заменить sub-ноду</h4>
+                  <ol>
+                    <li>Открой родительскую ноду (двойной клик).</li>
+                    <li>В правой панели найди sub-ноду нужного типа (например, существующая <em>Embeddings OpenAI</em>).</li>
+                    <li>Нажми <strong>×</strong> на sub-ноде — она отсоединится от родителя.</li>
+                    <li>Нажми <strong>+</strong> на том же кружке (например, <em>Add document embedding</em>) → выбери новую sub-ноду из списка.</li>
+                    <li>Заполни параметры новой sub-ноды (credential, модель, режим).</li>
+                  </ol>
+
+                  <p><strong>Важно:</strong> если родитель используется в нескольких местах (одна и та же sub-нода вшита в две разные ноды Qdrant Insert) — заменить нужно в каждом месте отдельно. Sub-ноды локальны для родителя, не разделяются.</p>
+                </div>
+              </div>
+            </details>
+
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Как заменить sub-ноду</div>
+              <div class="aa-node-step-config-label">Что конкретно сделать в WF1</div>
               <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
-                <li>Открой <strong>WF1 Chat Trigger Ingestion</strong>.</li>
-                <li>Кликни на ноду <strong>Qdrant Insert TXT</strong> → в правой панели найди sub-ноду <strong>Embeddings OpenAI</strong>.</li>
-                <li>Нажми <strong>×</strong> на sub-ноде, чтобы отсоединить её.</li>
-                <li>Нажми <strong>+ (Add document embedding)</strong> → выбери <strong>Embeddings Cohere</strong>.</li>
-                <li>Повтори для <strong>Qdrant Insert PDF</strong> (там та же sub-нода).</li>
+                <li>Открой <strong>WF1: Chat Trigger Ingestion Pipeline</strong>.</li>
+                <li>Замени sub-ноду <em>Embeddings OpenAI</em> на <em>Embeddings Cohere</em> в ноде <strong>Qdrant Insert TXT</strong> (как — в раскрывайке про sub-ноду выше).</li>
+                <li>Повтори для <strong>Qdrant Insert PDF</strong> — там та же sub-нода.</li>
               </ol>
             </div>
 
@@ -420,29 +609,13 @@
               <ul class="aa-node-step-config-list">
                 <li><strong>Credential</strong> <code>Cohere API</code> (тот, что создал в шаге 0.4)</li>
                 <li><strong>Model</strong> <code>embed-v4.0</code></li>
-                <li><strong>Input Type</strong> <code>search_document</code> ← для индексации</li>
+                <li><strong>Input Type</strong> <code>search_document</code> ← для индексации документов</li>
               </ul>
             </div>
 
-            <details class="aa-inline-article">
-              <summary>
-                <span class="aa-inline-article-icon">🔀</span>
-                <span class="aa-inline-article-title">Что такое sub-нода и как она работает внутри Qdrant Insert</span>
-                <span class="aa-inline-article-hint">статья · ~2 мин</span>
-                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
-              </summary>
-              <div class="aa-inline-article-body">
-                <div class="aa-md-body">
-                  <p>В n8n AI-ноды типа <code>Qdrant Insert</code>, <code>Qdrant KB</code>, <code>AI Agent</code> устроены как «родитель + дети». Родитель — основная нода (например, Qdrant Insert — записывает векторы в БД). Дети — sub-ноды, которые подключаются к кружкам на нижней стороне родителя.</p>
-                  <p>Sub-нода <code>Embeddings OpenAI</code> — это «провайдер эмбеддингов». Когда Qdrant Insert хочет записать чанк текста, он обращается к этой sub-ноде: «переведи мне этот текст в вектор». Sub-нода делает запрос в OpenAI API и возвращает вектор.</p>
-                  <p>Когда ты меняешь sub-ноду на <code>Embeddings Cohere</code> — ты просто говоришь Qdrant Insert: «теперь за векторами иди не в OpenAI, а в Cohere». Всё остальное в WF1 остаётся нетронутым.</p>
-                </div>
-              </div>
-            </details>
-
             <div class="aa-wf-shot">
-              <img src="screenshots/step2-wf1-cohere.png" alt="WF1 — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 2 — WF1 использует Cohere embed</div>
+              <img src="screenshots/step2-wf1-cohere.png" alt="WF1: Chat Trigger Ingestion Pipeline — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 2 — WF1: Chat Trigger Ingestion Pipeline использует Cohere embed</div>
             </div>
           </div>
         </div>
@@ -451,11 +624,10 @@
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">3</span>
-            <span class="aa-node-step-title">WF2 — замени Embeddings OpenAI → Cohere</span>
-            <span class="aa-node-step-tag">KB Master Agent</span>
+            <span class="aa-node-step-title">WF2: KB Master Agent — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в ноде <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже есть sub-нода <code>Embeddings OpenAI</code>. Заменяем аналогично. <strong>Но с другим Input Type.</strong></p>
+            <p><strong>Что делаем:</strong> в ноде <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже есть sub-нода <code>Embeddings OpenAI</code>. Заменяем аналогично шагу 2. <strong>Но с другим Input Type.</strong></p>
 
             <div class="aa-subnode-change">
               <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
@@ -470,73 +642,67 @@
                 <li><strong>Model</strong> <code>embed-v4.0</code></li>
                 <li><strong>Input Type</strong> <code>search_query</code> ← <span style="color:var(--warn)">ДРУГОЙ, чем в WF1!</span></li>
               </ul>
+              <p style="font-size:12px;color:var(--muted);margin-top:8px;">Почему разный Input Type — в раскрывайке «Cohere — что это» в самом начале задачи.</p>
             </div>
 
-            <details class="aa-inline-article">
-              <summary>
-                <span class="aa-inline-article-icon">🎯</span>
-                <span class="aa-inline-article-title">Зачем Input Type разный в WF1 и WF2</span>
-                <span class="aa-inline-article-hint">статья · ~3 мин</span>
-                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
-              </summary>
-              <div class="aa-inline-article-body">
-                <div class="aa-md-body">
-                  <p>Cohere специально обучила модель так, чтобы документы и вопросы к ним «тяготели» друг к другу в векторном пространстве — но при условии, что они обрабатываются через правильный режим.</p>
-                  <p>Представь два вектора:</p>
-                  <ul>
-                    <li>Документ «Наши склады расположены в Москве и Санкт-Петербурге», обработанный в режиме <code>search_document</code>.</li>
-                    <li>Вопрос «где у вас склады?», обработанный в режиме <code>search_query</code>.</li>
-                  </ul>
-                  <p>Эти два вектора будут близки. Именно это нам и нужно — вопрос должен «притягивать» релевантные документы.</p>
-                  <p>Если оба обрабатывать через <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10% — незаметно на простых запросах, ощутимо на сложных.</p>
-                  <p><strong>Мнемоника:</strong> WF1 загружает <em>документы</em> → <code>search_document</code>. WF2 ищет по <em>запросу пользователя</em> → <code>search_query</code>.</p>
-                </div>
-              </div>
-            </details>
-
             <div class="aa-wf-shot">
-              <img src="screenshots/step3-wf2-cohere.png" alt="WF2 — AI Agent с Qdrant KB, Embeddings Cohere sub-нода (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 3 — WF2 ищет по-прежнему, но уже через Cohere</div>
+              <img src="screenshots/step3-wf2-cohere.png" alt="WF2: KB Master Agent — AI Agent с Qdrant KB и sub-нодой Embeddings Cohere (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 3 — WF2: KB Master Agent ищет через Cohere</div>
             </div>
           </div>
         </div>
 
-        <!-- Step 4: Gateway Config -->
+        <!-- Step 4: Product Config -->
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">4</span>
-            <span class="aa-node-step-title">Обнови Gateway Config</span>
+            <span class="aa-node-step-title">Обнови Product Config</span>
             <span class="aa-node-step-tag">DataTable</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в DataTable <code>Gateway Config</code> добавляем два новых поля в JSON-конфиге строки <code>channel='telegram'</code>. Это нужно чтобы система знала, какой embedding-провайдер используется в проекте.</p>
+            <p><strong>Что делаем:</strong> в DataTable <code>[AI-01] Product Config</code> у тебя одна строка <code>product_id = ai-01</code> с JSON-конфигом продукта. Внутри секции <code>qdrant</code> меняем три поля — провайдер, модель и размерность.</p>
+            <p style="font-size:13px;color:var(--muted);">Embedding-настройки относятся к <em>продукту</em>, а не к каналу — у одного продукта одна база знаний и одна embedding-модель. Если позже добавишь web-чат или MAX-канал, embedding не нужно дублировать в их конфиги — он берётся из Product Config.</p>
 
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Что добавить в поле qdrant JSON</div>
-              <p style="font-size:13px;color:var(--muted);">Открой DataTable <code>Gateway Config</code> → найди строку с <code>channel = telegram</code> → отредактируй JSON в поле <code>qdrant</code>. Добавь два новых ключа:</p>
+              <div class="aa-node-step-config-label">Что меняем в поле config</div>
+              <p style="font-size:13px;color:var(--muted);">Открой DataTable <code>[AI-01] Product Config</code> → найди строку <code>product_id = ai-01</code> → отредактируй JSON в поле <code>config</code>. В секции <code>qdrant</code>:</p>
               <ul class="aa-node-step-config-list">
-                <li><strong>embedding_provider</strong> <code>"cohere"</code></li>
-                <li><strong>embedding_model</strong> <code>"embed-v4.0"</code></li>
-                <li><strong>embedding_dimensions</strong> <code>1024</code></li>
+                <li><strong>embedding_provider</strong> <code>"openai"</code> → <code>"cohere"</code></li>
+                <li><strong>embedding_model</strong> <code>"text-embedding-3-small"</code> → <code>"embed-v4.0"</code></li>
+                <li><strong>embedding_dimensions</strong> <code>1536</code> → <code>1024</code></li>
               </ul>
+              <p style="font-size:12px;color:var(--muted);margin-top:8px;">Остальные поля (<code>collection</code>, <code>kb_description</code>, <code>chat_memory</code>, <code>escalation_tool</code>, <code>log_table</code>) не трогай.</p>
             </div>
 
             <div class="aa-node-step-io">
               <div class="aa-node-step-io-col is-input">
-                <div class="aa-node-step-io-label">Было</div>
+                <div class="aa-node-step-io-label">Было (Product Config[ai-01].config)</div>
 <pre>{
-  "collection": "c01-kb-agent",
-  "description": "База МебельДом"
+  "qdrant": {
+    "collection": "&lt;твой_student_id&gt;-kb-agent",
+    "kb_description": "&lt;описание твоей KB&gt;",
+    "embedding_provider": "openai",
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dimensions": 1536
+  },
+  "chat_memory": { ... },
+  "escalation_tool": { ... },
+  "log_table": "kb_agent_logs"
 }</pre>
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">Стало</div>
 <pre>{
-  "collection": "c01-kb-agent",
-  "description": "База МебельДом",
-  "embedding_provider": "cohere",
-  "embedding_model": "embed-v4.0",
-  "embedding_dimensions": 1024
+  "qdrant": {
+    "collection": "&lt;твой_student_id&gt;-kb-agent",
+    "kb_description": "&lt;описание твоей KB&gt;",
+    "embedding_provider": <span style="color:#00c9a7;font-weight:600">"cohere"</span>,
+    "embedding_model": <span style="color:#00c9a7;font-weight:600">"embed-v4.0"</span>,
+    "embedding_dimensions": <span style="color:#00c9a7;font-weight:600">1024</span>
+  },
+  "chat_memory": { ... },
+  "escalation_tool": { ... },
+  "log_table": "kb_agent_logs"
 }</pre>
               </div>
             </div>
@@ -547,29 +713,20 @@
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">5</span>
-            <span class="aa-node-step-title">Перезалей KB через WF1</span>
+            <span class="aa-node-step-title">Перезалей KB</span>
             <span class="aa-node-step-tag">в самом конце</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Почему нужно:</strong> в шаге 1 ты удалил коллекцию — старые векторы пропали. Теперь ноды настроены на Cohere. Нужно снова загрузить все файлы KB через WF1 — они будут записаны уже как 1024-мерные Cohere-векторы.</p>
-
-            <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Как запустить</div>
-              <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
-                <li>Открой <strong>WF1 Chat Trigger Ingestion</strong>.</li>
-                <li>Нажми <strong>Chat</strong> (нижняя панель) — откроется встроенный чат n8n.</li>
-                <li>Прикрепи каждый файл KB и отправь. Если файлов много — по одному или пачкой, как удобно.</li>
-                <li>После каждого файла смотри в <strong>Executions</strong> — должен быть <code>Success</code>.</li>
-              </ol>
-            </div>
+            <p><strong>Что делаем:</strong> в шаге 1 ты удалил коллекцию — старые векторы пропали. Теперь ноды настроены на Cohere. Нужно перезалить все файлы KB заново — они запишутся как 1024-мерные Cohere-векторы.</p>
+            <p>Воспользуйся тем способом загрузки, который ты сам настроил для своего проекта. Если использовал базовый <strong>WF1: Chat Trigger Ingestion Pipeline</strong> — просто открой его, отправь файлы через встроенный Chat и проверь, что executions заканчиваются успехом. Если у тебя свой ingestion-воркфлоу — запусти его.</p>
 
             <div class="aa-callout-tip">
               <div class="aa-callout-tip-icon">💡</div>
               <div class="aa-callout-tip-body">
-                <div class="aa-callout-tip-label">Следи за trial-лимитом</div>
+                <div class="aa-callout-tip-label">Следи за trial-лимитом Cohere</div>
                 <div class="aa-callout-tip-title">100 документов ≈ 200 запросов к Cohere API</div>
                 <div class="aa-callout-tip-text">
-                  <p>Free tier Cohere — 1000 запросов в месяц. Один документ при ingestion разбивается на чанки и обрабатывается пачками по 96 (лимит batch). Отслеживай usage на dashboard.cohere.com → Usage.</p>
+                  <p>Free tier Cohere — 1000 запросов в месяц. Один документ при ingestion разбивается на чанки и обрабатывается пачками по 96 (лимит batch). Отслеживай usage на <a href="https://dashboard.cohere.com" target="_blank" rel="noopener">dashboard.cohere.com</a> → Usage.</p>
                 </div>
               </div>
             </div>
