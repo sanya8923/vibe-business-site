@@ -349,6 +349,14 @@
 [data-aa-stretch] .aa-arch-diff-side.is-after .aa-wf-shot {
   background: #060d0b;
 }
+/* Equal height for both BYLO / STALO images */
+[data-aa-stretch] .aa-arch-diff-side .aa-wf-shot img {
+  height: 260px;
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
 [data-aa-stretch] .aa-arch-diff-params {
   padding: 10px 14px;
   font-size: 12px;
@@ -360,3 +368,17 @@
 [data-aa-stretch] .aa-arch-diff-params .hi  { color: var(--accent); font-weight: 600; }
 [data-aa-stretch] .aa-arch-diff-params .changed { color: var(--teal); font-weight: 600; }
 [data-aa-stretch] .aa-arch-diff-params .critical { color: var(--warn); font-weight: 600; }
+
+/* ─── Screenshot sizing consistency ──────────────────────────── */
+/* WF result shots in node steps: constrain max width */
+[data-aa-stretch] .aa-node-step-body > .aa-wf-shot {
+  max-width: 720px;
+}
+/* Cohere/UI step screenshots: same max-width as WF shots */
+[data-aa-stretch] .aa-setup-step-text .aa-inline-article-figure {
+  max-width: 720px;
+}
+/* Inline article figures inside articles: reasonable max-width */
+[data-aa-stretch] .aa-inline-article-body .aa-inline-article-figure {
+  max-width: 720px;
+}

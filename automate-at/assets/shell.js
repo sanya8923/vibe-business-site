@@ -315,6 +315,23 @@
         if (banner) banner.remove();
         return;
       }
+      const copyBtn = e.target.closest('.aa-code-copy-btn');
+      if (copyBtn) {
+        const targetId = copyBtn.dataset.copyTarget;
+        const source = targetId ? document.getElementById(targetId) : copyBtn.closest('.aa-setup-step-curl')?.querySelector('pre');
+        if (!source) return;
+        navigator.clipboard.writeText(source.innerText).then(() => {
+          const label = copyBtn.querySelector('.aa-code-copy-btn-label');
+          const orig = label ? label.textContent : '';
+          if (label) label.textContent = 'Скопировано!';
+          copyBtn.classList.add('is-copied');
+          setTimeout(() => {
+            if (label) label.textContent = orig;
+            copyBtn.classList.remove('is-copied');
+          }, 2000);
+        });
+        return;
+      }
     });
   }
 
