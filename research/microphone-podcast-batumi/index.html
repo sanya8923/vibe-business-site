@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Микрофон для подкаста · Батуми</title>
+<style>
+  :root {
+    --bg: #0e1015;
+    --bg-2: #161922;
+    --bg-3: #1f2330;
+    --border: #2a2f3d;
+    --text: #e6e8ee;
+    --text-2: #a8adba;
+    --text-3: #7a7f8d;
+    --accent: #ffb347;
+    --accent-2: #6dc1ff;
+    --green: #5eba7d;
+    --blue: #6dc1ff;
+    --yellow: #f5c451;
+    --purple: #c08bff;
+    --red: #ff6b6b;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif; line-height: 1.55; }
+  body { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+  a { color: var(--accent-2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  h1, h2, h3, h4 { color: var(--text); margin-top: 1.6em; margin-bottom: 0.4em; line-height: 1.2; }
+  h1 { font-size: 2.2em; margin-top: 0; }
+  h2 { font-size: 1.6em; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.2em; color: var(--accent); }
+  h4 { font-size: 1em; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
+  p { color: var(--text); }
+  small, .meta { color: var(--text-3); font-size: 0.9em; }
+  hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
+  ul, ol { padding-left: 24px; }
+  li { margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-2); font-weight: 600; background: var(--bg-2); }
+  tr:hover td { background: var(--bg-2); }
+  code { background: var(--bg-3); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  blockquote { border-left: 3px solid var(--accent); margin: 16px 0; padding: 8px 16px; background: var(--bg-2); color: var(--text-2); }
+  .header-meta { color: var(--text-3); margin-bottom: 24px; font-size: 0.95em; }
+  .header-meta strong { color: var(--text-2); }
+  .nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 32px; padding: 12px 16px; background: var(--bg-2); border-radius: var(--radius); }
+  .nav a { color: var(--text-2); font-size: 0.95em; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 500; margin-right: 4px; }
+  .badge.green { background: rgba(94, 186, 125, 0.18); color: var(--green); }
+  .badge.blue { background: rgba(109, 193, 255, 0.18); color: var(--blue); }
+  .badge.yellow { background: rgba(245, 196, 81, 0.18); color: var(--yellow); }
+  .badge.purple { background: rgba(192, 139, 255, 0.18); color: var(--purple); }
+  .badge.red { background: rgba(255, 107, 107, 0.18); color: var(--red); }
+  .tldr { background: var(--bg-2); padding: 20px 24px; border-radius: var(--radius); border-left: 3px solid var(--accent); margin: 24px 0; }
+  .tldr h2 { border: 0; margin-top: 0; }
+  .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+  .setup-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+  .setup-card.recommended { border-color: var(--accent); }
+  .setup-card h3 { margin-top: 0; }
+  .setup-card .price { font-size: 1.4em; color: var(--accent); font-weight: 600; }
+  .setup-card ul { padding-left: 18px; }
+  .setup-card .checklist { margin-top: 8px; }
+  .setup-card .checklist label { display: block; padding: 4px 0; cursor: pointer; color: var(--text-2); font-size: 0.95em; }
+  .setup-card .checklist input { margin-right: 8px; accent-color: var(--accent); }
+  .setup-card .checklist input:checked + span { text-decoration: line-through; color: var(--text-3); }
+  .video-wrap { aspect-ratio: 16/9; max-width: 720px; margin: 12px 0; border-radius: var(--radius); overflow: hidden; background: #000; }
+  .video-wrap iframe { width: 100%; height: 100%; border: 0; }
+  .video-meta { color: var(--text-3); font-size: 0.9em; margin-bottom: 4px; }
+  .video-block { margin: 24px 0; }
+  .video-block blockquote { font-size: 0.95em; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+  .legend span { color: var(--text-2); font-size: 0.9em; }
+  .footer { color: var(--text-3); font-size: 0.85em; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .rec-badge { display: inline-block; background: rgba(255,179,71,0.2); color: var(--accent); border-radius: 6px; font-size: 0.8em; padding: 1px 8px; margin-left: 8px; }
+  .warn { background: rgba(245,196,81,0.1); border-left: 3px solid var(--yellow); padding: 10px 16px; border-radius: var(--radius); margin: 12px 0; color: var(--text-2); font-size: 0.95em; }
+</style>
+</head>
+<body>
+
+<h1>Микрофон для подкаста · Батуми</h1>
+
+<div class="header-meta">
+  <strong>Тема:</strong> Микрофон для подкаста &nbsp; · &nbsp;
+  <strong>Локация:</strong> Батуми, Грузия &nbsp; · &nbsp;
+  <strong>Дата сборки:</strong> 2026-05-08
+</div>
+
+<nav class="nav">
+  <a href="#tldr">TL;DR</a>
+  <a href="#setups">Сетапы</a>
+  <a href="#components">Компоненты</a>
+  <a href="#shopping">Шопинг</a>
+  <a href="#videos">Источники-видео</a>
+  <a href="#sources">Все источники</a>
+</nav>
+
+<section id="brief">
+  <h2>Бриф</h2>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td><strong>Тема</strong></td><td>Микрофон для подкаста</td></tr>
+    <tr><td><strong>Локация</strong></td><td>Батуми, Грузия</td></tr>
+    <tr><td><strong>Бюджет</strong></td><td>до $100 / ~270 GEL на всё</td></tr>
+    <tr><td><strong>Что уже есть</strong></td><td>Только наушники — больше ничего</td></tr>
+    <tr><td><strong>Формат</strong></td><td>Для себя (self-read)</td></tr>
+    <tr><td><strong>Дата старта</strong></td><td>2026-05-08</td></tr>
+  </table>
+  <p><small>Курс: 1 USD ≈ 2.7 GEL (май 2026)</small></p>
+</section>
+
+<section id="tldr" class="tldr">
+  <h2>TL;DR — главное за 1 минуту</h2>
+  <ol>
+    <li><strong>USB-динамический микрофон</strong> — правильный выбор для подкаста в непростой акустике квартиры. Конденсатор пишет весь фон и эхо — берём только если комната тихая и обшита коврами/шторами.</li>
+    <li><strong>Лучший выбор в $100: Fifine K688 (~$75)</strong> — USB+XLR, физическая ручка громкости, отличное подавление фона. Сейчас работает по USB, при желании апгрейд до XLR без замены микрофона. Доступен через yarmarka.ge (150-280 GEL) и ubuy.ge.</li>
+    <li><strong>Если нужно прямо сейчас в Батуми</strong> — только два варианта физически: <strong>Fifine AM8</strong> (119 GEL на noutbuk-ge.com с доставкой, или 400 GEL в tmarket) и <strong>HyperX SoloCast</strong> (250 GEL в tmarket). Позвонить в tmarket перед поездкой: +995 557 639 639.</li>
+    <li><strong>Samson Q2U, Maono PD200X/PD300X, Rode PodMic USB</strong> в Грузии не продаются — заказывать через camex.ge с Amazon ($65-99 + $5 комиссия, ~4-7 дней).</li>
+    <li><strong>Аксессуары:</strong> windscreen обычно в комплекте с микрофоном. Стойку и поп-фильтр — ubuy.ge или camex.ge → Amazon.</li>
+    <li><strong>XLR не в этом бюджете</strong>: XLR-микрофон + аудиоинтерфейс Focusrite = $50+$120 = уже $170+. Начинаем с USB, апгрейдим потом.</li>
+    <li><strong>Плохая акустика прощается</strong>: микрофон поднести близко ко рту (10-20 см), дверь закрыть, если есть — сесть лицом к шкафу с одеждой.</li>
+  </ol>
+</section>
+
+<section id="setups">
+  <h2>Сетапы по бюджетам</h2>
+  <p><small>Наушники не включены — уже есть. 1$ ≈ 2.7 GEL.</small></p>
+  <div class="setup-grid">
+
+    <div class="setup-card">
+      <h3>Стартовый</h3>
+      <div class="price">~$58 / ~156 GEL</div>
+      <p style="color:var(--text-3);font-size:0.9em;">Записать первые эпизоды. Минимально рабочий звук.</p>
+      <div class="checklist">
+        <label><input type="checkbox" data-id="s1-mic"><span>Fifine AM8 (USB dynamic) — ~$45 / 119 GEL</span></label>
+        <label><input type="checkbox" data-id="s1-wind"><span>Ветрозащита windscreen — ~$5 / 14 GEL</span></label>
+        <label><input type="checkbox" data-id="s1-stand"><span>Настольная стойка-штатив — ~$8 / 22 GEL</span></label>
+      </div>
+      <p style="margin-top:12px;color:var(--text-3);font-size:0.85em;">⚠️ Нет XLR — при апгрейде нужен новый микрофон</p>
+    </div>
+
+    <div class="setup-card recommended">
+      <h3>Комфорт <span class="rec-badge">рекомендован</span></h3>
+      <div class="price">~$99 / ~264 GEL</div>
+      <p style="color:var(--text-3);font-size:0.9em;">Хороший звук, USB сейчас → XLR потом без замены.</p>
+      <div class="checklist">
+        <label><input type="checkbox" data-id="s2-mic"><span>Fifine K688 (USB+XLR dynamic) — ~$75 / 200 GEL</span></label>
+        <label><input type="checkbox" data-id="s2-pop"><span>Тканевый поп-фильтр — ~$9 / 24 GEL</span></label>
+        <label><input type="checkbox" data-id="s2-arm"><span>Настольный журавль (desk arm) — ~$15 / 40 GEL</span></label>
+      </div>
+      <p style="margin-top:12px;color:var(--text-3);font-size:0.85em;">Broadcast-звук. Физическая ручка громкости + mute.</p>
+    </div>
+
+    <div class="setup-card">
+      <h3>Комфорт (альт.)</h3>
+      <div class="price">~$95 / ~256 GEL</div>
+      <p style="color:var(--text-3);font-size:0.9em;">Maono вместо Fifine — более натуральный тембр.</p>
+      <div class="checklist">
+        <label><input type="checkbox" data-id="s2b-mic"><span>Maono PD200X (USB+XLR dynamic) — ~$80 / 215 GEL</span></label>
+        <label><input type="checkbox" data-id="s2b-wind"><span>Windscreen поролон — ~$5 / 14 GEL</span></label>
+        <label><input type="checkbox" data-id="s2b-stand"><span>Настольная стойка — ~$10 / 27 GEL</span></label>
+      </div>
+      <p style="margin-top:12px;color:var(--text-3);font-size:0.85em;">Touch-mute. В Грузии только через camex/Amazon.</p>
+    </div>
+
+    <div class="setup-card">
+      <h3>Студия</h3>
+      <div class="price">~$136 / ~364 GEL</div>
+      <p style="color:var(--text-3);font-size:0.9em;">Топ без компромиссов. Встроенный DSP.</p>
+      <div class="checklist">
+        <label><input type="checkbox" data-id="s3-mic"><span>Rode PodMic USB (USB+XLR+DSP) — ~$99 / 265 GEL</span></label>
+        <label><input type="checkbox" data-id="s3-pop"><span>Металлический двойной поп-фильтр — ~$12 / 32 GEL</span></label>
+        <label><input type="checkbox" data-id="s3-arm"><span>Пружинная boom arm — ~$25 / 67 GEL</span></label>
+      </div>
+      <p style="margin-top:12px;color:var(--text-3);font-size:0.85em;">⚠️ Чуть выше $100. Обязателен boom arm.</p>
+    </div>
+
+    <div class="setup-card">
+      <h3>Pro (XLR)</h3>
+      <div class="price">~$260 / ~700 GEL</div>
+      <p style="color:var(--text-3);font-size:0.9em;">Максимальное качество. Требует аудиоинтерфейс.</p>
+      <div class="checklist">
+        <label><input type="checkbox" data-id="s4-mic"><span>Maono PD400X или AT2040 (XLR) — ~$90-110</span></label>
+        <label><input type="checkbox" data-id="s4-int"><span>Focusrite Scarlett Solo (4th Gen) — ~$120</span></label>
+        <label><input type="checkbox" data-id="s4-arm"><span>Пружинная boom arm — ~$25</span></label>
+        <label><input type="checkbox" data-id="s4-cab"><span>XLR-кабель 1.5м — ~$8</span></label>
+        <label><input type="checkbox" data-id="s4-pop"><span>Поп-фильтр — ~$12</span></label>
+      </div>
+      <p style="margin-top:12px;color:var(--text-3);font-size:0.85em;">Рассматривать когда подкаст уже работает.</p>
+    </div>
+
+  </div>
+
+  <div class="warn">
+    ⚠️ <strong>XLR в этом бюджете не работает:</strong> XLR-микрофон + Focusrite Scarlett Solo = $50+$120 = уже $170+. Начинаем с USB, апгрейдим позже.
+  </div>
+</section>
+
+<section id="components">
+  <h2>Компоненты и альтернативы</h2>
+  <p><small>Наушники не включены (уже есть). Курс: ~2.7 GEL/$</small></p>
+
+  <h3>Микрофон (главный слот)</h3>
+  <p>Для непростой акустики квартиры — динамический. Конденсатор только при тихой комнате с ковром/шторами.</p>
+  <table>
+    <tr><th>Модель</th><th>Тип</th><th>Подключение</th><th>USD</th><th>GEL ≈</th><th>Примечание</th></tr>
+    <tr><td><strong>Fifine AM8</strong></td><td>Динамический</td><td>USB</td><td>~$45</td><td>~120</td><td>Лучший ультра-бюджет 2024-2026 (Think Media #1)</td></tr>
+    <tr><td><strong>Samson Q2U</strong></td><td>Динамический</td><td>USB + XLR</td><td>~$65</td><td>~175</td><td>Классика, будущий upgrade до XLR</td></tr>
+    <tr style="background:rgba(255,179,71,0.06)"><td><strong>Fifine K688 ⭐</strong></td><td>Динамический</td><td>USB + XLR</td><td>~$75</td><td>~200</td><td>Лучшее цена/качество 2023-2025</td></tr>
+    <tr><td><strong>Maono PD200X</strong></td><td>Динамический</td><td>USB + XLR</td><td>~$80</td><td>~215</td><td>Новый лидер, broadcast-форм-фактор, built-in knob</td></tr>
+    <tr><td><strong>Maono PD300X</strong></td><td>Динамический</td><td>USB + XLR</td><td>~$90</td><td>~245</td><td>Upgrade PD200X, Touch-Mute, лучше сборка</td></tr>
+    <tr><td><strong>Rode PodMic USB</strong></td><td>Динамический</td><td>USB + XLR + DSP</td><td>~$99</td><td>~265</td><td>Топ «без компромиссов», встроенный компрессор/EQ</td></tr>
+    <tr><td>HyperX SoloCast</td><td>Конденсаторный</td><td>USB</td><td>~$50</td><td>~135</td><td>Хорош только при тихой комнате</td></tr>
+    <tr><td>AT2020USB+</td><td>Конденсаторный</td><td>USB</td><td>~$90</td><td>~245</td><td>Студийный звук, но пишет весь фон</td></tr>
+  </table>
+
+  <h4>Карта совместимости</h4>
+  <ul>
+    <li><strong>USB-only</strong> (AM8, SoloCast) → plug-and-play, больше ничего не нужно</li>
+    <li><strong>USB+XLR</strong> (Q2U, K688, PD200X, PD300X, PodMic USB) → сначала USB, апгрейд до XLR потом без замены микрофона</li>
+    <li><strong>XLR-only</strong> → выходит за $100 при добавлении интерфейса</li>
+  </ul>
+
+  <h3>Поп-фильтр / ветрозащита</h3>
+  <table>
+    <tr><th>Вариант</th><th>USD</th><th>Примечание</th></tr>
+    <tr><td>Поролоновый windscreen</td><td>$3–7</td><td>Надевается на капсюль. Достаточно для большинства задач. Часто в комплекте с K688/Q2U/AM8.</td></tr>
+    <tr><td>Тканевый поп-фильтр на гибкой ножке</td><td>$8–12</td><td>Классика, крепится на стойку перед микрофоном</td></tr>
+    <tr><td>Двойной металлический поп-фильтр</td><td>$12–18</td><td>Лучшее подавление взрывных согласных. Для серьёзных сессий.</td></tr>
+  </table>
+
+  <h3>Стойка / крепление</h3>
+  <table>
+    <tr><th>Вариант</th><th>USD</th><th>Примечание</th></tr>
+    <tr><td>Настольная стойка-штатив</td><td>$8–15</td><td>Входит во многие комплекты. Минимум для старта.</td></tr>
+    <tr><td>Настольный журавль (desk arm)</td><td>$15–25</td><td>Освобождает стол, регулировка высоты. Рекомендован с K688.</td></tr>
+    <tr><td>Пружинная стойка-журавль (boom arm)</td><td>$25–40</td><td>Лучший вариант. Обязателен для Rode PodMic USB.</td></tr>
+  </table>
+
+  <h3>Аудиоинтерфейс (только при XLR, вне бюджета $100)</h3>
+  <table>
+    <tr><th>Модель</th><th>USD</th><th>Примечание</th></tr>
+    <tr><td>Focusrite Scarlett Solo (4th Gen)</td><td>~$120</td><td>Стандарт. Комплект с XLR-микрофоном выходит за $200+</td></tr>
+    <tr><td>Behringer UMC22</td><td>~$40</td><td>Бюджетный вход в XLR — для будущего апгрейда</td></tr>
+  </table>
+
+  <h3>Акустика комнаты (DIY, бесплатно)</h3>
+  <table>
+    <tr><th>Мера</th><th>Эффект</th></tr>
+    <tr><td>Ковёр / плед на полу</td><td>Поглощает отражения снизу</td></tr>
+    <tr><td>Запись лицом к шкафу с одеждой</td><td>Одежда = отличный поглотитель</td></tr>
+    <tr><td>Книжный шкаф за спиной</td><td>Диффузия, уменьшение эха</td></tr>
+    <tr><td>Закрытая дверь + штора на окне</td><td>Изоляция от внешних звуков</td></tr>
+  </table>
+</section>
+
+<section id="shopping">
+  <h2>Шопинг в Батуми</h2>
+  <div class="legend">
+    <span><span class="badge green">🟢</span> локальная точка в Батуми</span>
+    <span><span class="badge blue">🔵</span> онлайн с доставкой</span>
+    <span><span class="badge yellow">🟡</span> pickup-only / нужен посредник</span>
+    <span><span class="badge purple">🟣</span> международный</span>
+  </div>
+
+  <h3>Магазины</h3>
+  <table>
+    <tr><th>Магазин</th><th>URL</th><th>Кат.</th><th>Контакты</th><th>Аудио</th></tr>
+    <tr><td><strong>tmarket</strong></td><td><a href="https://tmarket.ge" target="_blank">tmarket.ge</a></td><td>🟢</td><td>+995 557 639 639</td><td>Fifine AM8, HyperX SoloCast</td></tr>
+    <tr><td><strong>Zoommer</strong></td><td><a href="https://zoommer.ge" target="_blank">zoommer.ge</a></td><td>🟢</td><td>+995 32 260 30 60</td><td>HyperX SoloCast (онлайн-листинг)</td></tr>
+    <tr><td><strong>noutbuk-ge.com</strong></td><td><a href="https://noutbuk-ge.com" target="_blank">noutbuk-ge.com</a></td><td>🔵</td><td>—</td><td>Fifine AM8, K658, Samson C01U Pro</td></tr>
+    <tr><td><strong>yarmarka.ge</strong></td><td><a href="https://yarmarka.ge" target="_blank">yarmarka.ge</a></td><td>🔵</td><td>—</td><td>Fifine AM8, K688, K669 (б/у + новое)</td></tr>
+    <tr><td><strong>adashop.ge</strong></td><td><a href="https://adashop.ge" target="_blank">adashop.ge</a></td><td>🔵</td><td>+995 32 224 4030</td><td>HyperX SoloCast (часто нет в наличии)</td></tr>
+    <tr><td><strong>metromart.ge</strong></td><td><a href="https://metromart.ge" target="_blank">metromart.ge</a></td><td>🔵</td><td>0322 000 555</td><td>DJI Mic, Razer (частично)</td></tr>
+    <tr><td><strong>geovoice.ge</strong></td><td><a href="https://geovoice.ge" target="_blank">geovoice.ge</a></td><td>🔵</td><td>—</td><td>Студийные стойки, аксессуары</td></tr>
+    <tr><td><strong>ubuy.ge</strong></td><td><a href="https://ubuy.ge" target="_blank">ubuy.ge</a></td><td>🟣</td><td>—</td><td>Широкий ассортимент Fifine, 7-21 день</td></tr>
+    <tr><td><strong>camex.ge</strong></td><td><a href="https://camex.ge" target="_blank">camex.ge</a></td><td>🟣</td><td>—</td><td>Посредник Amazon/B&H → Грузия</td></tr>
+    <tr><td><strong>onex.ge</strong></td><td><a href="https://onex.ge" target="_blank">onex.ge</a></td><td>🟣</td><td>—</td><td>Посредник Amazon → Грузия</td></tr>
+  </table>
+
+  <h3>Микрофоны с прямыми ссылками</h3>
+
+  <h4>Fifine AM8 (~$45 / ~120 GEL)</h4>
+  <ul>
+    <li>🔵 <strong><a href="https://noutbuk-ge.com/z.php?p=Fifine-AmpliGame-AM8--db5" target="_blank">noutbuk-ge.com</a></strong> — <strong>119 GEL</strong> (скидка 15%, обычно 140 GEL); бесплатная доставка по Грузии ← <strong>лучшая цена</strong></li>
+    <li>🟢 <strong><a href="https://tmarket.ge/ru/product/microphone-fifine-am8-usb-xlr/" target="_blank">tmarket.ge</a></strong> — <strong>400 GEL</strong> (акц. со 435 GEL); физ. точка в Батуми; 1 шт. на дату проверки</li>
+    <li>🔵 <a href="https://yarmarka.ge/g_microfonefifineam8_809971" target="_blank">yarmarka.ge</a> — 200 GEL; частные продавцы</li>
+  </ul>
+  <p><small>⚠️ Цена в tmarket (400 GEL) завышена — noutbuk-ge.com выгоднее при доставке.</small></p>
+
+  <h4>Fifine K688 (~$75 / ~200 GEL)</h4>
+  <ul>
+    <li>🔵 <a href="https://yarmarka.ge/g_mikrofonfifinek688_827579" target="_blank">yarmarka.ge — объявление #1</a> — 180 GEL; частные продавцы</li>
+    <li>🔵 <a href="https://yarmarka.ge/g_fifinek688_762350" target="_blank">yarmarka.ge — объявление #2</a> — 280 GEL; частные продавцы</li>
+    <li>🟣 ubuy.ge — (прямой URL не найден, искать по сайту: <code>fifine k688</code>)</li>
+    <li>🟣 camex.ge → Amazon ~$75 + $5 fee</li>
+  </ul>
+
+  <h4>Samson Q2U (~$65 / ~175 GEL)</h4>
+  <ul>
+    <li>Грузинские магазины — <em>прямой URL не найден</em></li>
+    <li>🟣 camex.ge → Amazon ~$70 + $5 fee, 4-7 дней</li>
+  </ul>
+
+  <h4>Maono PD200X (~$80 / ~215 GEL)</h4>
+  <ul>
+    <li>Грузинские магазины — <em>бренд Maono не представлен в локальной рознице</em></li>
+    <li>🟣 camex.ge → Amazon ~$80 + $5 fee, 4-7 дней</li>
+  </ul>
+
+  <h4>Maono PD300X (~$90 / ~245 GEL)</h4>
+  <ul>
+    <li>Грузинские магазины — <em>прямой URL не найден</em></li>
+    <li>🟣 camex.ge → Amazon ~$90 + $5 fee</li>
+  </ul>
+
+  <h4>Rode PodMic USB (~$99 / ~265 GEL)</h4>
+  <ul>
+    <li>Грузинские магазины — <em>бренд RODE в розничной сети Грузии не обнаружен</em></li>
+    <li>🟣 camex.ge → Amazon ~$99 + $5 fee / B&H Photo</li>
+  </ul>
+
+  <h4>HyperX SoloCast (~$50 / ~135 GEL)</h4>
+  <ul>
+    <li>🟢 <strong><a href="https://tmarket.ge/ru/product/hyperx-solocast/" target="_blank">tmarket.ge</a></strong> — <strong>250 GEL</strong> (акц. со 269 GEL); физ. точка в Батуми; 1 шт. на дату проверки</li>
+    <li>🟢 <a href="https://zoommer.ge/en/gaming/hyperx-solocast-mic-black-p17755" target="_blank">zoommer.ge</a> — цена не получена через web (JS-rendered), проверить на сайте; физ. точка в Батуми</li>
+    <li>🔵 adashop.ge — 198 GEL, <strong>нет в наличии</strong> на дату проверки</li>
+  </ul>
+  <p><small>⚠️ SoloCast — конденсатор. Только если комната тихая.</small></p>
+
+  <h3>Аксессуары</h3>
+  <ul>
+    <li><strong>Стойки:</strong> geovoice.ge (студийные, уточнять по телефону) · ubuy.ge · camex.ge → Amazon (InnoGear, Neewer, ~$15-25)</li>
+    <li><strong>Поп-фильтр / windscreen:</strong> windscreen часто в комплекте с K688/Q2U/AM8 · ubuy.ge · camex.ge → Amazon (~$5-12)</li>
+  </ul>
+
+  <h3>Приоритетный маршрут закупки (май 2026)</h3>
+  <ol>
+    <li><strong>Сейчас в Батуми без ожиданий</strong> → tmarket: HyperX SoloCast 250 GEL или Fifine AM8 400 GEL (<a href="tel:+995557639639">+995 557 639 639</a> уточнить наличие)</li>
+    <li><strong>Fifine AM8 по нормальной цене</strong> → noutbuk-ge.com: 119 GEL с доставкой</li>
+    <li><strong>Fifine K688 с рук</strong> → yarmarka.ge: 150-280 GEL</li>
+    <li><strong>Samson Q2U / Maono / Rode PodMic</strong> → camex.ge → Amazon: ~$65-99 + $5 fee, ~4-7 дней</li>
+    <li><strong>Boom arm + поп-фильтр</strong> → ubuy.ge или camex.ge → Amazon</li>
+  </ol>
+
+  <h3>Курьеры Тбилиси → Батуми</h3>
+  <table>
+    <tr><th>Сервис</th><th>Срок</th></tr>
+    <tr><td><a href="https://inex.ge" target="_blank">Inex</a></td><td>1-2 дня</td></tr>
+    <tr><td><a href="https://ponyexpress.ge" target="_blank">Pony Express</a></td><td>экспресс, до 20 кг</td></tr>
+    <tr><td>Delivo</td><td>1-2 дня, есть точка в Батуми</td></tr>
+    <tr><td>Грузинская почта</td><td>1-2 дня, дешевле всего</td></tr>
+  </table>
+  <table>
+    <tr><th>Посредник США → Грузия</th><th>Стоимость</th><th>Срок</th></tr>
+    <tr><td><a href="https://camex.ge" target="_blank">camex.ge</a></td><td>до $100 товара — $5; свыше $100 — 5%</td><td>4-7 дней</td></tr>
+    <tr><td><a href="https://onex.ge" target="_blank">onex.ge</a></td><td>уточнять</td><td>5-10 дней</td></tr>
+  </table>
+</section>
+
+<section id="videos">
+  <h2>Источники-видео</h2>
+
+  <div class="video-block">
+    <p class="video-meta">b1trat3 · RU · 51k подписчиков · 95k просмотров · 2024-01-26</p>
+    <strong>МИКРОФОНЫ ДЛЯ СТРИМА и не только в 2024 году</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/Z6Juj4Shbd8" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      Fifine K688 — один из лучших динамических в бюджете до $80: USB+XLR, хорошее подавление фона. RODE Podmic USB не нужна отдельная звуковая карта — топовое качество из коробки. Динамические прощают плохую акустику.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">b1trat3 · RU · 51k подписчиков · 87k просмотров · 2023-02-21</p>
+    <strong>ВЫБИРАЕМ МИКРОФОН ДЛЯ СТРИМА / ВИДЕО / ПОДКАСТОВ</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/jGeEGOQa_PA" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      Fifine — лучший бюджетный выбор. Динамические (Rode PodMic, Shure MV7) — топ для шумных помещений. HyperX SoloCast — популярен у стримеров, звук приемлемый.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">Podcastage · EN · 344k подписчиков · 144k просмотров · 2023-07-25</p>
+    <strong>Rode Podmic USB Review / Test (vs. SM7b, NT-USB, Procaster, Q2u)</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/NAmwQl4r8YY" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      PodMic USB: 24-bit/48kHz, ноль-латентный мониторинг, встроенный DSP. Отлично сравнивается с SM7B. Единственный минус — слабый shock mount, нужен boom arm.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">Podcastage · EN · 344k подписчиков · 143k просмотров · 2023-06-06</p>
+    <strong>Fifine K688 Review / Test (vs. TD510, PD100, Q2u, MV7)</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/bZQ0NiQnlrk" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      K688 и Samson Q2U — два доминирующих бюджетных варианта. K688 слегка «полый» по звуку, но хорошее подавление фона для budget dynamic. Рекомендован для начинающих с гибкостью USB+XLR.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">Edward Smith · EN · 319k подписчиков · 26k просмотров · 2025-02-24</p>
+    <strong>Best BUDGET Microphones For Podcasting | Best Microphones Under $100</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/i9zzT3INXCc" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      Fifine K688 и Maono PD300X — новый бюджетный стандарт 2025 для подкастов. Все 5 протестированных микрофонов динамические — оптимальны для домашней студии без акустики.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">Nick Kendall · EN · 56k подписчиков · 93k просмотров · 2025-03-28</p>
+    <strong>Best Podcast Setup for Any Budget (Beginner Friendly)</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/MpnAkUik2_U" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      USB vs XLR для начинающих: USB побеждает — plug-and-play. Samson Q2U рекомендован как точка входа. Главный совет: не усложняй — запусти подкаст, апгрейди потом.
+    </blockquote>
+  </div>
+
+  <div class="video-block">
+    <p class="video-meta">Think Media · EN · 3.46M подписчиков · 23k просмотров · 2026-03-06</p>
+    <strong>Best Podcast Microphones in 2026!</strong>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/v7DyRmMkqCI" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <blockquote>
+      22 протестированных микрофона. Победитель бюджетного сегмента: Fifine AM8 (~$50). Принцип: динамик прощает необработанные комнаты. USB сначала, XLR — когда вырастешь.
+    </blockquote>
+  </div>
+</section>
+
+<section id="sources">
+  <h2>Все источники</h2>
+  <h3>Видео</h3>
+  <ul>
+    <li><a href="https://youtu.be/Z6Juj4Shbd8" target="_blank">b1trat3 — МИКРОФОНЫ ДЛЯ СТРИМА 2024 (RU)</a></li>
+    <li><a href="https://youtu.be/jGeEGOQa_PA" target="_blank">b1trat3 — ВЫБИРАЕМ МИКРОФОН ДЛЯ ПОДКАСТОВ (RU)</a></li>
+    <li><a href="https://youtu.be/NAmwQl4r8YY" target="_blank">Podcastage — Rode PodMic USB Review</a></li>
+    <li><a href="https://youtu.be/bZQ0NiQnlrk" target="_blank">Podcastage — Fifine K688 Review</a></li>
+    <li><a href="https://youtu.be/i9zzT3INXCc" target="_blank">Edward Smith — Best Budget Mics For Podcasting 2025</a></li>
+    <li><a href="https://youtu.be/MpnAkUik2_U" target="_blank">Nick Kendall — Best Podcast Setup Any Budget 2025</a></li>
+    <li><a href="https://youtu.be/vDGXu4YlWXk" target="_blank">Justin Brown Primal Video — Best Podcast Mic For Beginners</a></li>
+    <li><a href="https://youtu.be/v7DyRmMkqCI" target="_blank">Think Media — Best Podcast Microphones 2026</a></li>
+  </ul>
+  <h3>Магазины Грузии</h3>
+  <ul>
+    <li><a href="https://tmarket.ge/ru/product/microphone-fifine-am8-usb-xlr/" target="_blank">tmarket.ge — Fifine AM8</a></li>
+    <li><a href="https://tmarket.ge/ru/product/hyperx-solocast/" target="_blank">tmarket.ge — HyperX SoloCast</a></li>
+    <li><a href="https://noutbuk-ge.com/z.php?p=Fifine-AmpliGame-AM8--db5" target="_blank">noutbuk-ge.com — Fifine AM8 (119 GEL)</a></li>
+    <li><a href="https://yarmarka.ge/m_fifine" target="_blank">yarmarka.ge — Fifine products</a></li>
+    <li><a href="https://zoommer.ge/en/gaming/hyperx-solocast-mic-black-p17755" target="_blank">zoommer.ge — HyperX SoloCast</a></li>
+    <li><a href="https://geovoice.ge/sadgamebi-sakidebi/sadgamebi/mikrofoni/?sl=en" target="_blank">geovoice.ge — Microphone Stands</a></li>
+    <li><a href="https://camex.ge" target="_blank">camex.ge — посредник USA → Грузия</a></li>
+    <li><a href="https://ubuy.ge/en/brand/fifine" target="_blank">ubuy.ge — Fifine products</a></li>
+  </ul>
+</section>
+
+<div class="footer">
+  Slug: <code>microphone-podcast-batumi</code> &nbsp; · &nbsp;
+  Сгенерировано <code>vb_research-buy</code> · 2026-05-08 &nbsp; · &nbsp;
+  Локальный артефакт, не для публикации
+</div>
+
+<script>
+  const STORAGE_KEY = 'research-microphone-podcast-batumi-checklist';
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  document.querySelectorAll('.setup-card .checklist input[type=checkbox]').forEach(cb => {
+    const id = cb.dataset.id;
+    if (id && saved[id]) cb.checked = true;
+    cb.addEventListener('change', () => {
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      state[id] = cb.checked;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    });
+  });
+</script>
+
+</body>
+</html>
