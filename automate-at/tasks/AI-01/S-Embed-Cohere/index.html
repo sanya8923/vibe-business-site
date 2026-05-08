@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S-Embed-Cohere · AI-01 RAG Агент · Automate At</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/automate-at/assets/styles.css">
+  <link rel="stylesheet" href="/automate-at/tasks/AI-01/_ai01-stretch.css">
+</head>
+<body class="aa-platform" data-aa-page="tasks" data-aa-task="AI-01-S-Embed-Cohere" data-aa-stretch>
+
+<div class="aa-shell">
+  <main class="aa-main">
+    <div class="aa-main-inner">
+
+      <!-- Breadcrumb -->
+      <nav class="aa-breadcrumb">
+        <a href="/automate-at/products/">Продукты</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <a href="/automate-at/products/ai-01/">AI-01 RAG Агент</a>
+        <span class="aa-breadcrumb-sep">/</span>
+        <span>Embedding</span>
+        <span class="aa-breadcrumb-sep">/</span>
+        <span class="aa-breadcrumb-current">S-Embed-Cohere</span>
+      </nav>
+
+      <!-- Status -->
+      <div class="aa-task-status-row">
+        <span class="aa-status-pill-big is-not-started">К выполнению</span>
+      </div>
+
+      <!-- Header -->
+      <header class="aa-detail-header">
+        <h1 class="aa-detail-h1">
+          <span class="aa-detail-h1-code">S-Embed-Cohere</span>
+          Замени движок поиска на Cohere — агент заговорит по-русски
+        </h1>
+        <div class="aa-detail-header-pills">
+          <span class="aa-pill is-phase-junior">Джуниор</span>
+          <span class="aa-pill is-kind-catalog">каталог AI-01</span>
+          <span class="aa-pill is-stretch">стретч</span>
+          <span class="aa-pill is-difficulty">сложность 4/10</span>
+        </div>
+        <p class="aa-detail-lead">
+          Заменяем embedding-модель в двух воркфлоу — с <code>text-embedding-3-small</code> (OpenAI) на <code>embed-v4.0</code> (Cohere). Одно изменение, два воркфлоу, одна тонкость с параметром. Результат: поиск по русскоязычной базе знаний становится на 15–20% точнее.
+        </p>
+      </header>
+
+      <!-- Action card -->
+      <div class="aa-action-card is-inline">
+        <div class="aa-action-card-text-block">
+          <div class="aa-action-card-eyebrow">Стретч к задаче AI-01</div>
+          <div class="aa-action-card-title">Модифицируй два существующих воркфлоу</div>
+          <p class="aa-action-card-text">
+            Твой базовый AI-01 уже работает. Ничего не удаляй — только заменяй sub-ноды и обновляй конфиг.
+          </p>
+        </div>
+        <div class="aa-action-card-actions">
+          <a class="btn btn-primary" href="https://n8n.school.vibe-business.site/" target="_blank" rel="noopener">
+            Открыть n8n →
+          </a>
+          <button class="btn btn-ghost btn-sm" type="button">Сдать на ревью</button>
+        </div>
+      </div>
+
+      <!-- Prereq card -->
+      <div class="aa-side-card is-full aa-task-prereq">
+        <div class="aa-side-card-h3">Что должно быть готово</div>
+        <ul class="aa-side-card-list">
+          <li class="is-ok">AI-01 базовый выполнен (задачи AI-01-01..06) — бот работает в Telegram</li>
+          <li class="is-ok">WF1 загружает файлы в Qdrant, WF2 отвечает через агента</li>
+          <li class="is-pending">Аккаунт Cohere — создадим в шаге 0 ниже</li>
+        </ul>
+        <div class="aa-side-card-hint">
+          Этот стретч нельзя делать без работающего базового агента — ты меняешь существующие ноды, а не строишь с нуля.
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="aa-tabs">
+        <button class="aa-tabs-tab is-active" data-tab="desc">Описание</button>
+        <button class="aa-tabs-tab" data-tab="comments">
+          Комментарии
+          <span class="aa-tabs-tab-count">0</span>
+        </button>
+        <button class="aa-tabs-tab" data-tab="history">История</button>
+      </div>
+
+      <!-- Tab: Описание -->
+      <div class="aa-tab-content is-active" data-tab-content="desc">
+
+        <!-- IO box -->
+        <div class="aa-io-box">
+          <div class="aa-io-box-row">
+            <span class="aa-io-box-key">Было</span>
+            <span class="aa-io-box-val">OpenAI text-embedding-3-small (1536d) — обучена на английском, на русской морфологии теряет точность</span>
+          </div>
+          <div class="aa-io-box-row">
+            <span class="aa-io-box-key">Стало</span>
+            <span class="aa-io-box-val">Cohere embed-v4.0 (1024d) — специально обученная на 100+ языках, русский на уровне с английским</span>
+          </div>
+        </div>
+
+        <!-- Minimal idea -->
+        <div class="aa-md-body">
+          <h2>Что меняем и зачем</h2>
+          <p>
+            Когда агент ищет ответ в базе знаний, он сначала превращает вопрос пользователя в вектор — цифровое представление смысла. Embedding-модель — это и есть тот инструмент, который делает превращение. По умолчанию мы используем модель OpenAI.
+          </p>
+          <p>
+            Проблема: OpenAI <code>text-embedding-3-small</code> обучалась преимущественно на английских текстах. Русский язык со всей его морфологией — «стол», «стола», «столу», «столы» — для неё сложнее. Cohere <code>embed-v4.0</code> специально создавалась для 100+ языков и понимает русский так же хорошо, как английский.
+          </p>
+        </div>
+
+        <!-- Problem callout -->
+        <div class="aa-callout-tip is-warn">
+          <div class="aa-callout-tip-icon">⚠</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Когда это проявляется</div>
+            <div class="aa-callout-tip-title">Агент находит не то или «не знает» ответа — хотя он есть в базе</div>
+            <div class="aa-callout-tip-text">
+              <p>Пользователь спрашивает «где находятся наши склады» — в базе есть документ про «склад» и «хранение». OpenAI embedding иногда не свяжет «склады» и «склад» как близкие по смыслу. Cohere embed-v4 с этим справляется — она понимает морфологию и синонимы на русском языке.</p>
+              <p>На бенчмарках: на русскоязычных запросах Cohere embed-v4 показывает на <strong>15–20% лучший recall</strong>, чем OpenAI text-embedding-3-small.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture БЫЛО → СТАЛО -->
+        <div class="aa-md-body">
+          <h2>Что меняется в воркфлоу</h2>
+          <p>Два воркфлоу содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между ними.</p>
+        </div>
+
+        <div class="aa-arch-diff">
+          <div class="aa-arch-diff-side is-before">
+            <div class="aa-arch-diff-label">БЫЛО</div>
+            <div class="aa-arch-diff-body">
+              <div><span class="dim">WF1 · Qdrant Insert</span></div>
+              <div>&nbsp;└ Embeddings <span>OpenAI</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: text-embedding-3-small</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1536</span></div>
+              <br>
+              <div><span class="dim">WF2 · Qdrant KB</span></div>
+              <div>&nbsp;└ Embeddings <span>OpenAI</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: text-embedding-3-small</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1536</span></div>
+            </div>
+          </div>
+          <div class="aa-arch-diff-arrow">→</div>
+          <div class="aa-arch-diff-side is-after">
+            <div class="aa-arch-diff-label">СТАЛО</div>
+            <div class="aa-arch-diff-body">
+              <div><span class="dim">WF1 · Qdrant Insert</span></div>
+              <div>&nbsp;└ Embeddings <span class="changed">Cohere</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: </span><span class="changed">embed-v4.0</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Input Type: </span><span class="hi">search_document</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1024</span></div>
+              <br>
+              <div><span class="dim">WF2 · Qdrant KB</span></div>
+              <div>&nbsp;└ Embeddings <span class="changed">Cohere</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: </span><span class="changed">embed-v4.0</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Input Type: </span><span class="critical">search_query ← !</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1024</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aa-callout-tip">
+          <div class="aa-callout-tip-icon">💡</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Главная тонкость</div>
+            <div class="aa-callout-tip-title">В WF1 и WF2 параметр <code>Input Type</code> разный</div>
+            <div class="aa-callout-tip-text">
+              <p>В WF1 ставим <strong>search_document</strong> — это режим для индексации документов. В WF2 ставим <strong>search_query</strong> — это режим для поиска по запросу пользователя. Если поставить везде одинаково — качество поиска упадёт на 5–10%. Разбор причины — в статье ниже.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- SECTION 0: API Setup                          -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div class="aa-md-body">
+          <h2>Шаг 0 — Получи доступ к Cohere API</h2>
+          <p>Cohere — внешний сервис. Нужно зарегистрироваться, получить ключ и проверить что он работает. Занимает 5 минут.</p>
+        </div>
+
+        <div class="aa-setup-steps">
+
+          <div class="aa-setup-step">
+            <div class="aa-setup-step-num">0.1</div>
+            <div class="aa-setup-step-content">
+              <div class="aa-setup-step-title">Регистрация</div>
+              <div class="aa-setup-step-text">
+                Открой <a href="https://dashboard.cohere.com" target="_blank" rel="noopener">dashboard.cohere.com</a> → <strong>Sign Up</strong>. Email + подтверждение. Банковская карта не нужна — free tier даётся сразу.
+              </div>
+            </div>
+          </div>
+
+          <div class="aa-setup-step">
+            <div class="aa-setup-step-num">0.2</div>
+            <div class="aa-setup-step-content">
+              <div class="aa-setup-step-title">Получи API key</div>
+              <div class="aa-setup-step-text">
+                В левом меню: <strong>API Keys</strong> → <strong>Create API Key</strong>. Имя любое, например <code>n8n-school</code>. Скопируй ключ — он показывается один раз.
+                <div style="margin-top: 8px;">
+                  <div class="aa-inline-article-screenshot is-placeholder" style="height: 120px;">
+                    <div class="aa-inline-article-screenshot-icon">📸</div>
+                    <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                    <div class="aa-inline-article-screenshot-sub">Страница API Keys → кнопка Create API Key</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aa-setup-step">
+            <div class="aa-setup-step-num">0.3</div>
+            <div class="aa-setup-step-content">
+              <div class="aa-setup-step-title">Проверь что ключ работает</div>
+              <div class="aa-setup-step-text">
+                Скопируй curl-запрос, вставь свой ключ и запусти в терминале:
+                <div class="aa-setup-step-curl">
+                  <div class="aa-setup-step-curl-header">
+                    <span>curl · проверка ключа</span>
+                  </div>
+<pre>curl https://api.cohere.com/v2/embed \
+  -H "Authorization: Bearer <span style="color:var(--accent)">ВАШ_КЛЮЧ</span>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "embed-v4.0",
+    "input_type": "search_document",
+    "embedding_types": ["float"],
+    "texts": ["тестовая фраза для проверки"]
+  }'</pre>
+                  <div class="aa-setup-step-curl-note">
+                    Ожидаемый ответ: JSON с полем <code>embeddings.float</code> — массив из 1024 чисел.<br>
+                    Если <code>401</code> — ключ скопирован неверно. Если <code>429</code> — trial исчерпан.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aa-setup-step">
+            <div class="aa-setup-step-num">0.4</div>
+            <div class="aa-setup-step-content">
+              <div class="aa-setup-step-title">Создай credential в n8n</div>
+              <div class="aa-setup-step-text">
+                В n8n: <strong>Settings → Credentials → Add credential → Header Auth</strong>. Заполни:
+                <div class="aa-setup-step-credential">
+                  <div class="aa-setup-step-credential-row">
+                    <div class="aa-setup-step-credential-key">Name</div>
+                    <div class="aa-setup-step-credential-val">Cohere API</div>
+                  </div>
+                  <div class="aa-setup-step-credential-row">
+                    <div class="aa-setup-step-credential-key">Header Name</div>
+                    <div class="aa-setup-step-credential-val">Authorization</div>
+                  </div>
+                  <div class="aa-setup-step-credential-row">
+                    <div class="aa-setup-step-credential-key">Header Value</div>
+                    <div class="aa-setup-step-credential-val">Bearer <span style="color:var(--accent)">ВАШ_КЛЮЧ</span></div>
+                  </div>
+                </div>
+
+                <details class="aa-inline-article" style="margin-top: 12px;">
+                  <summary>
+                    <span class="aa-inline-article-icon">🔑</span>
+                    <span class="aa-inline-article-title">Что такое Header Auth и почему не «Cohere API»</span>
+                    <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                    <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+                  </summary>
+                  <div class="aa-inline-article-body">
+                    <div class="aa-md-body">
+                      <p>В n8n есть два способа хранить API-ключи:</p>
+                      <ul>
+                        <li><strong>Встроенные credentials</strong> — n8n «знает» сервис (OpenAI, Telegram, Slack) и сам знает как подставлять ключ. Интерфейс проще: просто вставь токен.</li>
+                        <li><strong>Header Auth</strong> — универсальный способ для любых REST API. Ты вручную говоришь: «при каждом запросе добавляй заголовок <code>Authorization: Bearer ключ</code>». Cohere embedding API — именно такой.</li>
+                      </ul>
+                      <p>Почему не «Cohere API»: в n8n может не быть нативного credential-типа для Cohere embed (зависит от версии). Header Auth — гарантированно работает. Если в твоей версии n8n есть <strong>Cohere API</strong> как встроенный тип — используй его, он удобнее.</p>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- SECTION: Qdrant recreation (FIRST!)           -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div class="aa-md-body">
+          <h2>Шаги внедрения</h2>
+        </div>
+
+        <!-- Step 1: Qdrant -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">1</span>
+            <span class="aa-node-step-title">Пересоздай Qdrant-коллекцию</span>
+            <span class="aa-node-step-tag" style="background:rgba(250,100,60,.12);color:#f06040;border-color:rgba(250,100,60,.25);">делать ПЕРВЫМ</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Почему первым:</strong> Qdrant хранит коллекцию с фиксированной размерностью. OpenAI делал векторы на 1536 чисел, Cohere — на 1024. Эти два формата несовместимы. Если сначала поменяешь ноды, а потом попытаешься загрузить файл — Qdrant вернёт ошибку. Поэтому сначала удаляем старую коллекцию, создаём новую, а потом меняем ноды.</p>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">📐</span>
+                <span class="aa-inline-article-title">Почему нельзя смешивать векторы разной размерности</span>
+                <span class="aa-inline-article-hint">статья · ~3 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Когда ты создаёшь коллекцию в Qdrant, ты один раз говоришь: «в этой коллекции векторы будут размером 1536». Это прошивается в структуру БД навсегда — как тип колонки в SQL-таблице.</p>
+                  <p>Embedding-модели выдают векторы конкретного размера. Это не случайность — размер определяет «сколько смысла» помещается в вектор:</p>
+                  <ul>
+                    <li><strong>OpenAI text-embedding-3-small</strong> → 1536 чисел</li>
+                    <li><strong>Cohere embed-v4.0</strong> → 1024 числа (или меньше через Matryoshka)</li>
+                    <li><strong>bge-m3</strong> → 1024 числа</li>
+                  </ul>
+                  <p>Если ты попытаешься записать 1024-мерный вектор в коллекцию, созданную под 1536 — Qdrant откажет с ошибкой <code>Wrong input: expected dim 1536, got 1024</code>.</p>
+                  <p><strong>Что делать:</strong></p>
+                  <ol>
+                    <li>Удалить старую коллекцию (все векторы пропадут).</li>
+                    <li>Создать новую с <code>size: 1024</code>. Это делается автоматически при первом insert'е через ноду Qdrant Insert.</li>
+                    <li>Перезалить все файлы KB через WF1 — теперь они запишутся с правильными 1024-мерными векторами.</li>
+                  </ol>
+                  <p><strong>Боятся ли потери данных?</strong> Нет. KB — это производное от твоих исходных файлов. Файлы у тебя есть, WF1 умеет их грузить. Удаление коллекции = «очисти индекс», а не «удали документы».</p>
+                </div>
+              </div>
+            </details>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Как удалить коллекцию через Qdrant HTTP Request</div>
+              <p>Самый простой способ — выполни HTTP Request прямо в n8n (один раз, вручную, без сохранения в WF):</p>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Method</strong> <code>DELETE</code></li>
+                <li><strong>URL</strong> <code>https://qdrant.school.vibe-business.site/collections/c01-kb-agent</code></li>
+                <li><strong>Header</strong> <code>api-key: &lt;твой Qdrant Master ключ&gt;</code></li>
+              </ul>
+              <p style="font-size:13px;color:var(--muted);">Замени <code>c01</code> на свой student_id. Qdrant Master credentials лежат в n8n — ключ смотри там.</p>
+            </div>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">До удаления</div>
+                <div class="aa-node-step-io-note">Коллекция <code>c01-kb-agent</code> с векторами 1536d. Файлы KB уже залиты через OpenAI embedding.</div>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">После удаления</div>
+                <div class="aa-node-step-io-note">Коллекции нет. При следующем запуске WF1 — Qdrant Insert создаст новую с размерностью 1024 (под Cohere). Сохранять старые данные не нужно.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: WF1 -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">2</span>
+            <span class="aa-node-step-title">WF1 — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-tag">Chat Trigger Ingestion</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делаем:</strong> в нодах <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> есть sub-нода <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
+
+            <div class="aa-subnode-change">
+              <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
+              <span class="aa-subnode-change-arrow">→</span>
+              <span class="aa-subnode-change-new">Embeddings Cohere (embed-v4.0)</span>
+            </div>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Как заменить sub-ноду</div>
+              <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
+                <li>Открой <strong>WF1 Chat Trigger Ingestion</strong>.</li>
+                <li>Кликни на ноду <strong>Qdrant Insert TXT</strong> → в правой панели найди sub-ноду <strong>Embeddings OpenAI</strong>.</li>
+                <li>Нажми <strong>×</strong> на sub-ноде, чтобы отсоединить её.</li>
+                <li>Нажми <strong>+ (Add document embedding)</strong> → выбери <strong>Embeddings Cohere</strong>.</li>
+                <li>Повтори для <strong>Qdrant Insert PDF</strong> (там та же sub-нода).</li>
+              </ol>
+            </div>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Настройки Embeddings Cohere в WF1</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Credential</strong> <code>Cohere API</code> (тот, что создал в шаге 0.4)</li>
+                <li><strong>Model</strong> <code>embed-v4.0</code></li>
+                <li><strong>Input Type</strong> <code>search_document</code> ← для индексации</li>
+              </ul>
+            </div>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">🔀</span>
+                <span class="aa-inline-article-title">Что такое sub-нода и как она работает внутри Qdrant Insert</span>
+                <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>В n8n AI-ноды типа <code>Qdrant Insert</code>, <code>Qdrant KB</code>, <code>AI Agent</code> устроены как «родитель + дети». Родитель — основная нода (например, Qdrant Insert — записывает векторы в БД). Дети — sub-ноды, которые подключаются к кружкам на нижней стороне родителя.</p>
+                  <p>Sub-нода <code>Embeddings OpenAI</code> — это «провайдер эмбеддингов». Когда Qdrant Insert хочет записать чанк текста, он обращается к этой sub-ноде: «переведи мне этот текст в вектор». Sub-нода делает запрос в OpenAI API и возвращает вектор.</p>
+                  <p>Когда ты меняешь sub-ноду на <code>Embeddings Cohere</code> — ты просто говоришь Qdrant Insert: «теперь за векторами иди не в OpenAI, а в Cohere». Всё остальное в WF1 остаётся нетронутым.</p>
+                </div>
+              </div>
+            </details>
+
+            <div class="aa-wf-shot">
+              <div class="aa-inline-article-screenshot is-placeholder" style="height: 160px; border-radius: 8px;">
+                <div class="aa-inline-article-screenshot-icon">📸</div>
+                <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                <div class="aa-inline-article-screenshot-sub">WF1 с заменённой sub-нодой Embeddings Cohere вместо OpenAI</div>
+              </div>
+              <div class="aa-wf-shot-caption">После шага 2 — WF1 использует Cohere embed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: WF2 -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">3</span>
+            <span class="aa-node-step-title">WF2 — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-tag">KB Master Agent</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делаем:</strong> в ноде <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже есть sub-нода <code>Embeddings OpenAI</code>. Заменяем аналогично. <strong>Но с другим Input Type.</strong></p>
+
+            <div class="aa-subnode-change">
+              <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
+              <span class="aa-subnode-change-arrow">→</span>
+              <span class="aa-subnode-change-new">Embeddings Cohere (embed-v4.0, <span style="color:var(--warn)">search_query</span>)</span>
+            </div>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Настройки Embeddings Cohere в WF2</div>
+              <ul class="aa-node-step-config-list">
+                <li><strong>Credential</strong> <code>Cohere API</code></li>
+                <li><strong>Model</strong> <code>embed-v4.0</code></li>
+                <li><strong>Input Type</strong> <code>search_query</code> ← <span style="color:var(--warn)">ДРУГОЙ, чем в WF1!</span></li>
+              </ul>
+            </div>
+
+            <details class="aa-inline-article">
+              <summary>
+                <span class="aa-inline-article-icon">🎯</span>
+                <span class="aa-inline-article-title">Зачем Input Type разный в WF1 и WF2</span>
+                <span class="aa-inline-article-hint">статья · ~3 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Cohere специально обучила модель так, чтобы документы и вопросы к ним «тяготели» друг к другу в векторном пространстве — но при условии, что они обрабатываются через правильный режим.</p>
+                  <p>Представь два вектора:</p>
+                  <ul>
+                    <li>Документ «Наши склады расположены в Москве и Санкт-Петербурге», обработанный в режиме <code>search_document</code>.</li>
+                    <li>Вопрос «где у вас склады?», обработанный в режиме <code>search_query</code>.</li>
+                  </ul>
+                  <p>Эти два вектора будут близки. Именно это нам и нужно — вопрос должен «притягивать» релевантные документы.</p>
+                  <p>Если оба обрабатывать через <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10% — незаметно на простых запросах, ощутимо на сложных.</p>
+                  <p><strong>Мнемоника:</strong> WF1 загружает <em>документы</em> → <code>search_document</code>. WF2 ищет по <em>запросу пользователя</em> → <code>search_query</code>.</p>
+                </div>
+              </div>
+            </details>
+
+            <div class="aa-wf-shot">
+              <div class="aa-inline-article-screenshot is-placeholder" style="height: 160px; border-radius: 8px;">
+                <div class="aa-inline-article-screenshot-icon">📸</div>
+                <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                <div class="aa-inline-article-screenshot-sub">WF2 с sub-нодой Embeddings Cohere (Input Type: search_query)</div>
+              </div>
+              <div class="aa-wf-shot-caption">После шага 3 — WF2 ищет по-прежнему, но уже через Cohere</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Gateway Config -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">4</span>
+            <span class="aa-node-step-title">Обнови Gateway Config</span>
+            <span class="aa-node-step-tag">DataTable</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Что делаем:</strong> в DataTable <code>Gateway Config</code> добавляем два новых поля в JSON-конфиге строки <code>channel='telegram'</code>. Это нужно чтобы система знала, какой embedding-провайдер используется в проекте.</p>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Что добавить в поле qdrant JSON</div>
+              <p style="font-size:13px;color:var(--muted);">Открой DataTable <code>Gateway Config</code> → найди строку с <code>channel = telegram</code> → отредактируй JSON в поле <code>qdrant</code>. Добавь два новых ключа:</p>
+              <ul class="aa-node-step-config-list">
+                <li><strong>embedding_provider</strong> <code>"cohere"</code></li>
+                <li><strong>embedding_model</strong> <code>"embed-v4.0"</code></li>
+                <li><strong>embedding_dimensions</strong> <code>1024</code></li>
+              </ul>
+            </div>
+
+            <div class="aa-node-step-io">
+              <div class="aa-node-step-io-col is-input">
+                <div class="aa-node-step-io-label">Было</div>
+<pre>{
+  "collection": "c01-kb-agent",
+  "description": "База МебельДом"
+}</pre>
+              </div>
+              <div class="aa-node-step-io-col is-output">
+                <div class="aa-node-step-io-label">Стало</div>
+<pre>{
+  "collection": "c01-kb-agent",
+  "description": "База МебельДом",
+  "embedding_provider": "cohere",
+  "embedding_model": "embed-v4.0",
+  "embedding_dimensions": 1024
+}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Re-ingest -->
+        <div class="aa-node-step">
+          <div class="aa-node-step-head">
+            <span class="aa-node-step-num">5</span>
+            <span class="aa-node-step-title">Перезалей KB через WF1</span>
+            <span class="aa-node-step-tag">в самом конце</span>
+          </div>
+          <div class="aa-node-step-body">
+            <p><strong>Почему нужно:</strong> в шаге 1 ты удалил коллекцию — старые векторы пропали. Теперь ноды настроены на Cohere. Нужно снова загрузить все файлы KB через WF1 — они будут записаны уже как 1024-мерные Cohere-векторы.</p>
+
+            <div class="aa-node-step-config">
+              <div class="aa-node-step-config-label">Как запустить</div>
+              <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
+                <li>Открой <strong>WF1 Chat Trigger Ingestion</strong>.</li>
+                <li>Нажми <strong>Chat</strong> (нижняя панель) — откроется встроенный чат n8n.</li>
+                <li>Прикрепи каждый файл KB и отправь. Если файлов много — по одному или пачкой, как удобно.</li>
+                <li>После каждого файла смотри в <strong>Executions</strong> — должен быть <code>Success</code>.</li>
+              </ol>
+            </div>
+
+            <div class="aa-callout-tip">
+              <div class="aa-callout-tip-icon">💡</div>
+              <div class="aa-callout-tip-body">
+                <div class="aa-callout-tip-label">Следи за trial-лимитом</div>
+                <div class="aa-callout-tip-title">100 документов ≈ 200 запросов к Cohere API</div>
+                <div class="aa-callout-tip-text">
+                  <p>Free tier Cohere — 1000 запросов в месяц. Один документ при ingestion разбивается на чанки и обрабатывается пачками по 96 (лимит batch). Отслеживай usage на dashboard.cohere.com → Usage.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification -->
+        <div class="aa-md-body">
+          <h2>Проверка</h2>
+        </div>
+
+        <div class="aa-callout-tip">
+          <div class="aa-callout-tip-icon">✓</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">5 шагов проверки</div>
+            <div class="aa-callout-tip-title">Убедись что всё работает правильно</div>
+            <div class="aa-callout-tip-text">
+              <ol>
+                <li>Загрузи один файл через WF1 → execution <code>Success</code> → usage в Cohere dashboard вырос.</li>
+                <li>Отправь боту вопрос на русском с морфологией — например про «столы», если в KB есть про мебель. Агент должен найти правильный чанк.</li>
+                <li>Если KB смешанная (RU+EN) — задай вопрос по-английски. Должен тоже находить.</li>
+                <li>Возьми 3–5 «трудных» вопросов с синонимами или разными формами слов. Сравни с тем, как отвечал агент раньше — на Cohere должно быть заметно лучше.</li>
+                <li>Проверь, что при ошибке (например, превышен trial) — Error Workflow отправляет алерт, а не падает молча.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- DoD -->
+        <div class="aa-dod-block">
+          <div class="aa-dod-block-h2">Готов? Проверь себя</div>
+          <p class="aa-dod-block-lead">Все пять пунктов — отправляй на ревью.</p>
+          <ul class="aa-dod-list">
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">Аккаунт Cohere создан, API key добавлен в credential <code>Cohere API</code> в n8n. Curl-тест вернул массив из 1024 чисел.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">WF1: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_document</code>.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">WF2: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_query</code> — другой, чем в WF1.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">Qdrant-коллекция пересоздана, KB перезалита через WF1. Бот отвечает на вопросы.</span>
+              </label>
+            </li>
+            <li class="aa-dod-item">
+              <label>
+                <input type="checkbox">
+                <span class="aa-dod-item-check"></span>
+                <span class="aa-dod-item-text">На вопросе с русской морфологией агент находит правильный чанк — качество лучше, чем было на OpenAI.</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Test cases -->
+        <div class="aa-md-body aa-test-cases-block">
+          <h2>Тест-кейсы</h2>
+          <table class="aa-test-cases">
+            <thead>
+              <tr><th>Вход</th><th>Ожидаем</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Вопрос с морфологией («расскажи о столах» при KB про мебель)</td>
+                <td>Агент находит чанки про «стол», «столов», «столами» — без промаха</td>
+              </tr>
+              <tr>
+                <td>Оба Input Type = search_document (ошибочная конфигурация)</td>
+                <td>Ощутимая просадка точности на сложных запросах</td>
+              </tr>
+              <tr>
+                <td>Попытка загрузить файл до пересоздания коллекции</td>
+                <td>Ошибка Qdrant: несовместимость размерностей 1024 ≠ 1536</td>
+              </tr>
+              <tr>
+                <td>Trial исчерпан (> 1000 req/мес)</td>
+                <td>Cohere вернёт 429 → Error WF отправит алерт</td>
+              </tr>
+              <tr>
+                <td>Смешанная KB (RU+EN) — вопрос по-английски</td>
+                <td>Агент находит правильные чанки на обоих языках</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Gotchas -->
+        <div class="aa-callout-tip is-warn">
+          <div class="aa-callout-tip-icon">⚠</div>
+          <div class="aa-callout-tip-body">
+            <div class="aa-callout-tip-label">Типичные ошибки</div>
+            <div class="aa-callout-tip-title">Три места где обычно застревают</div>
+            <div class="aa-callout-tip-text">
+              <ol>
+                <li><strong>input_type одинаковый в WF1 и WF2.</strong> Самая частая ошибка. WF1 = <code>search_document</code>, WF2 = <code>search_query</code>. Разные.</li>
+                <li><strong>Не пересоздали коллекцию перед сменой нод.</strong> Получишь <code>Wrong input: expected dim 1536, got 1024</code> при первой же загрузке файла.</li>
+                <li><strong>Native ноды Cohere нет в n8n.</strong> Зависит от версии. Если в списке sub-нод нет <code>Embeddings Cohere</code> — нужен HTTP Request, это отдельный более сложный сценарий (~2 часа работы). Уточни у ментора.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cross-links -->
+        <details class="aa-stretch">
+          <summary>
+            <span class="aa-stretch-title">Куда дальше — следующие логичные стретчи</span>
+            <span class="aa-stretch-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="aa-md-body">
+            <ul>
+              <li>
+                <strong>S-Retrieval-Rerank (Cohere Rerank)</strong> — следующий логичный шаг. Cohere embed + Cohere rerank — официально рекомендованная связка. Rerank берёт топ-50 результатов поиска и переранжирует их по точности. Качество retrieval вырастает ещё на 10–15%.
+              </li>
+              <li>
+                <strong>S-Embed-Voyage</strong> — альтернатива если база содержит длинные документы (> 10 страниц). Voyage AI специализируется на длинном контексте (32k+ токенов за раз).
+              </li>
+              <li>
+                <strong>M8 RAG M8-00 — Embedding selection</strong> — тематический модуль, разбирает выбор embedding-модели изнутри: бенчмарки OpenAI vs Cohere vs Voyage vs Gemini vs OSS, Matryoshka, как выбирать.
+              </li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- Tab: Комментарии -->
+      <div class="aa-tab-content" data-tab-content="comments">
+        <div class="aa-md-body" style="text-align: center; padding: 40px 20px; color: var(--muted);">
+          Здесь появятся вопросы и ответы по этому стретчу.
+        </div>
+      </div>
+
+      <!-- Tab: История -->
+      <div class="aa-tab-content" data-tab-content="history">
+        <div class="aa-history">
+          <div class="aa-history-item is-active">
+            <div class="aa-history-item-date">сейчас</div>
+            <div class="aa-history-item-text">Стретч <strong>открыт</strong> — статус «К выполнению».</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help -->
+      <section class="aa-side-card is-full aa-bottom-section aa-help-block">
+        <div class="aa-side-card-h3">Помощь</div>
+        <p class="aa-side-card-hint">
+          Застрял? Покажи в чате скриншот ноды и вывод ошибки из Executions — обычно находим причину быстро.
+        </p>
+        <a class="btn btn-ghost btn-sm" href="https://t.me/profy_conveyor" target="_blank" rel="noopener">
+          Написать в чат
+        </a>
+      </section>
+
+      <footer class="aa-platform-footer">
+        <span>Automate At · Profy Conveyor</span>
+        <span>AI-01 RAG Агент · Стретчи Embedding</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="/automate-at/assets/shell.js"></script>
+<script>
+(function () {
+  // Tabs
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if (!tab) return;
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.aa-tabs-tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === id));
+    document.querySelectorAll('[data-tab-content]').forEach(c => c.classList.toggle('is-active', c.dataset.tabContent === id));
+  });
+
+  // DoD checklist
+  document.querySelectorAll('.aa-dod-item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', e => {
+      e.target.closest('.aa-dod-item').classList.toggle('is-checked', e.target.checked);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

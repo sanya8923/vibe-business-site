@@ -1,0 +1,130 @@
+stretch_id: S-Embed-Cohere
+name: "Cohere Embed v3"
+category: embedding
+difficulty: 4           # из 10
+time_min: 30
+estimated_cost: free_tier   # 1000 req/мес бесплатно
+
+api_mode:
+  - own_api_key
+
+registration_steps:
+  - url: https://dashboard.cohere.com
+    description: "Email + подтверждение почты. Банковская карта не нужна."
+  - where_to_find_key: "API Keys → Create API Key (имя любое, например 'n8n-school')"
+  - free_tier: "1000 запросов/мес. Один документ при ingestion ≈ 1-2 запроса."
+
+n8n_credential:
+  type: "Header Auth"
+  fields:
+    Name: Authorization
+    Value: "Bearer <api_key>"
+
+curl_test: |
+  curl https://api.cohere.com/v2/embed \
+    -H "Authorization: Bearer <api_key>" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "model": "embed-v4.0",
+      "input_type": "search_document",
+      "embedding_types": ["float"],
+      "texts": ["тестовая фраза для проверки"]
+    }'
+curl_expected: "JSON с полем embeddings.float — массив из 1024 чисел. Если 401 — ключ скопирован неверно. Если 429 — превышен trial-лимит."
+
+community_node: null
+community_node_version: null
+
+prereqs:
+  - base_wf: AI-01-core   # задачи AI-01-01..06 выполнены, агент работает
+
+incompatible_with:
+  - S-Embed-Voyage
+  - S-Embed-GigaChat
+  - S-Embed-BGE-Selfhost
+  # нельзя использовать два embedding-провайдера одновременно
+
+wf_changes:
+  - wf_id: WF1
+    wf_name: "Chat Trigger Ingestion"
+    action: replace_subnode
+    parent_node: "Qdrant Insert TXT"
+    old_subnode: "Embeddings OpenAI"
+    new_subnode: "Embeddings Cohere"
+    params:
+      Credential: Cohere API
+      Model: embed-v4.0
+      Input Type: search_document
+    note: "Повторить для Qdrant Insert PDF (та же замена)"
+
+  - wf_id: WF2
+    wf_name: "KB Master Agent"
+    action: replace_subnode
+    parent_node: "Qdrant KB"
+    old_subnode: "Embeddings OpenAI"
+    new_subnode: "Embeddings Cohere"
+    params:
+      Credential: Cohere API
+      Model: embed-v4.0
+      Input Type: search_query     # ← ДРУГОЙ input_type, чем в WF1!
+
+  - wf_id: gateway_config
+    action: update_field
+    field: qdrant.embedding_provider
+    value: cohere
+    note: "Добавить новое поле, которого нет в базовом конфиге"
+
+  - action: recreate_qdrant_collection
+    reason: "размерность изменилась 1536→1024, старые и новые векторы несовместимы"
+    order: FIRST  # выполнять ДО замены нод
+
+  - action: reingest_all_files
+    reason: "после пересоздания коллекции — все файлы KB нужно загрузить заново через WF1"
+    order: LAST
+
+gotchas:
+  - "input_type=search_document в WF1 и input_type=search_query в WF2 — они РАЗНЫЕ. Ошибка здесь снижает качество поиска на 5-10%."
+  - "Сначала пересоздаём Qdrant-коллекцию, ПОТОМ меняем ноды. Иначе при попытке записи получишь ошибку несовместимости размерностей."
+  - "Trial 1000 req/мес. 100 документов при ingestion ≈ 200 запросов. Следи за usage в дашборде Cohere."
+  - "Если native Cohere sub-нода отсутствует в твоей версии n8n — нужен HTTP Request. Это сложнее (~2 часа). Сначала проверь, есть ли нода."
+
+verification_steps:
+  - "Загрузи один файл через WF1 → execution прошёл без ошибок → в Cohere dashboard usage вырос на 1-2 запроса."
+  - "Задай боту вопрос на русском с морфологией (например, про 'столы' если в KB есть про стол) → находит правильный чанк."
+  - "Если KB смешанная (RU+EN) — задай вопрос по-английски → тоже находит."
+  - "Возьми 3-5 'сложных' вопросов с морфологией и синонимами — сравни с тем, что было на OpenAI. Cohere должен ощутимо выигрывать."
+  - "Проверь usage в Cohere dashboard: цифра не должна пугать (один agent-вопрос = 1 embedding-запрос)."
+
+dod:
+  - "Аккаунт Cohere создан, API key добавлен в credential 'Cohere API' в n8n."
+  - "Curl-тест вернул массив из 1024 чисел."
+  - "WF1 и WF2 переключены на Cohere. input_type правильный: search_document в WF1, search_query в WF2."
+  - "Qdrant-коллекция пересоздана, KB перезалита через WF1."
+  - "Бот отвечает на вопросы по-прежнему. Качество на русском заметно лучше."
+
+test_cases:
+  - input: "Вопрос с русской морфологией (напр. 'расскажи о столах' при KB про мебель)"
+    expected: "Находит чанки про 'стол', 'столов', 'столами' — без промаха"
+  - input: "Тот же вопрос, но input_type одинаковый (search_document и там и там)"
+    expected: "Ощутимая просадка точности на сложных запросах"
+  - input: "Размерность mismatch (WF1 1024, WF2 ещё 1536 от OpenAI)"
+    expected: "Qdrant вернёт ошибку или пустой результат"
+  - input: "Trial исчерпан (> 1000 запросов)"
+    expected: "Cohere вернёт 429 → Error WF отправит алерт"
+  - input: "Смешанная KB (RU+EN) — вопрос по-английски"
+    expected: "Находит правильные чанки на обоих языках"
+
+submission_type: plane_task
+
+inline_articles:
+  - qdrant-dimensions-incompatible   # почему нельзя смешивать векторы разной размерности
+  - cohere-input-type-explained      # input_type: search_document vs search_query
+  - n8n-credential-header-auth       # как создать Header Auth credential
+  - n8n-subnode-concept              # что такое sub-нода в AI-нодах n8n
+
+next_stretches:
+  - S-Retrieval-Rerank   # Cohere embed + Cohere rerank = рекомендованная связка
+  - S-Embed-Voyage       # альтернатива если нужны domain-specific тексты
+
+source_md: "school/doc/modules/AI-business-automations/drafts/[AI-01_Base]_RAG_Agent/drafts/AI-01-S-Emb-Cohere.md"
+instruction_md: "school/doc/modules/AI-business-automations/drafts/[AI-01_Base]_RAG_Agent/stretches/Embeddings/Cohere/instruction.md"

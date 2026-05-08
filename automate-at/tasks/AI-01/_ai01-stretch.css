@@ -1,0 +1,270 @@
+/* AI-01 Stretch Tasks — общие стили для всех стретчей AI-01.
+   Подключать в каждой стретч-задаче.
+   Дополнять в {stretch-id}.css только специфичными стилями. */
+
+/* ─── Workflow screenshot ─────────────────────────────────────── */
+[data-aa-stretch] .aa-wf-shot {
+  margin: 16px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0a0c12;
+}
+[data-aa-stretch] .aa-wf-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 9px;
+}
+[data-aa-stretch] .aa-wf-shot-caption {
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+/* ─── Binary preview (n8n Output panel visualization) ───────── */
+[data-aa-stretch] .aa-binary-preview {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(91,192,235,.06);
+  border: 1px solid rgba(91,192,235,.18);
+  margin: 6px 0;
+}
+[data-aa-stretch] .aa-binary-preview-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+[data-aa-stretch] .aa-binary-preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+[data-aa-stretch] .aa-binary-preview-tag {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--info, #5BC0EB);
+  font-family: 'JetBrains Mono', monospace;
+}
+[data-aa-stretch] .aa-binary-preview-row {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+[data-aa-stretch] .aa-binary-preview-key {
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+[data-aa-stretch] .aa-binary-preview-val {
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── Architecture БЫЛО → СТАЛО ──────────────────────────────── */
+.aa-arch-diff {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: start;
+  margin: 20px 0;
+}
+.aa-arch-diff-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 700;
+}
+.aa-arch-diff-side {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.aa-arch-diff-side.is-before {
+  border-color: rgba(255,255,255,.12);
+  opacity: .75;
+}
+.aa-arch-diff-side.is-after {
+  border-color: rgba(0,201,167,.25);
+}
+.aa-arch-diff-label {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  border-bottom: 1px solid var(--border);
+}
+.aa-arch-diff-side.is-before .aa-arch-diff-label {
+  color: var(--muted);
+  background: rgba(255,255,255,.03);
+}
+.aa-arch-diff-side.is-after .aa-arch-diff-label {
+  color: var(--teal);
+  background: rgba(0,201,167,.06);
+}
+.aa-arch-diff-body {
+  padding: 14px;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.7;
+  color: var(--text);
+}
+.aa-arch-diff-body .dim { color: var(--muted); font-size: 12px; }
+.aa-arch-diff-body .hi  { color: var(--accent); font-weight: 600; }
+.aa-arch-diff-body .changed { color: var(--teal); font-weight: 600; }
+.aa-arch-diff-body .critical { color: var(--warn); font-weight: 600; }
+@media (max-width: 700px) {
+  .aa-arch-diff { grid-template-columns: 1fr; }
+  .aa-arch-diff-arrow { padding-top: 0; transform: rotate(90deg); }
+}
+
+/* ─── Setup steps (API registration, curl, credential) ──────── */
+.aa-setup-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 20px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.aa-setup-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.aa-setup-step:last-child { border-bottom: none; }
+.aa-setup-step-num {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(255,255,255,.02);
+  border-right: 1px solid var(--border);
+}
+.aa-setup-step-content {
+  padding: 14px 16px;
+}
+.aa-setup-step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.aa-setup-step-text {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.aa-setup-step-text a { color: var(--teal); text-decoration: none; }
+.aa-setup-step-text a:hover { text-decoration: underline; }
+.aa-setup-step-text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(255,255,255,.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+.aa-setup-step-curl {
+  margin-top: 10px;
+  background: #0a0e1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.aa-setup-step-curl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+.aa-setup-step-curl pre {
+  margin: 0;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-x: auto;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+}
+.aa-setup-step-curl-note {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: rgba(0,201,167,.04);
+}
+.aa-setup-step-credential {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.aa-setup-step-credential-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.aa-setup-step-credential-row:last-child { border-bottom: none; }
+.aa-setup-step-credential-key {
+  padding: 9px 12px;
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.aa-setup-step-credential-val {
+  padding: 9px 12px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* ─── Subnode change visual ──────────────────────────────────── */
+.aa-subnode-change {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0,201,167,.04);
+  border: 1px solid rgba(0,201,167,.18);
+  border-radius: 8px;
+  margin: 10px 0;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.aa-subnode-change-old {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.aa-subnode-change-arrow {
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.aa-subnode-change-new {
+  color: var(--teal);
+  font-weight: 600;
+}
