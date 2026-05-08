@@ -138,33 +138,35 @@
         <div class="aa-arch-diff">
           <div class="aa-arch-diff-side is-before">
             <div class="aa-arch-diff-label">БЫЛО</div>
-            <div class="aa-arch-diff-body">
-              <div><span class="dim">WF1 · Qdrant Insert</span></div>
-              <div>&nbsp;└ Embeddings <span>OpenAI</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: text-embedding-3-small</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1536</span></div>
-              <br>
-              <div><span class="dim">WF2 · Qdrant KB</span></div>
-              <div>&nbsp;└ Embeddings <span>OpenAI</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: text-embedding-3-small</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1536</span></div>
+            <div class="aa-wf-shot">
+              <div class="aa-inline-article-screenshot is-placeholder" style="height:140px;border-radius:0;">
+                <div class="aa-inline-article-screenshot-icon">📸</div>
+                <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                <div class="aa-inline-article-screenshot-sub">WF1 — Qdrant Insert с Embeddings OpenAI sub-нодой</div>
+              </div>
+              <div class="aa-wf-shot-caption">WF1 / WF2 — Embeddings OpenAI</div>
+            </div>
+            <div class="aa-arch-diff-params">
+              Model: <span>text-embedding-3-small</span><br>
+              Размерность: <span>1536d</span>
             </div>
           </div>
           <div class="aa-arch-diff-arrow">→</div>
           <div class="aa-arch-diff-side is-after">
             <div class="aa-arch-diff-label">СТАЛО</div>
-            <div class="aa-arch-diff-body">
-              <div><span class="dim">WF1 · Qdrant Insert</span></div>
-              <div>&nbsp;└ Embeddings <span class="changed">Cohere</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: </span><span class="changed">embed-v4.0</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Input Type: </span><span class="hi">search_document</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1024</span></div>
-              <br>
-              <div><span class="dim">WF2 · Qdrant KB</span></div>
-              <div>&nbsp;└ Embeddings <span class="changed">Cohere</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Model: </span><span class="changed">embed-v4.0</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Input Type: </span><span class="critical">search_query ← !</span></div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">Размерность: 1024</span></div>
+            <div class="aa-wf-shot">
+              <div class="aa-inline-article-screenshot is-placeholder" style="height:140px;border-radius:0;">
+                <div class="aa-inline-article-screenshot-icon">📸</div>
+                <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                <div class="aa-inline-article-screenshot-sub">WF1 — Embeddings Cohere (search_document) / WF2 — (search_query)</div>
+              </div>
+              <div class="aa-wf-shot-caption">WF1 = search_document / WF2 = search_query</div>
+            </div>
+            <div class="aa-arch-diff-params">
+              Model: <span class="changed">embed-v4.0</span><br>
+              WF1 Input Type: <span class="hi">search_document</span><br>
+              WF2 Input Type: <span class="critical">search_query ← !</span><br>
+              Размерность: <span class="changed">1024d</span>
             </div>
           </div>
         </div>
@@ -225,10 +227,14 @@
                 Скопируй curl-запрос, вставь свой ключ и запусти в терминале:
                 <div class="aa-setup-step-curl">
                   <div class="aa-setup-step-curl-header">
-                    <span>curl · проверка ключа</span>
+                    <span>Terminal · curl</span>
+                    <button class="aa-code-copy-btn" data-copy-target="curl-cohere-check" type="button">
+                      <span class="aa-code-copy-btn-icon">⎘</span>
+                      <span class="aa-code-copy-btn-label">Скопировать</span>
+                    </button>
                   </div>
-<pre>curl https://api.cohere.com/v2/embed \
-  -H "Authorization: Bearer <span style="color:var(--accent)">ВАШ_КЛЮЧ</span>" \
+<pre id="curl-cohere-check">curl https://api.cohere.com/v2/embed \
+  -H "Authorization: Bearer ВАШ_КЛЮЧ" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "embed-v4.0",
@@ -237,8 +243,9 @@
     "texts": ["тестовая фраза для проверки"]
   }'</pre>
                   <div class="aa-setup-step-curl-note">
-                    Ожидаемый ответ: JSON с полем <code>embeddings.float</code> — массив из 1024 чисел.<br>
-                    Если <code>401</code> — ключ скопирован неверно. Если <code>429</code> — trial исчерпан.
+                    Замени <code>ВАШ_КЛЮЧ</code> на свой API key из шага 0.2.<br>
+                    <strong>Ожидаемый ответ:</strong> JSON с полем <code>embeddings.float</code> — массив из 1024 чисел.<br>
+                    Если <code>401</code> — ключ скопирован неверно. Если <code>429</code> — trial исчерпан (1000 req/мес).
                   </div>
                 </div>
               </div>
@@ -250,37 +257,78 @@
             <div class="aa-setup-step-content">
               <div class="aa-setup-step-title">Создай credential в n8n</div>
               <div class="aa-setup-step-text">
-                В n8n: <strong>Settings → Credentials → Add credential → Header Auth</strong>. Заполни:
-                <div class="aa-setup-step-credential">
+                Нужно сохранить API key в n8n как credential, чтобы использовать его в нодах.
+                Итоговый результат — credential с такими полями:
+                <div class="aa-setup-step-credential" style="margin-top:10px;">
                   <div class="aa-setup-step-credential-row">
-                    <div class="aa-setup-step-credential-key">Name</div>
-                    <div class="aa-setup-step-credential-val">Cohere API</div>
+                    <div class="aa-setup-step-credential-key">Credential name</div>
+                    <div class="aa-setup-step-credential-val" style="color:var(--teal);font-weight:600;">Cohere API</div>
                   </div>
                   <div class="aa-setup-step-credential-row">
-                    <div class="aa-setup-step-credential-key">Header Name</div>
+                    <div class="aa-setup-step-credential-key">Name (header)</div>
                     <div class="aa-setup-step-credential-val">Authorization</div>
                   </div>
                   <div class="aa-setup-step-credential-row">
-                    <div class="aa-setup-step-credential-key">Header Value</div>
-                    <div class="aa-setup-step-credential-val">Bearer <span style="color:var(--accent)">ВАШ_КЛЮЧ</span></div>
+                    <div class="aa-setup-step-credential-key">Value</div>
+                    <div class="aa-setup-step-credential-val">Bearer <span style="color:var(--accent)">твой-api-key</span></div>
                   </div>
                 </div>
 
                 <details class="aa-inline-article" style="margin-top: 12px;">
                   <summary>
                     <span class="aa-inline-article-icon">🔑</span>
-                    <span class="aa-inline-article-title">Что такое Header Auth и почему не «Cohere API»</span>
-                    <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                    <span class="aa-inline-article-title">Пошаговая инструкция: добавить Header Auth credential в n8n</span>
+                    <span class="aa-inline-article-hint">статья · ~3 мин</span>
                     <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
                   </summary>
                   <div class="aa-inline-article-body">
                     <div class="aa-md-body">
-                      <p>В n8n есть два способа хранить API-ключи:</p>
-                      <ul>
-                        <li><strong>Встроенные credentials</strong> — n8n «знает» сервис (OpenAI, Telegram, Slack) и сам знает как подставлять ключ. Интерфейс проще: просто вставь токен.</li>
-                        <li><strong>Header Auth</strong> — универсальный способ для любых REST API. Ты вручную говоришь: «при каждом запросе добавляй заголовок <code>Authorization: Bearer ключ</code>». Cohere embedding API — именно такой.</li>
-                      </ul>
-                      <p>Почему не «Cohere API»: в n8n может не быть нативного credential-типа для Cohere embed (зависит от версии). Header Auth — гарантированно работает. Если в твоей версии n8n есть <strong>Cohere API</strong> как встроенный тип — используй его, он удобнее.</p>
+                      <ol>
+                        <li>
+                          <p>В левом меню n8n нажми <strong>Settings</strong> (шестерёнка) → <strong>Credentials</strong>.</p>
+                          <figure class="aa-inline-article-figure">
+                            <div class="aa-inline-article-screenshot is-placeholder">
+                              <div class="aa-inline-article-screenshot-icon">📸</div>
+                              <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                              <div class="aa-inline-article-screenshot-sub">Левое меню n8n — Settings → Credentials</div>
+                            </div>
+                          </figure>
+                        </li>
+                        <li>
+                          <p>Нажми <strong>Add credential</strong> (кнопка в правом верхнем углу).</p>
+                        </li>
+                        <li>
+                          <p>В поиске набери <code>Header Auth</code> → выбери <strong>Header Auth</strong>.</p>
+                          <figure class="aa-inline-article-figure">
+                            <div class="aa-inline-article-screenshot is-placeholder">
+                              <div class="aa-inline-article-screenshot-icon">📸</div>
+                              <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                              <div class="aa-inline-article-screenshot-sub">Поиск типа credential: Header Auth</div>
+                            </div>
+                          </figure>
+                        </li>
+                        <li>
+                          <p>Заполни поля:</p>
+                          <ul>
+                            <li><strong>Credential name:</strong> <code>Cohere API</code> (именно так — ноды будут искать по этому имени)</li>
+                            <li><strong>Name:</strong> <code>Authorization</code></li>
+                            <li><strong>Value:</strong> <code>Bearer твой-api-key</code> (подставь ключ из шага 0.2, пробел между Bearer и ключом обязателен)</li>
+                          </ul>
+                          <figure class="aa-inline-article-figure">
+                            <div class="aa-inline-article-screenshot is-placeholder">
+                              <div class="aa-inline-article-screenshot-icon">📸</div>
+                              <div class="aa-inline-article-screenshot-label">Скрин в разработке</div>
+                              <div class="aa-inline-article-screenshot-sub">Заполненная форма Header Auth credential</div>
+                            </div>
+                          </figure>
+                        </li>
+                        <li>
+                          <p>Нажми <strong>Save</strong>. Credential появится в списке и станет доступен во всех нодах.</p>
+                        </li>
+                      </ol>
+                      <hr style="border-color:var(--border);margin:14px 0;">
+                      <p><strong>Почему Header Auth, а не «Cohere API»?</strong><br>
+                      Cohere Embedding API принимает ключ через HTTP-заголовок <code>Authorization: Bearer ключ</code>. Header Auth — это именно такой универсальный способ. В некоторых версиях n8n есть встроенный тип <em>Cohere API</em> — если видишь его в поиске, используй его: он удобнее. Если нет — Header Auth работает одинаково хорошо.</p>
                     </div>
                   </div>
                 </details>
@@ -667,26 +715,18 @@
           </div>
         </div>
 
-        <!-- Cross-links -->
-        <details class="aa-stretch">
-          <summary>
-            <span class="aa-stretch-title">Куда дальше — следующие логичные стретчи</span>
-            <span class="aa-stretch-arrow" aria-hidden="true">▾</span>
-          </summary>
-          <div class="aa-md-body">
-            <ul>
-              <li>
-                <strong>S-Retrieval-Rerank (Cohere Rerank)</strong> — следующий логичный шаг. Cohere embed + Cohere rerank — официально рекомендованная связка. Rerank берёт топ-50 результатов поиска и переранжирует их по точности. Качество retrieval вырастает ещё на 10–15%.
-              </li>
-              <li>
-                <strong>S-Embed-Voyage</strong> — альтернатива если база содержит длинные документы (> 10 страниц). Voyage AI специализируется на длинном контексте (32k+ токенов за раз).
-              </li>
-              <li>
-                <strong>M8 RAG M8-00 — Embedding selection</strong> — тематический модуль, разбирает выбор embedding-модели изнутри: бенчмарки OpenAI vs Cohere vs Voyage vs Gemini vs OSS, Matryoshka, как выбирать.
-              </li>
-            </ul>
+        <!-- Next task in ТЗ -->
+        <div class="aa-next-task-card">
+          <div class="aa-next-task-eyebrow">Следующий шаг в твоём ТЗ</div>
+          <div class="aa-next-task-title">S-Retrieval-Rerank — Cohere Reranker</div>
+          <div class="aa-next-task-desc">
+            Cohere embed + Cohere rerank — официально рекомендованная связка. Reranker берёт топ-50 результатов поиска и переранжирует их по смысловой близости. Качество retrieval вырастает ещё на 10–15% поверх улучшения от embedding.
           </div>
-        </details>
+          <a class="btn btn-primary btn-sm" href="/automate-at/tasks/AI-01/S-Retrieval-Rerank/" style="display:inline-block;">
+            Открыть задачу →
+          </a>
+          <div class="aa-next-task-foot">Список задач собирается из твоего конфигуратора AI-01 · <a href="/rag-agent/" style="color:var(--teal);text-decoration:none;">изменить конфигурацию</a></div>
+        </div>
 
       </div>
 
@@ -743,6 +783,21 @@
   document.querySelectorAll('.aa-dod-item input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', e => {
       e.target.closest('.aa-dod-item').classList.toggle('is-checked', e.target.checked);
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('[data-copy-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText.trim()).then(() => {
+        const label = btn.querySelector('.aa-code-copy-btn-label');
+        const prev = label.textContent;
+        btn.classList.add('is-copied');
+        label.textContent = 'Скопировано!';
+        setTimeout(() => { btn.classList.remove('is-copied'); label.textContent = prev; }, 2000);
+      });
     });
   });
 })();

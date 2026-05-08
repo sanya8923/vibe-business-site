@@ -3233,3 +3233,25 @@
   color: #FF6B6B;
 }
 .aa-callout-tip.is-warn .aa-callout-tip-label { color: #FF6B6B; }
+/* is-info — синий: объяснение концепции, контекст */
+.aa-callout-tip.is-info {
+  background: linear-gradient(135deg,rgba(91,192,235,.05),rgba(0,201,167,.03));
+  border-left-color: var(--info,#5BC0EB);
+}
+.aa-callout-tip.is-info .aa-callout-tip-icon {
+  background: rgba(91,192,235,.12);
+  border-color: rgba(91,192,235,.3);
+  color: var(--info,#5BC0EB);
+}
+.aa-callout-tip.is-info .aa-callout-tip-label { color: var(--info,#5BC0EB); }
+/* is-critical — глубокий красный: блокер, нельзя, критическая ошибка */
+.aa-callout-tip.is-critical {
+  background: linear-gradient(135deg,rgba(220,38,38,.07),rgba(255,50,50,.03));
+  border-left-color: #DC2626;
+}
+.aa-callout-tip.is-critical .aa-callout-tip-icon {
+  background: rgba(220,38,38,.15);
+  border-color: rgba(220,38,38,.35);
+  color: #DC2626;
+}
+.aa-callout-tip.is-critical .aa-callout-tip-label { color: #DC2626; }
