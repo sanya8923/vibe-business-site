@@ -72,7 +72,7 @@
         <div class="aa-side-card-h3">Что должно быть готово</div>
         <ul class="aa-side-card-list">
           <li class="is-ok">AI-01 базовый выполнен (задачи AI-01-01..06) — бот работает в Telegram</li>
-          <li class="is-ok"><strong>WF1</strong> (загрузка в базу знаний) и <strong>WF2</strong> (агент отвечает на вопросы) уже работают</li>
+          <li class="is-ok"><strong>workflow загрузки в базу знаний</strong> и <strong>workflow агента</strong>, который отвечает на вопросы, уже работают</li>
           <li class="is-pending">Аккаунт Cohere — создадим в шаге 0 ниже</li>
         </ul>
         <div class="aa-side-card-hint">
@@ -161,14 +161,14 @@
                 <li>Свободный лимит — 1000 запросов в месяц. Для тестов хватает, для прода нужен платный план.</li>
               </ul>
 
-              <h4>Зачем разный <code>input_type</code> в WF1 и WF2</h4>
-              <p>В этой задаче ты меняешь embedding в двух местах: в WF1 (загрузка файлов в базу знаний) и в WF2 (поиск ответа на вопрос пользователя). Параметр <code>input_type</code> задаётся для каждого случая отдельно:</p>
+              <h4>Зачем разный <code>input_type</code> в workflow загрузки и workflow агента</h4>
+              <p>В этой задаче ты меняешь embedding в двух местах: в workflow загрузки в базу знаний и в workflow агента, который ищет ответ на вопрос пользователя. Параметр <code>input_type</code> задаётся для каждого случая отдельно:</p>
               <ul>
-                <li><code>search_document</code> — режим для индексации документов. Используется в WF1.</li>
-                <li><code>search_query</code> — режим для поискового запроса. Используется в WF2.</li>
+                <li><code>search_document</code> — режим для индексации документов. Используется в workflow загрузки.</li>
+                <li><code>search_query</code> — режим для поискового запроса. Используется в workflow агента.</li>
               </ul>
               <p>Cohere обучила модель так, чтобы документы и вопросы «тяготели» друг к другу в векторном пространстве, но при условии что обрабатываются через правильный режим. Если поставить везде <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10%.</p>
-              <p><strong>Мнемоника:</strong> WF1 загружает <em>документы</em> → <code>search_document</code>. WF2 ищет по <em>запросу пользователя</em> → <code>search_query</code>.</p>
+              <p><strong>Мнемоника:</strong> при загрузке в базу знаний → <code>search_document</code>; при поиске ответа агентом → <code>search_query</code>.</p>
             </div>
           </div>
         </details>
@@ -178,19 +178,19 @@
           <h2>Что меняется в воркфлоу</h2>
           <p>В базовом агенте AI-01 у тебя два workflow:</p>
           <ul>
-            <li><strong>WF1</strong> — загружает файлы в базу знаний (ingestion).</li>
-            <li><strong>WF2</strong> — агент отвечает на вопросы пользователей (retrieval).</li>
+            <li><strong>workflow загрузки</strong> — кладёт файлы в базу знаний (ingestion).</li>
+            <li><strong>workflow агента</strong> — отвечает на вопросы пользователей (retrieval).</li>
           </ul>
-          <p>Точные имена workflow могут отличаться в твоей версии курса — ориентируйся на функцию: «WF1 = загрузка», «WF2 = ответы».</p>
-          <p>Оба workflow содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между WF1 и WF2.</p>
+          <p>Точные имена workflow могут отличаться в твоей версии курса — ориентируйся на функцию.</p>
+          <p>Оба workflow содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между workflow загрузки и workflow агента.</p>
         </div>
 
         <div class="aa-arch-diff">
           <div class="aa-arch-diff-side is-before">
             <div class="aa-arch-diff-label">БЫЛО</div>
             <div class="aa-wf-shot">
-              <img src="screenshots/wf-bylo.png" alt="WF1 с Embeddings OpenAI sub-нодой" loading="lazy">
-              <div class="aa-wf-shot-caption">WF1 / WF2 — Embeddings OpenAI</div>
+              <img src="screenshots/wf-bylo.png" alt="workflow загрузки с Embeddings OpenAI sub-нодой" loading="lazy">
+              <div class="aa-wf-shot-caption">Загрузка / Агент — Embeddings OpenAI</div>
             </div>
             <div class="aa-arch-diff-params">
               Model: <span>text-embedding-3-small</span><br>
@@ -201,13 +201,13 @@
           <div class="aa-arch-diff-side is-after">
             <div class="aa-arch-diff-label">СТАЛО</div>
             <div class="aa-wf-shot">
-              <img src="screenshots/wf-stalo.png" alt="WF1 с Embeddings Cohere sub-нодой" loading="lazy">
-              <div class="aa-wf-shot-caption">WF1 = search_document / WF2 = search_query</div>
+              <img src="screenshots/wf-stalo.png" alt="workflow загрузки и workflow агента с Embeddings Cohere" loading="lazy">
+              <div class="aa-wf-shot-caption">Загрузка = search_document · Агент = search_query</div>
             </div>
             <div class="aa-arch-diff-params">
               Model: <span class="changed">embed-v4.0</span><br>
-              WF1 Input Type: <span class="hi">search_document</span><br>
-              WF2 Input Type: <span class="critical">search_query ← !</span><br>
+              Загрузка · Input Type: <span class="hi">search_document</span><br>
+              Агент · Input Type: <span class="critical">search_query ← !</span><br>
               Размерность: <span class="changed">1024d</span>
             </div>
           </div>
@@ -217,9 +217,11 @@
           <div class="aa-callout-tip-icon">💡</div>
           <div class="aa-callout-tip-body">
             <div class="aa-callout-tip-label">Главная тонкость</div>
-            <div class="aa-callout-tip-title">В WF1 и WF2 параметр <code>Input Type</code> разный</div>
+            <div class="aa-callout-tip-title">В workflow загрузки и в workflow агента параметр <code>Input Type</code> разный</div>
             <div class="aa-callout-tip-text">
-              <p>В WF1 ставим <strong>search_document</strong> — это режим для индексации документов. В WF2 ставим <strong>search_query</strong> — режим для поискового запроса пользователя. Если поставить везде одинаково — качество поиска упадёт на 5–10%. Разбор причины — в статье «Cohere — что это» выше.</p>
+              <p>В <strong>workflow загрузки</strong> (где файлы кладутся в базу знаний) ставим <code>search_document</code> — это режим для индексации документов.</p>
+              <p>В <strong>workflow агента</strong> (где агент ищет ответ на вопрос пользователя) ставим <code>search_query</code> — режим для поискового запроса.</p>
+              <p>Если поставить везде одинаково — качество поиска упадёт на 5–10%. Разбор причины — в статье «Cohere — что это» выше.</p>
             </div>
           </div>
         </div>
@@ -307,13 +309,52 @@
 
                       <h4>Пошагово</h4>
                       <ol>
-                        <li>Скопируй curl-команду из задачи или документации API.</li>
-                        <li>В n8n создай новый workflow или открой sandbox. Добавь ноду <strong>HTTP Request</strong>.</li>
-                        <li>В правом верхнем углу панели настроек ноды нажми <strong>Import cURL</strong> (или ссылку <em>Import cURL</em> рядом с полем URL — название может слегка отличаться по версии).</li>
-                        <li>В открывшееся поле вставь скопированную curl-команду. Нажми <strong>Import</strong>.</li>
-                        <li>n8n автоматически заполнит метод (GET/POST/DELETE/…), URL, заголовки и body. Проверь, что всё подставилось корректно.</li>
-                        <li>Если в curl был placeholder вроде <code>ВАШ_КЛЮЧ</code> — найди его в импортированных полях и замени на реальное значение.</li>
-                        <li>Нажми <strong>Execute step</strong>. Получи ответ API в правой панели.</li>
+                        <li>
+                          <p>Скопируй curl-команду из задачи или документации API.</p>
+                        </li>
+                        <li>
+                          <p>В n8n создай новый workflow (или открой sandbox). Добавь ноду <strong>HTTP Request</strong>.</p>
+                          <div class="aa-inline-article-screenshot">
+                            <div class="aa-inline-article-screenshot-icon">📷</div>
+                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                            <div class="aa-inline-article-screenshot-sub">Пустая нода HTTP Request в n8n с раскрытой панелью настроек справа.</div>
+                          </div>
+                        </li>
+                        <li>
+                          <p>В правом верхнем углу панели настроек ноды нажми <strong>Import cURL</strong> (или ссылка <em>Import cURL</em> рядом с полем URL — название может слегка отличаться по версии n8n).</p>
+                          <div class="aa-inline-article-screenshot">
+                            <div class="aa-inline-article-screenshot-icon">📷</div>
+                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                            <div class="aa-inline-article-screenshot-sub">Кнопка/ссылка «Import cURL» в HTTP Request ноде — обведена.</div>
+                          </div>
+                        </li>
+                        <li>
+                          <p>В открывшееся поле вставь скопированную curl-команду. Нажми <strong>Import</strong>.</p>
+                          <div class="aa-inline-article-screenshot">
+                            <div class="aa-inline-article-screenshot-icon">📷</div>
+                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                            <div class="aa-inline-article-screenshot-sub">Диалог Import cURL с вставленной curl-командой и кнопкой Import.</div>
+                          </div>
+                        </li>
+                        <li>
+                          <p>n8n автоматически заполнит метод (GET / POST / DELETE / …), URL, заголовки и тело запроса. Проверь, что всё подставилось корректно.</p>
+                          <div class="aa-inline-article-screenshot">
+                            <div class="aa-inline-article-screenshot-icon">📷</div>
+                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                            <div class="aa-inline-article-screenshot-sub">HTTP Request нода с заполненными полями: Method, URL, Header Parameters, Body — после импорта curl.</div>
+                          </div>
+                        </li>
+                        <li>
+                          <p>Если в curl был placeholder вроде <code>ВАШ_КЛЮЧ</code> — найди его в импортированных полях и замени на реальное значение.</p>
+                        </li>
+                        <li>
+                          <p>Нажми <strong>Execute step</strong>. Получи ответ API в правой панели.</p>
+                          <div class="aa-inline-article-screenshot">
+                            <div class="aa-inline-article-screenshot-icon">📷</div>
+                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
+                            <div class="aa-inline-article-screenshot-sub">Output panel HTTP Request ноды с JSON-ответом API.</div>
+                          </div>
+                        </li>
                       </ol>
 
                       <p><strong>Зачем это нужно знать:</strong> большинство сторонних API даёт примеры в виде curl-команд. Зная Import from cURL, ты можешь подключить почти любой сервис без чтения его SDK — просто скопировал команду из доков, импортировал, заменил ключ.</p>
@@ -494,7 +535,7 @@
                     <li><code>c12-faq-bot</code> — студент <code>c12</code>, продукт FAQ-бот.</li>
                   </ul>
                   <p><strong>Зачем:</strong> на одном Qdrant-инстансе живут коллекции всех студентов. Префикс <code>student_id</code> исключает пересечения. Никогда не используй чужой prefix — увидишь чужие данные или сломаешь чужую коллекцию.</p>
-                  <p>Свой <code>student_id</code> найдёшь в <em>«Мои Credentials»</em> в личном кабинете. Имя коллекции, которое ты создал в базовом агенте AI-01, дублируется в трёх местах: WF1 (Qdrant Insert), WF2 (Qdrant KB sub-нода), Product Config. При смене embedding-провайдера достаточно сохранить то же имя коллекции — пересоздать её с новой размерностью.</p>
+                  <p>Свой <code>student_id</code> найдёшь в <em>«Мои Credentials»</em> в личном кабинете. Имя коллекции, которое ты создал в базовом агенте AI-01, дублируется в трёх местах: workflow загрузки (Qdrant Insert), workflow агента (Qdrant KB sub-нода), Product Config. При смене embedding-провайдера достаточно сохранить то же имя коллекции — пересоздать её с новой размерностью.</p>
                 </div>
               </div>
             </details>
@@ -522,7 +563,7 @@
                     <li>Создать новую с правильной размерностью. Это делается автоматически при первом insert'е через ноду Qdrant Insert.</li>
                     <li>Перезалить все файлы KB через WF ingestion — теперь они запишутся с правильными векторами.</li>
                   </ol>
-                  <p><strong>Бояться потери данных?</strong> Нет. KB — это производное от твоих исходных файлов. Файлы у тебя есть, WF1 умеет их грузить. Удаление коллекции = «очисти индекс», а не «удали документы».</p>
+                  <p><strong>Бояться потери данных?</strong> Нет. KB — это производное от твоих исходных файлов. Файлы у тебя есть, workflow загрузки умеет их грузить. Удаление коллекции = «очисти индекс», а не «удали документы».</p>
                 </div>
               </div>
             </details>
@@ -543,12 +584,12 @@
   https://qdrant.school.vibe-business.site/collections/&lt;имя_твоей_коллекции&gt; \
   -H "api-key: &lt;Qdrant Master ключ&gt;"</pre>
                 <div class="aa-setup-step-curl-note">
-                  <strong>&lt;имя_твоей_коллекции&gt;</strong> — то самое имя, которое ты задал в базовом агенте AI-01 (см. <code>Product Config.qdrant.collection</code>). После удаления оно останется тем же — просто следующий запуск WF1 пересоздаст коллекцию автоматически с новой размерностью.<br>
+                  <strong>&lt;имя_твоей_коллекции&gt;</strong> — то самое имя, которое ты задал в базовом агенте AI-01 (см. <code>Product Config.qdrant.collection</code>). После удаления оно останется тем же — просто следующий запуск workflow загрузки пересоздаст коллекцию автоматически с новой размерностью.<br>
                   <strong>&lt;Qdrant Master ключ&gt;</strong> — лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>.<br>
                   <strong>Ожидаемый ответ:</strong> JSON <code>{"result": true, "status": "ok"}</code>.
                 </div>
               </div>
-              <p style="font-size:12px;color:var(--muted);margin-top:8px;">DELETE удаляет коллекцию вместе со всеми векторами. Файлы-источники, из которых ты строил KB, не трогаются — они останутся у тебя, и WF1 перезальёт их в новую коллекцию.</p>
+              <p style="font-size:12px;color:var(--muted);margin-top:8px;">DELETE удаляет коллекцию вместе со всеми векторами. Файлы-источники, из которых ты строил KB, не трогаются — они останутся у тебя, и workflow загрузки перезальёт их в новую коллекцию.</p>
             </div>
 
             <div class="aa-node-step-io">
@@ -558,20 +599,20 @@
               </div>
               <div class="aa-node-step-io-col is-output">
                 <div class="aa-node-step-io-label">После удаления</div>
-                <div class="aa-node-step-io-note">Коллекции нет. При следующем запуске WF1 нода Qdrant Insert создаст её заново с размерностью 1024 (под Cohere). Старые данные не нужны.</div>
+                <div class="aa-node-step-io-note">Коллекции нет. При следующем запуске workflow загрузки нода Qdrant Insert создаст её заново с размерностью 1024 (под Cohere). Старые данные не нужны.</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Step 2: WF1 -->
+        <!-- Step 2: workflow загрузки -->
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">2</span>
-            <span class="aa-node-step-title">WF1 (загрузка в KB) — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-title">Workflow загрузки в базу знаний — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в WF1 ноды <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> содержат sub-ноду <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
+            <p><strong>Что делаем:</strong> в workflow загрузки ноды <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> содержат sub-ноду <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
 
             <div class="aa-subnode-change">
               <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
@@ -613,16 +654,16 @@
             </details>
 
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Что конкретно сделать в WF1</div>
+              <div class="aa-node-step-config-label">Что конкретно сделать</div>
               <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
-                <li>Открой <strong>WF1</strong> (workflow, который отвечает за загрузку файлов в KB).</li>
+                <li>Открой workflow, отвечающий за загрузку файлов в базу знаний.</li>
                 <li>Замени sub-ноду <em>Embeddings OpenAI</em> на <em>Embeddings Cohere</em> в ноде <strong>Qdrant Insert TXT</strong> (как — в раскрывайке про sub-ноду выше).</li>
                 <li>Повтори для <strong>Qdrant Insert PDF</strong> — там та же sub-нода.</li>
               </ol>
             </div>
 
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Настройки Embeddings Cohere в WF1</div>
+              <div class="aa-node-step-config-label">Настройки Embeddings Cohere</div>
               <ul class="aa-node-step-config-list">
                 <li><strong>Credential</strong> <code>Cohere API</code> (тот, что создал в шаге 0.4)</li>
                 <li><strong>Model</strong> <code>embed-v4.0</code></li>
@@ -631,20 +672,20 @@
             </div>
 
             <div class="aa-wf-shot">
-              <img src="screenshots/step2-wf1-cohere.png" alt="WF1 — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 2 — WF1 использует Cohere embed</div>
+              <img src="screenshots/step2-wf1-cohere.png" alt="Workflow загрузки — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 2 — workflow загрузки использует Cohere embed</div>
             </div>
           </div>
         </div>
 
-        <!-- Step 3: WF2 -->
+        <!-- Step 3: workflow агента -->
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">3</span>
-            <span class="aa-node-step-title">WF2 (агент отвечает) — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-title">Workflow агента — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в WF2 нода <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже содержит sub-ноду <code>Embeddings OpenAI</code>. Заменяем аналогично шагу 2. <strong>Но с другим Input Type.</strong></p>
+            <p><strong>Что делаем:</strong> в workflow агента нода <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже содержит sub-ноду <code>Embeddings OpenAI</code>. Заменяем аналогично шагу 2. <strong>Но с другим Input Type.</strong></p>
 
             <div class="aa-subnode-change">
               <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
@@ -653,18 +694,18 @@
             </div>
 
             <div class="aa-node-step-config">
-              <div class="aa-node-step-config-label">Настройки Embeddings Cohere в WF2</div>
+              <div class="aa-node-step-config-label">Настройки Embeddings Cohere</div>
               <ul class="aa-node-step-config-list">
                 <li><strong>Credential</strong> <code>Cohere API</code></li>
                 <li><strong>Model</strong> <code>embed-v4.0</code></li>
-                <li><strong>Input Type</strong> <code>search_query</code> ← <span style="color:var(--warn)">ДРУГОЙ, чем в WF1!</span></li>
+                <li><strong>Input Type</strong> <code>search_query</code> ← <span style="color:var(--warn)">ДРУГОЙ, чем в workflow загрузки!</span></li>
               </ul>
               <p style="font-size:12px;color:var(--muted);margin-top:8px;">Почему разный Input Type — в раскрывайке «Cohere — что это» в самом начале задачи.</p>
             </div>
 
             <div class="aa-wf-shot">
-              <img src="screenshots/step3-wf2-cohere.png" alt="WF2 — AI Agent с Qdrant KB и sub-нодой Embeddings Cohere (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 3 — WF2 ищет через Cohere</div>
+              <img src="screenshots/step3-wf2-cohere.png" alt="Workflow агента — AI Agent с Qdrant KB и sub-нодой Embeddings Cohere (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 3 — workflow агента ищет через Cohere</div>
             </div>
           </div>
         </div>
@@ -700,14 +741,14 @@
                   </ul>
 
                   <h4>Пример: как работает чтение конфига</h4>
-                  <p>В нашем агенте AI-01 при запуске WF2 происходит:</p>
+                  <p>В нашем агенте AI-01 при запуске workflow агента происходит:</p>
                   <ol>
                     <li>Триггер передаёт <code>channel</code> (например <code>telegram</code>) и сообщение пользователя.</li>
                     <li>Нода <strong>Get rows</strong> читает строку из DataTable <code>[AI-01] Channel Config</code> по <code>channel = telegram</code>. Получает channel-config (системный промпт, модель, температура).</li>
                     <li>Из channel-config берёт <code>product_id</code>. Вторая <strong>Get rows</strong> читает <code>[AI-01] Product Config</code> по этому id. Получает product-config (qdrant, embedding, chat memory, log table, escalation).</li>
                     <li>Нода <strong>Set</strong> сливает оба конфига в плоский JSON. Дальше AI Agent и его sub-ноды (Qdrant KB, Postgres Chat Memory) берут параметры из этого JSON.</li>
                   </ol>
-                  <p><strong>В этой задаче</strong> ты меняешь параметры внутри Product Config (embedding_provider, embedding_model, embedding_dimensions). При следующем запуске WF2 эти значения автоматически подтянутся в ноды агента — менять что-то ещё в воркфлоу не нужно.</p>
+                  <p><strong>В этой задаче</strong> ты меняешь параметры внутри Product Config (embedding_provider, embedding_model, embedding_dimensions). При следующем запуске workflow агента эти значения автоматически подтянутся в ноды агента — менять что-то ещё в воркфлоу не нужно.</p>
                 </div>
               </div>
             </details>
@@ -767,7 +808,7 @@
           </div>
           <div class="aa-node-step-body">
             <p><strong>Что делаем:</strong> в шаге 1 ты удалил коллекцию — старые векторы пропали. Теперь ноды настроены на Cohere. Нужно перезалить все файлы KB заново — они запишутся как 1024-мерные Cohere-векторы.</p>
-            <p>Воспользуйся тем способом загрузки, который ты сам настроил для своего проекта. Если использовал базовый <strong>WF1</strong> (загрузка через встроенный Chat) — просто открой его, отправь файлы и проверь, что executions заканчиваются успехом. Если у тебя свой ingestion-воркфлоу — запусти его.</p>
+            <p>Воспользуйся тем workflow загрузки, который ты сам настроил для своего проекта. В стандартной поставке базового агента это workflow с Chat-триггером — открываешь его, отправляешь файлы во встроенный n8n-чат и проверяешь, что executions заканчиваются успехом. Если у тебя свой ingestion-workflow — запусти его.</p>
 
             <div class="aa-callout-tip">
               <div class="aa-callout-tip-icon">💡</div>
@@ -794,7 +835,7 @@
             <div class="aa-callout-tip-title">Убедись что всё работает правильно</div>
             <div class="aa-callout-tip-text">
               <ol>
-                <li>Загрузи один файл через WF1 → execution <code>Success</code> → usage в Cohere dashboard вырос.</li>
+                <li>Загрузи один файл через workflow загрузки → execution <code>Success</code> → usage в Cohere dashboard вырос.</li>
                 <li>Отправь боту вопрос на русском с морфологией — например про «столы», если в KB есть про мебель. Агент должен найти правильный чанк.</li>
                 <li>Если KB смешанная (RU+EN) — задай вопрос по-английски. Должен тоже находить.</li>
                 <li>Возьми 3–5 «трудных» вопросов с синонимами или разными формами слов. Сравни с тем, как отвечал агент раньше — на Cohere должно быть заметно лучше.</li>
@@ -820,21 +861,21 @@
               <label>
                 <input type="checkbox">
                 <span class="aa-dod-item-check"></span>
-                <span class="aa-dod-item-text">WF1: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_document</code>.</span>
+                <span class="aa-dod-item-text">Workflow загрузки: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_document</code>.</span>
               </label>
             </li>
             <li class="aa-dod-item">
               <label>
                 <input type="checkbox">
                 <span class="aa-dod-item-check"></span>
-                <span class="aa-dod-item-text">WF2: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_query</code> — другой, чем в WF1.</span>
+                <span class="aa-dod-item-text">Workflow агента: Embeddings OpenAI заменена на Embeddings Cohere с <code>Input Type = search_query</code> — другой, чем в workflow загрузки.</span>
               </label>
             </li>
             <li class="aa-dod-item">
               <label>
                 <input type="checkbox">
                 <span class="aa-dod-item-check"></span>
-                <span class="aa-dod-item-text">Qdrant-коллекция пересоздана, KB перезалита через WF1. Бот отвечает на вопросы.</span>
+                <span class="aa-dod-item-text">Qdrant-коллекция пересоздана, KB перезалита через workflow загрузки. Бот отвечает на вопросы.</span>
               </label>
             </li>
             <li class="aa-dod-item">
@@ -887,7 +928,7 @@
             <div class="aa-callout-tip-title">Три места где обычно застревают</div>
             <div class="aa-callout-tip-text">
               <ol>
-                <li><strong>input_type одинаковый в WF1 и WF2.</strong> Самая частая ошибка. WF1 = <code>search_document</code>, WF2 = <code>search_query</code>. Разные.</li>
+                <li><strong>input_type одинаковый в обоих workflow.</strong> Самая частая ошибка. В workflow загрузки <code>search_document</code>, в workflow агента <code>search_query</code>. Разные.</li>
                 <li><strong>Не пересоздали коллекцию перед сменой нод.</strong> Получишь <code>Wrong input: expected dim 1536, got 1024</code> при первой же загрузке файла.</li>
                 <li><strong>Забыли обновить Product Config.</strong> Ноды используют Cohere, а в конфиге всё ещё <code>embedding_provider: openai</code> — рассинхрон между фактом и метаданными.</li>
               </ol>
