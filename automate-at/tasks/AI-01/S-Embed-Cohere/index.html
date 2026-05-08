@@ -313,47 +313,34 @@
                           <p>Скопируй curl-команду из задачи или документации API.</p>
                         </li>
                         <li>
-                          <p>В n8n создай новый workflow (или открой sandbox). Добавь ноду <strong>HTTP Request</strong>.</p>
-                          <div class="aa-inline-article-screenshot">
-                            <div class="aa-inline-article-screenshot-icon">📷</div>
-                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                            <div class="aa-inline-article-screenshot-sub">Пустая нода HTTP Request в n8n с раскрытой панелью настроек справа.</div>
-                          </div>
+                          <p>В n8n создай новый workflow (или открой sandbox). Добавь ноду <strong>HTTP Request</strong> и открой её настройки (двойной клик).</p>
+                          <figure class="aa-inline-article-figure">
+                            <img src="screenshots/http-request-empty.png" alt="Пустая HTTP Request нода в n8n: панель Parameters с дефолтами, кнопка Import cURL под Execute step" loading="lazy" style="border-radius:8px;width:100%;">
+                          </figure>
                         </li>
                         <li>
-                          <p>В правом верхнем углу панели настроек ноды нажми <strong>Import cURL</strong> (или ссылка <em>Import cURL</em> рядом с полем URL — название может слегка отличаться по версии n8n).</p>
-                          <div class="aa-inline-article-screenshot">
-                            <div class="aa-inline-article-screenshot-icon">📷</div>
-                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                            <div class="aa-inline-article-screenshot-sub">Кнопка/ссылка «Import cURL» в HTTP Request ноде — обведена.</div>
-                          </div>
+                          <p>В правом верхнем углу панели настроек ноды (под кнопкой <strong>Execute step</strong>) нажми <strong>Import cURL</strong>.</p>
+                          <figure class="aa-inline-article-figure">
+                            <img src="screenshots/http-request-import-button.png" alt="Кнопка Import cURL в панели HTTP Request ноды (под Execute step)" loading="lazy" style="border-radius:8px;width:100%;">
+                          </figure>
                         </li>
                         <li>
-                          <p>В открывшееся поле вставь скопированную curl-команду. Нажми <strong>Import</strong>.</p>
-                          <div class="aa-inline-article-screenshot">
-                            <div class="aa-inline-article-screenshot-icon">📷</div>
-                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                            <div class="aa-inline-article-screenshot-sub">Диалог Import cURL с вставленной curl-командой и кнопкой Import.</div>
-                          </div>
+                          <p>В открывшемся диалоге <strong>Import cURL command</strong> вставь скопированную curl-команду в textarea. Нажми <strong>Import</strong>.</p>
+                          <figure class="aa-inline-article-figure">
+                            <img src="screenshots/http-request-import-dialog.png" alt="Диалог Import cURL command с вставленной curl-командой и кнопкой Import" loading="lazy" style="border-radius:8px;width:100%;">
+                          </figure>
                         </li>
                         <li>
-                          <p>n8n автоматически заполнит метод (GET / POST / DELETE / …), URL, заголовки и тело запроса. Проверь, что всё подставилось корректно.</p>
-                          <div class="aa-inline-article-screenshot">
-                            <div class="aa-inline-article-screenshot-icon">📷</div>
-                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                            <div class="aa-inline-article-screenshot-sub">HTTP Request нода с заполненными полями: Method, URL, Header Parameters, Body — после импорта curl.</div>
-                          </div>
+                          <p>n8n автоматически разберёт curl и заполнит поля HTTP Request ноды: Method (POST/GET/DELETE/…), URL, Send Headers, Send Body, и сами заголовки/тело. Проверь, что всё подставилось корректно — Method, URL и заголовки видны сразу, Body может быть ниже по скроллу.</p>
+                          <figure class="aa-inline-article-figure">
+                            <img src="screenshots/http-request-imported.png" alt="HTTP Request нода после импорта curl: Method=POST, URL заполнен, Send Headers=ON, справа панель OUTPUT с кнопкой Execute step" loading="lazy" style="border-radius:8px;width:100%;">
+                          </figure>
                         </li>
                         <li>
-                          <p>Если в curl был placeholder вроде <code>ВАШ_КЛЮЧ</code> — найди его в импортированных полях и замени на реальное значение.</p>
+                          <p>Если в curl был placeholder вроде <code>ВАШ_КЛЮЧ</code> или <code>YOUR_TOKEN</code> — найди его в импортированных полях (обычно в Header Parameters или в Body) и замени на реальное значение.</p>
                         </li>
                         <li>
-                          <p>Нажми <strong>Execute step</strong>. Получи ответ API в правой панели.</p>
-                          <div class="aa-inline-article-screenshot">
-                            <div class="aa-inline-article-screenshot-icon">📷</div>
-                            <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                            <div class="aa-inline-article-screenshot-sub">Output panel HTTP Request ноды с JSON-ответом API.</div>
-                          </div>
+                          <p>Нажми <strong>Execute step</strong> — справа в панели OUTPUT появится ответ API.</p>
                         </li>
                       </ol>
 
@@ -630,17 +617,16 @@
               </summary>
               <div class="aa-inline-article-body">
                 <div class="aa-md-body">
-                  <p>В n8n AI-ноды устроены как <strong>«родитель + дети»</strong>. Родитель — основная нода (Qdrant Insert, AI Agent, Vector Store Tool…). Дети — sub-ноды, которые подключаются к специальным кружкам на нижней стороне родителя. Каждая sub-нода — это «поставщик ресурса» для родителя.</p>
+                  <p>В n8n AI-ноды устроены как <strong>«родитель + дети»</strong>. Родитель — основная нода (AI Agent, Qdrant Insert, Qdrant Vector Store…). Дети — sub-ноды, которые подключаются к специальным кружкам на нижней стороне родителя. Каждая sub-нода — это «поставщик ресурса» для родителя.</p>
 
-                  <div class="aa-inline-article-screenshot">
-                    <div class="aa-inline-article-screenshot-icon">📷</div>
-                    <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                    <div class="aa-inline-article-screenshot-sub">AI Agent с подключёнными sub-нодами на нижних кружках: Chat Model, Memory, Tool — родитель сверху, дети снизу.</div>
-                  </div>
+                  <figure class="aa-inline-article-figure">
+                    <img src="screenshots/subnode-parent-with-children.png" alt="AI Agent (родитель) с подключёнными sub-нодами Chat Model и Tool, и пустым слотом Memory" loading="lazy" style="border-radius:8px;width:100%;">
+                  </figure>
 
                   <h4>Какие бывают sub-ноды</h4>
                   <ul>
-                    <li><strong>Embeddings *</strong> — поставляет векторы (OpenAI / Cohere / Voyage / bge…).</li>
+                    <li><strong>Embeddings *</strong> — поставляет векторы (OpenAI / Cohere / Voyage / bge / …).</li>
+                    <li><strong>Chat Model</strong> — поставляет LLM для AI Agent.</li>
                     <li><strong>Document Loader</strong> — поставляет «нарезанные» куски документа.</li>
                     <li><strong>Text Splitter</strong> — внутри Document Loader, разбивает на чанки.</li>
                     <li><strong>Memory</strong> — поставляет историю диалога для AI Agent.</li>
@@ -648,36 +634,36 @@
                   </ul>
                   <p>Когда родитель запускается (например, Qdrant Insert получил файл и собирается записать его в БД), он по очереди обращается к sub-нодам: «дай мне чанки», «переведи каждый чанк в вектор». Sub-ноды отвечают, родитель собирает результат.</p>
 
+                  <h4>Как выглядит sub-нода в настройках родителя</h4>
+                  <p>Если открыть NDV (панель настроек) родителя двойным кликом, на нижней границе панели видны кружки sub-нод. Подключённая sub-нода показана как круглый цветной индикатор с иконкой провайдера. При наведении — tooltip с именем и статусом.</p>
+
+                  <figure class="aa-inline-article-figure">
+                    <img src="screenshots/subnode-disconnect.png" alt="NDV ноды Qdrant Insert TXT — на нижней границе видны слоты Embedding и Document, к Embedding подключена sub-нода Embeddings Cohere (виден tooltip)" loading="lazy" style="border-radius:8px;width:100%;">
+                  </figure>
+
                   <h4>Как заменить sub-ноду</h4>
                   <ol>
                     <li>
-                      <p>Открой родительскую ноду двойным кликом. В правой панели увидишь подключённые sub-ноды на нижних кружках.</p>
+                      <p>Закрой NDV родителя (Esc).</p>
                     </li>
                     <li>
-                      <p>Найди sub-ноду, которую хочешь заменить (например, существующая <em>Embeddings OpenAI</em>). Нажми <strong>×</strong> возле её имени — она отсоединится от родителя.</p>
-                      <div class="aa-inline-article-screenshot">
-                        <div class="aa-inline-article-screenshot-icon">📷</div>
-                        <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                        <div class="aa-inline-article-screenshot-sub">Курсор над × возле sub-ноды Embeddings OpenAI на родительской ноде.</div>
-                      </div>
+                      <p>На canvas найди подключённую sub-ноду — она расположена под родителем. Кликни на ней, нажми <strong>Delete</strong> (или правый клик → <em>Delete</em>). Sub-нода удалится, у родителя освободится слот.</p>
                     </li>
                     <li>
-                      <p>На освободившемся кружке появится <strong>+</strong> (например, <em>Add document embedding</em>). Нажми — откроется список доступных sub-нод нужного типа.</p>
-                      <div class="aa-inline-article-screenshot">
-                        <div class="aa-inline-article-screenshot-icon">📷</div>
-                        <div class="aa-inline-article-screenshot-label">Скриншот</div>
-                        <div class="aa-inline-article-screenshot-sub">Список выбора sub-ноды Embeddings: OpenAI, Cohere, HuggingFace, Mistral и т.д.</div>
-                      </div>
+                      <p>На родителе освободившийся слот покажет «+» (например, <em>Add document embedding</em>). Нажми — справа откроется список доступных sub-нод нужного типа.</p>
+                      <figure class="aa-inline-article-figure">
+                        <img src="screenshots/subnode-add-list.png" alt="Список доступных Embedding sub-нод: Cohere, AWS Bedrock, Azure OpenAI, Google Gemini, Google Vertex, Hugging Face и др." loading="lazy" style="border-radius:8px;width:100%;">
+                      </figure>
                     </li>
                     <li>
-                      <p>Выбери новую sub-ноду — она автоматически подключится к родителю на освободившемся кружке.</p>
+                      <p>Выбери нужную sub-ноду — она автоматически подключится к родителю на освободившемся слоте.</p>
                     </li>
                     <li>
                       <p>Заполни параметры новой sub-ноды (credential, модель, режим). Сохрани workflow.</p>
                     </li>
                   </ol>
 
-                  <p><strong>Важно:</strong> если родитель используется в нескольких местах (например, в воркфлоу две ноды Qdrant Insert — для txt и pdf — и каждая имеет свою sub-ноду Embeddings) — заменить нужно в каждом родителе отдельно. Sub-ноды локальны для своего родителя, между нодами не разделяются.</p>
+                  <p><strong>Важно:</strong> sub-ноды локальны для своего родителя — между нодами не разделяются. Если в воркфлоу несколько родителей одного типа (например, две ноды Qdrant Insert — для txt и для pdf — и у каждой своя sub-нода Embeddings) — заменить нужно в каждом родителе отдельно.</p>
                 </div>
               </div>
             </details>
