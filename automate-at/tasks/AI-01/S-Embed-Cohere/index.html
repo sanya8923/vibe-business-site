@@ -21,7 +21,7 @@
       <nav class="aa-breadcrumb">
         <a href="/automate-at/products/">Продукты</a>
         <span class="aa-breadcrumb-sep">/</span>
-        <a href="/automate-at/products/ai-01/">AI-01 RAG Агент</a>
+        <a href="/automate-at/products/ai-01/">Базовый агент</a>
         <span class="aa-breadcrumb-sep">/</span>
         <span>Embedding</span>
         <span class="aa-breadcrumb-sep">/</span>
@@ -41,7 +41,7 @@
         </h1>
         <div class="aa-detail-header-pills">
           <span class="aa-pill is-phase-junior">Джуниор</span>
-          <span class="aa-pill is-kind-catalog">каталог AI-01</span>
+          <span class="aa-pill is-kind-catalog">каталог · базовый агент</span>
           <span class="aa-pill is-stretch">стретч</span>
           <span class="aa-pill is-difficulty">сложность 4/10</span>
         </div>
@@ -53,10 +53,10 @@
       <!-- Action card -->
       <div class="aa-action-card is-inline">
         <div class="aa-action-card-text-block">
-          <div class="aa-action-card-eyebrow">Стретч к задаче AI-01</div>
+          <div class="aa-action-card-eyebrow">Стретч к базовому агенту</div>
           <div class="aa-action-card-title">Модифицируй два существующих воркфлоу</div>
           <p class="aa-action-card-text">
-            Твой базовый AI-01 уже работает. Ничего не удаляй — только заменяй sub-ноды и обновляй Product Config.
+            Твой базовый агент уже работает. Ничего не удаляй — только заменяй sub-ноды и обновляй Product Config.
           </p>
         </div>
         <div class="aa-action-card-actions">
@@ -71,7 +71,7 @@
       <div class="aa-side-card is-full aa-task-prereq">
         <div class="aa-side-card-h3">Что должно быть готово</div>
         <ul class="aa-side-card-list">
-          <li class="is-ok">AI-01 базовый выполнен (задачи AI-01-01..06) — бот работает в Telegram</li>
+          <li class="is-ok">Базовый агент собран — бот работает в Telegram</li>
           <li class="is-ok"><strong>workflow загрузки в базу знаний</strong> и <strong>workflow агента</strong>, который отвечает на вопросы, уже работают</li>
           <li class="is-pending">Аккаунт Cohere — создадим в шаге 0 ниже</li>
         </ul>
@@ -176,7 +176,7 @@
         <!-- Architecture БЫЛО → СТАЛО -->
         <div class="aa-md-body">
           <h2>Что меняется в воркфлоу</h2>
-          <p>В базовом агенте AI-01 у тебя два workflow:</p>
+          <p>В базовом агенте у тебя два workflow:</p>
           <ul>
             <li><strong>workflow загрузки</strong> — кладёт файлы в базу знаний (ingestion).</li>
             <li><strong>workflow агента</strong> — отвечает на вопросы пользователей (retrieval).</li>
@@ -314,9 +314,6 @@
                         </li>
                         <li>
                           <p>В n8n создай новый workflow (или открой sandbox). Добавь ноду <strong>HTTP Request</strong> и открой её настройки (двойной клик).</p>
-                          <figure class="aa-inline-article-figure">
-                            <img src="screenshots/http-request-empty.png" alt="Пустая HTTP Request нода в n8n: панель Parameters с дефолтами, кнопка Import cURL под Execute step" loading="lazy" style="border-radius:8px;width:100%;">
-                          </figure>
                         </li>
                         <li>
                           <p>В правом верхнем углу панели настроек ноды (под кнопкой <strong>Execute step</strong>) нажми <strong>Import cURL</strong>.</p>
@@ -572,7 +569,7 @@
   https://qdrant.school.vibe-business.site/collections/&lt;имя_твоей_коллекции&gt; \
   -H "api-key: &lt;Qdrant Master ключ&gt;"</pre>
                 <div class="aa-setup-step-curl-note">
-                  <strong>&lt;имя_твоей_коллекции&gt;</strong> — то самое имя, которое ты задал в базовом агенте AI-01 (см. <code>Product Config.qdrant.collection</code>). После удаления оно останется тем же — просто следующий запуск workflow загрузки пересоздаст коллекцию автоматически с новой размерностью.<br>
+                  <strong>&lt;имя_твоей_коллекции&gt;</strong> — то самое имя, которое ты задал в базовом агенте (см. <code>Product Config.qdrant.collection</code>). После удаления оно останется тем же — просто следующий запуск workflow загрузки пересоздаст коллекцию автоматически с новой размерностью.<br>
                   <strong>&lt;Qdrant Master ключ&gt;</strong> — лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>.<br>
                   <strong>Ожидаемый ответ:</strong> JSON <code>{"result": true, "status": "ok"}</code>.
                 </div>
@@ -989,7 +986,7 @@
           <a class="btn btn-primary btn-sm" href="/automate-at/tasks/AI-01/S-Retrieval-Rerank/" style="display:inline-block;">
             Открыть задачу →
           </a>
-          <div class="aa-next-task-foot">Список задач собирается из твоего конфигуратора AI-01 · <a href="/rag-agent/" style="color:var(--teal);text-decoration:none;">изменить конфигурацию</a></div>
+          <div class="aa-next-task-foot">Список задач собирается из твоего конфигуратора · <a href="/rag-agent/" style="color:var(--teal);text-decoration:none;">изменить конфигурацию</a></div>
         </div>
 
       </div>
@@ -1024,7 +1021,7 @@
 
       <footer class="aa-platform-footer">
         <span>Automate At · Profy Conveyor</span>
-        <span>AI-01 RAG Агент · Стретчи Embedding</span>
+        <span>Базовый агент · Стретчи Embedding</span>
       </footer>
 
     </div>

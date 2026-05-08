@@ -374,6 +374,33 @@
   max-width: none;
 }
 
+/* ─── Action card: pinned to viewport bottom ─────────────────── */
+[data-aa-stretch] .aa-action-card.is-inline {
+  position: fixed;
+  bottom: 16px;
+  /* sidebar 248px + half of remaining → centered over main area */
+  left: calc(50% + 124px);
+  transform: translateX(-50%);
+  width: min(calc(100vw - 248px - 72px), 1108px);
+  z-index: 50;
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.55);
+}
+/* Compensate for fixed card overlapping content */
+[data-aa-stretch] .aa-main-inner {
+  padding-bottom: 180px;
+}
+@media (max-width: 900px) {
+  [data-aa-stretch] .aa-action-card.is-inline {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    width: auto;
+  }
+  [data-aa-stretch] .aa-main-inner {
+    padding-bottom: 220px;
+  }
+}
+
 /* ─── Prereq list: stack vertically ──────────────────────────── */
 [data-aa-stretch] .aa-task-prereq .aa-side-card-list {
   flex-direction: column;
