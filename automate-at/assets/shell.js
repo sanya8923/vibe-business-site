@@ -275,6 +275,8 @@
       }
     }
 
+    initInlineArticleVideos();
+
     // Event delegation
     document.addEventListener('click', (e) => {
       const collapseBtn = e.target.closest('.aa-sidebar-collapse-btn');
@@ -313,6 +315,43 @@
         if (banner) banner.remove();
         return;
       }
+    });
+  }
+
+  // ─── Inline article videos ──────────────────────────────────
+  // Usage: add data-video="YOUTUBE_ID" to <details class="aa-inline-article">
+  // JS injects iframe lazily (on open) + adds ▶ видео badge to summary.
+  function initInlineArticleVideos() {
+    document.querySelectorAll('.aa-inline-article[data-video]').forEach(article => {
+      const vid = escapeHtml(article.dataset.video);
+      if (!vid) return;
+
+      // Badge in summary
+      const arrow = article.querySelector('.aa-inline-article-arrow');
+      const badge = document.createElement('span');
+      badge.className = 'aa-inline-article-video-badge';
+      badge.textContent = '▶ видео';
+      if (arrow) arrow.before(badge);
+
+      // Video container — inject before article body content
+      const body = article.querySelector('.aa-inline-article-body');
+      if (!body) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'aa-inline-article-video is-embed';
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'lazy');
+      wrap.appendChild(iframe);
+      body.prepend(wrap);
+
+      // Load iframe src only when article is opened (avoid network requests on page load)
+      article.addEventListener('toggle', function onToggle() {
+        if (article.open && !iframe.src) {
+          iframe.src = `https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1`;
+        }
+      });
     });
   }
 
