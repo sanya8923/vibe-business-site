@@ -369,6 +369,11 @@
 [data-aa-stretch] .aa-arch-diff-params .changed { color: var(--teal); font-weight: 600; }
 [data-aa-stretch] .aa-arch-diff-params .critical { color: var(--warn); font-weight: 600; }
 
+/* ─── Detail lead: full width like h1 and cards ──────────────── */
+[data-aa-stretch] .aa-detail-lead {
+  max-width: none;
+}
+
 /* ─── Prereq list: stack vertically ──────────────────────────── */
 [data-aa-stretch] .aa-task-prereq .aa-side-card-list {
   flex-direction: column;
