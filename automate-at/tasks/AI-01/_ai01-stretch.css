@@ -369,6 +369,15 @@
 [data-aa-stretch] .aa-arch-diff-params .changed { color: var(--teal); font-weight: 600; }
 [data-aa-stretch] .aa-arch-diff-params .critical { color: var(--warn); font-weight: 600; }
 
+/* ─── Prereq list: stack vertically ──────────────────────────── */
+[data-aa-stretch] .aa-task-prereq .aa-side-card-list {
+  flex-direction: column;
+  gap: 8px;
+}
+[data-aa-stretch] .aa-task-prereq .aa-side-card-list li {
+  width: 100%;
+}
+
 /* ─── Screenshot sizing consistency ──────────────────────────── */
 /* WF result shots in node steps: constrain max width */
 [data-aa-stretch] .aa-node-step-body > .aa-wf-shot {

@@ -72,7 +72,7 @@
         <div class="aa-side-card-h3">Что должно быть готово</div>
         <ul class="aa-side-card-list">
           <li class="is-ok">AI-01 базовый выполнен (задачи AI-01-01..06) — бот работает в Telegram</li>
-          <li class="is-ok"><strong>WF1: Chat Trigger Ingestion Pipeline</strong> загружает файлы в Qdrant, <strong>WF2: KB Master Agent</strong> отвечает через агента</li>
+          <li class="is-ok"><strong>WF1</strong> (загрузка в базу знаний) и <strong>WF2</strong> (агент отвечает на вопросы) уже работают</li>
           <li class="is-pending">Аккаунт Cohere — создадим в шаге 0 ниже</li>
         </ul>
         <div class="aa-side-card-hint">
@@ -139,32 +139,35 @@
           </summary>
           <div class="aa-inline-article-body">
             <div class="aa-md-body">
-              <p><strong>Cohere</strong> — компания, которая делает языковые модели для бизнеса. Главный конкурент OpenAI и Anthropic. Их сильная сторона — мультиязычность: модели понимают 100+ языков примерно одинаково хорошо. У OpenAI русский всегда «второй сорт» после английского, у Cohere — наравне.</p>
+              <p><strong>Cohere</strong> — компания, которая делает языковые модели для бизнеса. Их сильная сторона — мультиязычность: модели понимают 100+ языков примерно одинаково хорошо. Большинство embedding-моделей оптимизированы под английский и теряют точность на русской морфологии — Cohere специально решает эту проблему.</p>
               <p>У Cohere три семейства моделей:</p>
               <ul>
                 <li><strong>Embed</strong> — превращает текст в вектор (числовое представление смысла). Используется в RAG для поиска по смыслу. Это то, что мы будем менять в задаче.</li>
                 <li><strong>Rerank</strong> — берёт топ-50 результатов поиска и переранжирует их по точности. Отдельный стретч <code>S-Retrieval-Rerank</code>.</li>
-                <li><strong>Chat</strong> — генеративная модель для ответов агента (аналог gpt-4). Мы её сейчас не используем, у нас OpenAI.</li>
+                <li><strong>Chat</strong> — генеративная модель для ответов агента. В этой задаче мы её не задействуем — меняем только embedding.</li>
               </ul>
 
               <h4>Почему модель <code>embed-v4.0</code></h4>
-              <p>Это текущая флагманская embedding-модель Cohere для мультиязычного поиска. Что нам в ней важно:</p>
+              <p>Это флагманская embedding-модель Cohere для мультиязычного поиска.</p>
+              <p><strong>Плюсы:</strong></p>
               <ul>
-                <li><strong>+:</strong> Понимает русский на уровне с английским. Морфология, синонимы, разговорные формы — всё ок.</li>
-                <li><strong>+:</strong> Поддерживает <em>Matryoshka embeddings</em> — можно укоротить вектор до 256/512/1024 чисел без сильной потери точности.</li>
-                <li><strong>+:</strong> Отдельные режимы для документов и запросов (см. ниже про <code>input_type</code>).</li>
-                <li><strong>−:</strong> Размерность 1024 (у OpenAI 1536) — нельзя смешивать векторы. Старую коллекцию придётся пересоздать.</li>
-                <li><strong>−:</strong> Свободный лимит — 1000 запросов в месяц. Для тестов хватает, для прода нужен платный план.</li>
+                <li>Понимает русский на уровне с английским — морфология, синонимы, разговорные формы.</li>
+                <li>Поддерживает <em>Matryoshka embeddings</em> — можно укоротить вектор до 256 / 512 / 1024 чисел без сильной потери точности (когда нужно сэкономить место в БД).</li>
+                <li>Отдельные режимы для документов и запросов (см. ниже про <code>input_type</code>).</li>
               </ul>
-              <p>Через 6–12 месяцев Cohere выпустит новую версию (v5, v6…). Логика выбора останется той же: лучший мультиязычный recall + поддержка input_type. Конкретный номер версии меняется, принцип нет.</p>
+              <p><strong>Минусы:</strong></p>
+              <ul>
+                <li>Размерность 1024 — нельзя смешивать векторы с коллекцией под другую размерность. Старую коллекцию придётся пересоздать.</li>
+                <li>Свободный лимит — 1000 запросов в месяц. Для тестов хватает, для прода нужен платный план.</li>
+              </ul>
 
               <h4>Зачем разный <code>input_type</code> в WF1 и WF2</h4>
-              <p>Cohere специально обучила модель так, чтобы документы и вопросы к ним «тяготели» друг к другу в векторном пространстве — но при условии, что они обрабатываются через правильный режим:</p>
+              <p>В этой задаче ты меняешь embedding в двух местах: в WF1 (загрузка файлов в базу знаний) и в WF2 (поиск ответа на вопрос пользователя). Параметр <code>input_type</code> задаётся для каждого случая отдельно:</p>
               <ul>
-                <li><code>search_document</code> — для индексации документов. Используется в WF1 (когда грузим файлы в KB).</li>
-                <li><code>search_query</code> — для поисковых запросов. Используется в WF2 (когда пользователь спрашивает агента).</li>
+                <li><code>search_document</code> — режим для индексации документов. Используется в WF1.</li>
+                <li><code>search_query</code> — режим для поискового запроса. Используется в WF2.</li>
               </ul>
-              <p>Если поставить везде <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10%.</p>
+              <p>Cohere обучила модель так, чтобы документы и вопросы «тяготели» друг к другу в векторном пространстве, но при условии что обрабатываются через правильный режим. Если поставить везде <code>search_document</code> — вопрос «попадает» в другое облако векторного пространства, и расстояния до документов будут хуже. Recall падает на 5–10%.</p>
               <p><strong>Мнемоника:</strong> WF1 загружает <em>документы</em> → <code>search_document</code>. WF2 ищет по <em>запросу пользователя</em> → <code>search_query</code>.</p>
             </div>
           </div>
@@ -173,7 +176,13 @@
         <!-- Architecture БЫЛО → СТАЛО -->
         <div class="aa-md-body">
           <h2>Что меняется в воркфлоу</h2>
-          <p>Два воркфлоу содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между WF1 и WF2.</p>
+          <p>В базовом агенте AI-01 у тебя два workflow:</p>
+          <ul>
+            <li><strong>WF1</strong> — загружает файлы в базу знаний (ingestion).</li>
+            <li><strong>WF2</strong> — агент отвечает на вопросы пользователей (retrieval).</li>
+          </ul>
+          <p>Точные имена workflow могут отличаться в твоей версии курса — ориентируйся на функцию: «WF1 = загрузка», «WF2 = ответы».</p>
+          <p>Оба workflow содержат sub-ноду <code>Embeddings OpenAI</code>. Меняем её на <code>Embeddings Cohere</code> — с важным отличием в параметре между WF1 и WF2.</p>
         </div>
 
         <div class="aa-arch-diff">
@@ -259,10 +268,10 @@
             <div class="aa-setup-step-content">
               <div class="aa-setup-step-title">Проверь что ключ работает</div>
               <div class="aa-setup-step-text">
-                Скопируй curl-запрос, вставь свой ключ и запусти в терминале:
+                Самый простой способ — отправить тестовый запрос к Cohere API через HTTP Request ноду в n8n. Используй готовый curl-запрос ниже: его не нужно запускать в терминале, n8n умеет автоматически импортировать curl в HTTP Request ноду.
                 <div class="aa-setup-step-curl">
                   <div class="aa-setup-step-curl-header">
-                    <span>Terminal · curl</span>
+                    <span>curl-запрос для проверки ключа</span>
                     <button class="aa-code-copy-btn" data-copy-target="curl-cohere-check" type="button">
                       <span class="aa-code-copy-btn-icon">⎘</span>
                       <span class="aa-code-copy-btn-label">Скопировать</span>
@@ -283,6 +292,36 @@
                     Если <code>401</code> — ключ скопирован неверно. Если <code>429</code> — trial исчерпан (1000 req/мес).
                   </div>
                 </div>
+
+                <details class="aa-inline-article" data-article-slug="n8n-http-request-import-from-curl" style="margin-top:10px;">
+                  <summary>
+                    <span class="aa-inline-article-icon">⚡</span>
+                    <span class="aa-inline-article-title">Как быстро настроить HTTP Request ноду через Import from cURL</span>
+                    <span class="aa-inline-article-hint">статья · ~2 мин</span>
+                    <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+                  </summary>
+                  <div class="aa-inline-article-body">
+                    <div class="aa-md-body">
+                      <p><strong>cURL</strong> (читается «кёрл») — это команда для отправки HTTP-запросов из терминала. Документация большинства API устроена так: «вот пример запроса в виде curl-команды — отправь его и получишь ответ».</p>
+                      <p>Не обязательно запускать curl в терминале. В n8n у HTTP Request ноды есть кнопка <strong>Import from cURL</strong> — она забирает готовую curl-команду и автоматически разбирает её на части: метод, URL, заголовки, тело запроса. Это самый быстрый способ настроить вызов любого API.</p>
+
+                      <h4>Пошагово</h4>
+                      <ol>
+                        <li>Скопируй curl-команду из задачи или документации API.</li>
+                        <li>В n8n создай новый workflow или открой sandbox. Добавь ноду <strong>HTTP Request</strong>.</li>
+                        <li>В правом верхнем углу панели настроек ноды нажми <strong>Import cURL</strong> (или ссылку <em>Import cURL</em> рядом с полем URL — название может слегка отличаться по версии).</li>
+                        <li>В открывшееся поле вставь скопированную curl-команду. Нажми <strong>Import</strong>.</li>
+                        <li>n8n автоматически заполнит метод (GET/POST/DELETE/…), URL, заголовки и body. Проверь, что всё подставилось корректно.</li>
+                        <li>Если в curl был placeholder вроде <code>ВАШ_КЛЮЧ</code> — найди его в импортированных полях и замени на реальное значение.</li>
+                        <li>Нажми <strong>Execute step</strong>. Получи ответ API в правой панели.</li>
+                      </ol>
+
+                      <p><strong>Зачем это нужно знать:</strong> большинство сторонних API даёт примеры в виде curl-команд. Зная Import from cURL, ты можешь подключить почти любой сервис без чтения его SDK — просто скопировал команду из доков, импортировал, заменил ключ.</p>
+
+                      <p><strong>Подсказка:</strong> если в curl используется HTTP-заголовок <code>Authorization: Bearer …</code>, можно после импорта переключить ноду на использование сохранённого Generic Header Auth credential (см. статью «Как добавить Header Auth credential в n8n»). Тогда ключ не лежит «в открытом виде» в воркфлоу.</p>
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
           </div>
@@ -379,7 +418,7 @@
                         <li><strong>Postgres</strong> — реквизиты школьной БД для логов и chat memory.</li>
                       </ul>
                       <p>Внешние сервисы (Cohere, Voyage, Mem0 и т.п.) под свои задачи студент регистрирует сам — их ключи в школьный раздел не попадают.</p>
-                      <p>Если нужного ключа нет в «Мои Credentials» или ключ не работает — пиши в чат <a href="https://t.me/profy_conveyor" target="_blank" rel="noopener">@profy_conveyor</a>.</p>
+                      <p>Если нужного ключа нет в «Мои Credentials» или ключ не работает — напиши в <a href="https://t.me/+NHhrolKjGzY0N2Ni" target="_blank" rel="noopener">учебный чат школы</a>.</p>
                     </div>
                   </div>
                 </details>
@@ -488,50 +527,28 @@
               </div>
             </details>
 
-            <details class="aa-inline-article" data-article-slug="qdrant-delete-collection">
-              <summary>
-                <span class="aa-inline-article-icon">🗑</span>
-                <span class="aa-inline-article-title">Как удалить Qdrant-коллекцию через HTTP Request (с Import from cURL)</span>
-                <span class="aa-inline-article-hint">статья · ~2 мин</span>
-                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
-              </summary>
-              <div class="aa-inline-article-body">
-                <div class="aa-md-body">
-                  <p>В n8n нет отдельной ноды «Qdrant Delete Collection» — используем универсальный <strong>HTTP Request</strong>. Сделать это можно за минуту через функцию <em>Import from cURL</em>.</p>
-                  <ol>
-                    <li>
-                      <p>В любом sandbox-воркфлоу добавь ноду <strong>HTTP Request</strong> (или открой существующую). В правом верхнем углу настроек ноды нажми <strong>Import from cURL</strong>.</p>
-                    </li>
-                    <li>
-                      <p>Вставь в открывшееся поле curl-команду:</p>
-                      <pre style="background:#0a0e1a;padding:10px;border-radius:6px;font-size:12px;"><code>curl -X DELETE \
-  https://qdrant.school.vibe-business.site/collections/&lt;имя_твоей_коллекции&gt; \
-  -H "api-key: &lt;Qdrant Master ключ&gt;"</code></pre>
-                      <p>n8n автоматически распарсит curl и заполнит метод (<code>DELETE</code>), URL и заголовок.</p>
-                    </li>
-                    <li>
-                      <p>Подставь свои значения:</p>
-                      <ul>
-                        <li><code>&lt;имя_твоей_коллекции&gt;</code> — имя коллекции, которую ты создал в базовом агенте AI-01 (например, <code>c01-kb-agent</code>). Скопируй из своего <code>Product Config.qdrant.collection</code>.</li>
-                        <li><code>&lt;Qdrant Master ключ&gt;</code> — лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>. Можно использовать сохранённый в n8n credential <code>Qdrant Master</code> (Generic Header Auth) — тогда поле Header не нужно заполнять вручную.</li>
-                      </ul>
-                    </li>
-                    <li>
-                      <p>Нажми <strong>Execute step</strong>. Ожидаемый ответ — JSON <code>{"result": true, "status": "ok"}</code>.</p>
-                    </li>
-                    <li>
-                      <p>Удали HTTP Request ноду или оставь в sandbox-воркфлоу — она нужна была одноразово, в продакшн-воркфлоу её не нужно.</p>
-                    </li>
-                  </ol>
-                  <p><strong>Безопасность:</strong> DELETE действительно удаляет коллекцию — вместе со всеми векторами. Сохранённые в Qdrant payload'ы пропадут. Файлы-источники, из которых строилась KB, остаются у тебя — просто перезалей их.</p>
-                </div>
-              </div>
-            </details>
-
             <div class="aa-node-step-config">
               <div class="aa-node-step-config-label">Что конкретно сделать</div>
-              <p style="font-size:13px;color:var(--muted);">Удали свою текущую коллекцию через HTTP Request — детали в раскрывайке выше.</p>
-              <p style="font-size:13px;color:var(--muted);">Имя коллекции возьми из своего <code>Product Config.qdrant.collection</code> (то самое имя, которое ты задал в базовом агенте AI-01-02). После удаления оно останется тем же — просто следующий запуск WF1 пересоздаст коллекцию автоматически с новой размерностью.</p>
+              <p style="font-size:13px;color:var(--muted);">В Qdrant нет отдельной ноды «Delete Collection» — используем универсальный HTTP Request. Скопируй curl-запрос ниже и импортируй его в HTTP Request ноду через <em>Import from cURL</em> (см. раскрывайку «Как быстро настроить HTTP Request ноду через Import from cURL» в шаге 0.3 — инструкция универсальная).</p>
+
+              <div class="aa-setup-step-curl">
+                <div class="aa-setup-step-curl-header">
+                  <span>curl-запрос для удаления коллекции</span>
+                  <button class="aa-code-copy-btn" data-copy-target="curl-qdrant-delete" type="button">
+                    <span class="aa-code-copy-btn-icon">⎘</span>
+                    <span class="aa-code-copy-btn-label">Скопировать</span>
+                  </button>
+                </div>
+<pre id="curl-qdrant-delete">curl -X DELETE \
+  https://qdrant.school.vibe-business.site/collections/&lt;имя_твоей_коллекции&gt; \
+  -H "api-key: &lt;Qdrant Master ключ&gt;"</pre>
+                <div class="aa-setup-step-curl-note">
+                  <strong>&lt;имя_твоей_коллекции&gt;</strong> — то самое имя, которое ты задал в базовом агенте AI-01 (см. <code>Product Config.qdrant.collection</code>). После удаления оно останется тем же — просто следующий запуск WF1 пересоздаст коллекцию автоматически с новой размерностью.<br>
+                  <strong>&lt;Qdrant Master ключ&gt;</strong> — лежит в личном кабинете школы, раздел <em>«Мои Credentials»</em>.<br>
+                  <strong>Ожидаемый ответ:</strong> JSON <code>{"result": true, "status": "ok"}</code>.
+                </div>
+              </div>
+              <p style="font-size:12px;color:var(--muted);margin-top:8px;">DELETE удаляет коллекцию вместе со всеми векторами. Файлы-источники, из которых ты строил KB, не трогаются — они останутся у тебя, и WF1 перезальёт их в новую коллекцию.</p>
             </div>
 
             <div class="aa-node-step-io">
@@ -551,10 +568,10 @@
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">2</span>
-            <span class="aa-node-step-title">WF1: Chat Trigger Ingestion Pipeline — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-title">WF1 (загрузка в KB) — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в нодах <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> есть sub-нода <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
+            <p><strong>Что делаем:</strong> в WF1 ноды <code>Qdrant Insert TXT</code> и <code>Qdrant Insert PDF</code> содержат sub-ноду <code>Embeddings OpenAI</code>. Заменяем её на <code>Embeddings Cohere</code>.</p>
 
             <div class="aa-subnode-change">
               <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
@@ -598,7 +615,7 @@
             <div class="aa-node-step-config">
               <div class="aa-node-step-config-label">Что конкретно сделать в WF1</div>
               <ol style="font-size:13px;color:var(--muted);padding-left:20px;line-height:1.8;">
-                <li>Открой <strong>WF1: Chat Trigger Ingestion Pipeline</strong>.</li>
+                <li>Открой <strong>WF1</strong> (workflow, который отвечает за загрузку файлов в KB).</li>
                 <li>Замени sub-ноду <em>Embeddings OpenAI</em> на <em>Embeddings Cohere</em> в ноде <strong>Qdrant Insert TXT</strong> (как — в раскрывайке про sub-ноду выше).</li>
                 <li>Повтори для <strong>Qdrant Insert PDF</strong> — там та же sub-нода.</li>
               </ol>
@@ -614,8 +631,8 @@
             </div>
 
             <div class="aa-wf-shot">
-              <img src="screenshots/step2-wf1-cohere.png" alt="WF1: Chat Trigger Ingestion Pipeline — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 2 — WF1: Chat Trigger Ingestion Pipeline использует Cohere embed</div>
+              <img src="screenshots/step2-wf1-cohere.png" alt="WF1 — Qdrant Insert с sub-нодой Embeddings Cohere" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 2 — WF1 использует Cohere embed</div>
             </div>
           </div>
         </div>
@@ -624,10 +641,10 @@
         <div class="aa-node-step">
           <div class="aa-node-step-head">
             <span class="aa-node-step-num">3</span>
-            <span class="aa-node-step-title">WF2: KB Master Agent — замени Embeddings OpenAI → Cohere</span>
+            <span class="aa-node-step-title">WF2 (агент отвечает) — замени Embeddings OpenAI → Cohere</span>
           </div>
           <div class="aa-node-step-body">
-            <p><strong>Что делаем:</strong> в ноде <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже есть sub-нода <code>Embeddings OpenAI</code>. Заменяем аналогично шагу 2. <strong>Но с другим Input Type.</strong></p>
+            <p><strong>Что делаем:</strong> в WF2 нода <code>Qdrant KB</code> (инструмент AI Agent'а) — тоже содержит sub-ноду <code>Embeddings OpenAI</code>. Заменяем аналогично шагу 2. <strong>Но с другим Input Type.</strong></p>
 
             <div class="aa-subnode-change">
               <span class="aa-subnode-change-old">Embeddings OpenAI (text-embedding-3-small)</span>
@@ -646,8 +663,8 @@
             </div>
 
             <div class="aa-wf-shot">
-              <img src="screenshots/step3-wf2-cohere.png" alt="WF2: KB Master Agent — AI Agent с Qdrant KB и sub-нодой Embeddings Cohere (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
-              <div class="aa-wf-shot-caption">После шага 3 — WF2: KB Master Agent ищет через Cohere</div>
+              <img src="screenshots/step3-wf2-cohere.png" alt="WF2 — AI Agent с Qdrant KB и sub-нодой Embeddings Cohere (search_query)" loading="lazy" style="width:100%;border-radius:8px;display:block;">
+              <div class="aa-wf-shot-caption">После шага 3 — WF2 ищет через Cohere</div>
             </div>
           </div>
         </div>
@@ -662,6 +679,38 @@
           <div class="aa-node-step-body">
             <p><strong>Что делаем:</strong> в DataTable <code>[AI-01] Product Config</code> у тебя одна строка <code>product_id = ai-01</code> с JSON-конфигом продукта. Внутри секции <code>qdrant</code> меняем три поля — провайдер, модель и размерность.</p>
             <p style="font-size:13px;color:var(--muted);">Embedding-настройки относятся к <em>продукту</em>, а не к каналу — у одного продукта одна база знаний и одна embedding-модель. Если позже добавишь web-чат или MAX-канал, embedding не нужно дублировать в их конфиги — он берётся из Product Config.</p>
+
+            <details class="aa-inline-article" data-article-slug="datatable-config-concept">
+              <summary>
+                <span class="aa-inline-article-icon">⚙️</span>
+                <span class="aa-inline-article-title">Что такое конфиг продукта в DataTable и зачем он нужен</span>
+                <span class="aa-inline-article-hint">статья · ~3 мин</span>
+                <span class="aa-inline-article-arrow" aria-hidden="true">▾</span>
+              </summary>
+              <div class="aa-inline-article-body">
+                <div class="aa-md-body">
+                  <p>Когда AI-агент собран в n8n, его поведение определяется множеством параметров: какая модель LLM, какая коллекция в Qdrant, какой системный промпт, какой логировать в БД. Эти параметры можно «зашить» прямо в ноды воркфлоу, но тогда любая правка требует открыть редактор, найти ноду, поменять и опубликовать новую версию воркфлоу.</p>
+                  <p><strong>DataTable-конфиг</strong> — это альтернативный способ. Параметры лежат отдельно, в специальной таблице (<code>DataTable</code>) внутри n8n. Воркфлоу при запуске читает строку конфига и подставляет значения в свои ноды на лету.</p>
+
+                  <h4>Что это даёт</h4>
+                  <ul>
+                    <li><strong>Правка без редактирования воркфлоу.</strong> Хочешь сменить системный промпт — открой DataTable, поменяй ячейку, сохрани. Воркфлоу перезагружать не нужно — он подхватит новое значение при следующем запуске.</li>
+                    <li><strong>Один воркфлоу — много продуктов или каналов.</strong> Можно запустить тот же воркфлоу под несколько разных конфигураций — каждая в своей строке таблицы.</li>
+                    <li><strong>История изменений.</strong> Версии конфига видны в одном месте, легче откатить ошибочную правку.</li>
+                  </ul>
+
+                  <h4>Пример: как работает чтение конфига</h4>
+                  <p>В нашем агенте AI-01 при запуске WF2 происходит:</p>
+                  <ol>
+                    <li>Триггер передаёт <code>channel</code> (например <code>telegram</code>) и сообщение пользователя.</li>
+                    <li>Нода <strong>Get rows</strong> читает строку из DataTable <code>[AI-01] Channel Config</code> по <code>channel = telegram</code>. Получает channel-config (системный промпт, модель, температура).</li>
+                    <li>Из channel-config берёт <code>product_id</code>. Вторая <strong>Get rows</strong> читает <code>[AI-01] Product Config</code> по этому id. Получает product-config (qdrant, embedding, chat memory, log table, escalation).</li>
+                    <li>Нода <strong>Set</strong> сливает оба конфига в плоский JSON. Дальше AI Agent и его sub-ноды (Qdrant KB, Postgres Chat Memory) берут параметры из этого JSON.</li>
+                  </ol>
+                  <p><strong>В этой задаче</strong> ты меняешь параметры внутри Product Config (embedding_provider, embedding_model, embedding_dimensions). При следующем запуске WF2 эти значения автоматически подтянутся в ноды агента — менять что-то ещё в воркфлоу не нужно.</p>
+                </div>
+              </div>
+            </details>
 
             <div class="aa-node-step-config">
               <div class="aa-node-step-config-label">Что меняем в поле config</div>
@@ -718,7 +767,7 @@
           </div>
           <div class="aa-node-step-body">
             <p><strong>Что делаем:</strong> в шаге 1 ты удалил коллекцию — старые векторы пропали. Теперь ноды настроены на Cohere. Нужно перезалить все файлы KB заново — они запишутся как 1024-мерные Cohere-векторы.</p>
-            <p>Воспользуйся тем способом загрузки, который ты сам настроил для своего проекта. Если использовал базовый <strong>WF1: Chat Trigger Ingestion Pipeline</strong> — просто открой его, отправь файлы через встроенный Chat и проверь, что executions заканчиваются успехом. Если у тебя свой ingestion-воркфлоу — запусти его.</p>
+            <p>Воспользуйся тем способом загрузки, который ты сам настроил для своего проекта. Если использовал базовый <strong>WF1</strong> (загрузка через встроенный Chat) — просто открой его, отправь файлы и проверь, что executions заканчиваются успехом. Если у тебя свой ingestion-воркфлоу — запусти его.</p>
 
             <div class="aa-callout-tip">
               <div class="aa-callout-tip-icon">💡</div>
@@ -840,7 +889,7 @@
               <ol>
                 <li><strong>input_type одинаковый в WF1 и WF2.</strong> Самая частая ошибка. WF1 = <code>search_document</code>, WF2 = <code>search_query</code>. Разные.</li>
                 <li><strong>Не пересоздали коллекцию перед сменой нод.</strong> Получишь <code>Wrong input: expected dim 1536, got 1024</code> при первой же загрузке файла.</li>
-                <li><strong>Native ноды Cohere нет в n8n.</strong> Зависит от версии. Если в списке sub-нод нет <code>Embeddings Cohere</code> — нужен HTTP Request, это отдельный более сложный сценарий (~2 часа работы). Уточни у ментора.</li>
+                <li><strong>Забыли обновить Product Config.</strong> Ноды используют Cohere, а в конфиге всё ещё <code>embedding_provider: openai</code> — рассинхрон между фактом и метаданными.</li>
               </ol>
             </div>
           </div>
@@ -884,8 +933,8 @@
         <p class="aa-side-card-hint">
           Застрял? Покажи в чате скриншот ноды и вывод ошибки из Executions — обычно находим причину быстро.
         </p>
-        <a class="btn btn-ghost btn-sm" href="https://t.me/profy_conveyor" target="_blank" rel="noopener">
-          Написать в чат
+        <a class="btn btn-ghost btn-sm" href="https://t.me/+NHhrolKjGzY0N2Ni" target="_blank" rel="noopener">
+          Написать в учебный чат
         </a>
       </section>
 

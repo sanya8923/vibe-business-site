@@ -42,6 +42,7 @@
 |------|-----------|------------------|-------|
 | `n8n-credential-header-auth` | Как добавить Header Auth credential в n8n | AI-01/S-Embed-Cohere | HIGH |
 | `my-credentials-in-platform` | Раздел «Мои Credentials» в личном кабинете школы | AI-01/S-Embed-Cohere | HIGH |
+| `n8n-http-request-import-from-curl` | Как быстро настроить HTTP Request ноду через Import from cURL | AI-01/S-Embed-Cohere | HIGH — переиспользуется в любой задаче с внешним API |
 
 ### Категория: Qdrant
 
@@ -49,7 +50,6 @@
 |------|-----------|------------------|-------|
 | `qdrant-overview` | Что такое Qdrant и как с ним работать в n8n | AI-01/S-Embed-Cohere | HIGH |
 | `qdrant-collection-naming` | Правила именования Qdrant-коллекций в школе | AI-01/S-Embed-Cohere | HIGH |
-| `qdrant-delete-collection` | Как удалить коллекцию через HTTP Request с Import from cURL | AI-01/S-Embed-Cohere | HIGH |
 | `qdrant-dimensions-incompatible` | Почему нельзя смешивать векторы разной размерности | AI-01/S-Embed-Cohere | MEDIUM |
 
 ### Категория: AI / LLM сервисы
@@ -58,6 +58,12 @@
 |------|-----------|------------------|-------|
 | `cohere-overview-and-models` | Cohere — что это, какие модели, зачем разный input_type | AI-01/S-Embed-Cohere | MEDIUM |
 | `n8n-whisper` | Что такое Whisper | M5-01 | MEDIUM |
+
+### Категория: Архитектура агентов
+
+| slug | Заголовок | Где используется | Reuse |
+|------|-----------|------------------|-------|
+| `datatable-config-concept` | Что такое конфиг продукта в DataTable и зачем он нужен | AI-01/S-Embed-Cohere | HIGH — любая задача с конфигом в DataTable |
 
 ### Категория: Telegram
 
@@ -80,7 +86,6 @@
 |------|-----------|-----------|
 | `n8n-community-node-install` | Как установить community node в n8n | HIGH (S-Mem-Mem0, S-Channels-MAX) |
 | `litellm-proxy-concept` | Что такое LiteLLM-прокси и как школа его использует | HIGH (school_token стретчи) |
-| `n8n-http-request-basics` | HTTP Request: метод, URL, auth, body, Import from cURL | HIGH |
 | `voyage-api-registration` | Регистрация в Voyage AI | LOW (S-Embed-Voyage) |
 | `mem0-registration` | Регистрация в Mem0 | LOW (S-Mem-Mem0) |
 
