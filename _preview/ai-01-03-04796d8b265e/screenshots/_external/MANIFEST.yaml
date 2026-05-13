@@ -1,0 +1,43 @@
+schema_version: external-screenshots/v1
+task_id: AI-01-03
+generated_at: 2026-05-13T16:30:00Z
+generated_by: pc_n8n-screenshotter (phase 5.2)
+note: |
+  Только runtime-figure. Все 25 n8n-скринов задачи приостановлены phase-blocker'ом
+  NDV_OVERFLOW_VIEWPORT_NOT_RECOVERABLE (см. .pipeline/05-screenshots-log.json).
+  После закрытия blocker'а ручной съёмкой автором в полноэкранном Chrome —
+  записи здесь остаются актуальными только для runtime-скринов.
+
+items:
+  - external_id: wf2-execution-success
+    filename: wf2-execution-success.png
+    source: runtime
+    service: n8n-master
+    url: https://n8n.school.vibe-business.site/workflow/bEBnz1WO7xW0Nu0b/executions
+    instruction: |
+      Запусти эталон _etalon-ai-01-03 через runner _etalon-ai-01-03-test
+      (jQm1u67JiDbB2RID) с живыми credentials (OpenAi account, Postgres, Qdrant)
+      и заполненной Qdrant-коллекцией. После успешного прогона открой Executions
+      tab Sub-WF — снимок последнего execution с зелёной success-галочкой и
+      колонкой Duration. В кадр должны попасть: статус success, дата/время, длительность.
+    figure_id: fig-step11-execution-success
+    used_in_body: true
+    used_in_inline: []
+    alt: "Список executions Sub-WF с зелёным статусом и временем ответа"
+
+  - external_id: wf2-ai-agent-output-intermediate-steps
+    filename: wf2-ai-agent-output-intermediate-steps.png
+    source: runtime
+    service: n8n-master
+    url: https://n8n.school.vibe-business.site/workflow/bEBnz1WO7xW0Nu0b
+    instruction: |
+      После успешного e2e-прогона (вопрос из KB, чтобы агент дернул Qdrant KB tool)
+      открой output ноды AI Agent в режиме JSON. В кадре должны быть видны:
+      - ключ "output" со строкой ответа агента
+      - ключ "intermediateSteps" со списком объектов { action: {...}, observation: ... },
+        где action ссылается на инструмент Qdrant KB.
+      Это работает только при returnIntermediateSteps=true в Options ноды AI Agent.
+    figure_id: fig-step11-intermediate-steps
+    used_in_body: true
+    used_in_inline: []
+    alt: "Output ноды AI Agent с полем intermediateSteps"
