@@ -6,6 +6,12 @@
 
   const STACK_ORDER = ['chat', 'embedding', 'retrieval', 'memory', 'channels', 'data', 'storage', 'sec', 'ops'];
 
+  // Опубликованные инструкции стретч-задач (public preview без CTA).
+  // Ключ — id из catalog (window.RagCatalog.getStretch(id)).
+  const STRETCH_PREVIEW_URLS = {
+    'S-Mem-Zep-Cloud': '/_preview/ai-01-s-mem-zep-958df1c8da48/'
+  };
+
   function start() {
     const proj = window.RagShared.getActiveProject();
     if (!proj) {
@@ -496,6 +502,11 @@
         if (stretchBtn) {
           e.preventDefault();
           const id = stretchBtn.dataset.stretch;
+          const url = STRETCH_PREVIEW_URLS[id];
+          if (url) {
+            window.location.href = url;
+            return;
+          }
           const s = window.RagCatalog.getStretch(id);
           window.RagShared.showToast(
             s ? `Инструкция «${s.name}» — в разработке` : 'Инструкция в разработке'
