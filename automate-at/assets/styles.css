@@ -3106,6 +3106,11 @@
 .aa-node-step-body { font-size: 14px; line-height: 1.6; color: var(--text); }
 .aa-node-step-body p { margin: 8px 0; color: var(--muted); }
 .aa-node-step-body p strong { color: var(--text); }
+/* Списки markdown в прозе шага приглушаются под цвет параграфов (var(--muted)),
+   чтобы внутри одного setup-step не было визуального разрыва между прозой и списком.
+   strong внутри списка остаётся ярким — для акцентов, как в правиле `p strong` выше. */
+.aa-node-step-body li { color: var(--muted); }
+.aa-node-step-body li strong { color: var(--text); }
 .aa-node-step-config {
   margin: 12px 0;
   padding: 12px 14px;
