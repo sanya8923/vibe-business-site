@@ -1,0 +1,30 @@
+id: shot-step1
+file: shot-step1.png
+type: canvas-partial
+source: n8n
+workflow_url: https://n8n.school.vibe-business.site/workflow/mav43ZzPVgQ66GDP
+node_name: Telegram Trigger
+anchor_step: step-telegram-trigger
+state: |
+  Открой workflow → NDV закрыт, сайдбар collapsed, zoom-to-fit (Ctrl+Shift+H).
+  На canvas одна нода Telegram Trigger после шага 1 (до добавления OpenAI).
+expected_ui:
+  canvas_nodes: "1 нода: Telegram Trigger"
+  ndv: "закрыт"
+  sidebar: "collapsed"
+  zoom: "to-fit"
+expected_alt: |
+  Canvas n8n с одной добавленной нодой Telegram Trigger
+expected_caption: |
+  После шага 1 — на canvas одна нода Telegram Trigger, в её параметрах выбран
+  credential на твой бот и Trigger On = Message.
+mask:
+  - "Имя credential в NDV если оно содержит реальный токен-hint или личное имя бота"
+target_resolution: "1840+ px ширина (для container-md @2x на платформе)"
+notes: |
+  Снимай полный canvas: нода должна быть по центру, видны стрелки тулбара сверху.
+  Эталон содержит уже все 3 ноды — скадрируй только первую или сделай скрин на
+  промежуточном этапе пока не добавил OpenAI.
+  Если эталон уже полный — можно скрыть/удалить временно другие ноды или снять
+  этот кадр с частичным canvas (кrop по горизонтали).
+arch_diff_pair: null

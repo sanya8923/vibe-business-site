@@ -1,0 +1,29 @@
+id: shot-step3
+file: shot-step3.png
+type: canvas-full
+source: n8n
+workflow_url: https://n8n.school.vibe-business.site/workflow/mav43ZzPVgQ66GDP
+node_name: Telegram Send Message
+anchor_step: step-send-message
+state: |
+  Открой workflow → NDV закрыт, сайдбар collapsed, zoom-to-fit.
+  Все три ноды должны быть видны: Telegram Trigger → OpenAI → Telegram Send Message.
+expected_ui:
+  canvas_nodes: "3 ноды в линейной цепочке: Telegram Trigger → OpenAI → Telegram Send Message"
+  ndv: "закрыт"
+  sidebar: "collapsed"
+  zoom: "to-fit"
+  arrows: "два main-коннектора: Trigger→OpenAI и OpenAI→SendMessage"
+expected_alt: |
+  Готовый workflow: Telegram Trigger → OpenAI → Telegram Send Message
+expected_caption: |
+  Готовый workflow после шага 3 — три ноды в линейной цепочке.
+mask: []
+target_resolution: "1840+ px ширина (для container-md @2x на платформе)"
+notes: |
+  Это главный canvas-скрин задачи — архитектура linear standalone должна быть
+  понятна с первого взгляда. Все три ноды и обе стрелки обязательно в кадре.
+  В отличие от M0-01 (sub-node паттерн со стрелкой снизу) — здесь все стрелки
+  горизонтальные и одного типа (main-connector).
+  Zoom-to-fit: нажми Ctrl+Shift+H или используй кнопку Fit в правом нижнем углу.
+arch_diff_pair: null

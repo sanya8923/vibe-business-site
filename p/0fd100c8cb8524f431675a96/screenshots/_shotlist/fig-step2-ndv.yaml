@@ -1,0 +1,37 @@
+id: fig-step2-ndv
+file: fig-step2-ndv.png
+type: ndv
+source: n8n
+workflow_url: https://n8n.school.vibe-business.site/workflow/mav43ZzPVgQ66GDP
+node_name: OpenAI
+anchor_step: step-openai
+state: |
+  Открой workflow → двойной клик по ноде "OpenAI" → откроется NDV.
+  Раздел Options должен быть раскрыт (там Instructions / системный промпт).
+expected_ui:
+  resource: "Text"
+  operation: "Response"
+  credential: "OpenAi account (выбран)"
+  modelId: "deepseek-chat (режим By ID)"
+  responses_user_content: "={{ $('Telegram Trigger').item.json.message.text }}"
+  options_instructions: "Ты полезный ассистент. Отвечай кратко и по делу на русском языке."
+  simplify: "true (default, может быть скрыт)"
+expected_alt: |
+  Параметры ноды OpenAI: Resource=Text, Operation=Response, модель deepseek-chat,
+  в Content выражение из Telegram Trigger, в Instructions системный промпт
+expected_caption: |
+  Параметры ноды OpenAI после настройки: Resource=Text, Operation=Response, модель
+  `deepseek-chat`, в Content подставлено выражение
+  `={{ $('Telegram Trigger').item.json.message.text }}`, в Instructions — системный промпт.
+mask:
+  - "Имя credential если отличается от 'OpenAi account' и содержит персональные данные"
+target_resolution: "1840+ px ширина (для container-md @2x на платформе)"
+notes: |
+  ВАЖНО: операция должна называться "Response" (не "Message a Model" — это старое
+  имя v1.x). Если видишь старое имя — значит открыта старая нода, проверь тип.
+  Раздел Options должен быть раскрыт — поле Instructions должно попасть в кадр.
+  Если NDV не вмещается по высоте — уменьши zoom браузера до 75% или сделай
+  scroll-stitch (два скрина склей вертикально).
+  Поле Content (внутри Messages → User) должно содержать выражение с message.text
+  из Telegram Trigger — это ключевой педагогический момент скрина.
+arch_diff_pair: null

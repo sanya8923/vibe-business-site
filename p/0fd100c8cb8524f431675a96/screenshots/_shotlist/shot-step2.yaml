@@ -1,0 +1,29 @@
+id: shot-step2
+file: shot-step2.png
+type: canvas-partial
+source: n8n
+workflow_url: https://n8n.school.vibe-business.site/workflow/mav43ZzPVgQ66GDP
+node_name: OpenAI
+anchor_step: step-openai
+state: |
+  Открой workflow → NDV закрыт, сайдбар collapsed, zoom-to-fit.
+  На canvas две ноды: Telegram Trigger и OpenAI, соединённые стрелкой.
+  (Telegram Send Message ещё не добавлен — это промежуточное состояние после шага 2.)
+expected_ui:
+  canvas_nodes: "2 ноды: Telegram Trigger → OpenAI (main-стрелка между ними)"
+  ndv: "закрыт"
+  sidebar: "collapsed"
+  zoom: "to-fit"
+expected_alt: |
+  Canvas n8n: Telegram Trigger соединён с нодой OpenAI
+expected_caption: |
+  После шага 2 — на canvas две ноды: Telegram Trigger подключён к OpenAI.
+mask: []
+target_resolution: "1840+ px ширина (для container-md @2x на платформе)"
+notes: |
+  Эталон уже содержит все 3 ноды (включая Telegram Send Message).
+  Снимай частично — либо на промежуточном этапе сборки (когда третья нода ещё
+  не добавлена), либо скадрируй canvas по горизонтали так, чтобы Telegram Send
+  Message не попал в кадр.
+  Стрелка main-коннектора между Trigger и OpenAI должна быть чётко видна.
+arch_diff_pair: null

@@ -1,0 +1,33 @@
+id: fig-step3-ndv
+file: fig-step3-ndv.png
+type: ndv
+source: n8n
+workflow_url: https://n8n.school.vibe-business.site/workflow/mav43ZzPVgQ66GDP
+node_name: Telegram Send Message
+anchor_step: step-send-message
+state: |
+  Открой workflow → двойной клик по ноде "Telegram Send Message" → откроется NDV.
+expected_ui:
+  resource: "Message"
+  operation: "Send Message"
+  credential: "выбран тот же credential что в Telegram Trigger (@profy_conveyor_bot или имя студента)"
+  chatId: "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+  text: "={{ $json.output[0].content[0].text }}"
+  appendAttribution: "false (опция 'Append n8n Attribution' выключена)"
+expected_alt: |
+  Параметры ноды Telegram Send Message: Chat ID и Text заполнены выражениями из
+  предыдущих нод
+expected_caption: |
+  Параметры Telegram Send Message: Chat ID = `={{ $('Telegram Trigger').item.json.message.chat.id }}`,
+  Text = `={{ $json.output[0].content[0].text }}`.
+mask:
+  - "Имя credential если содержит реальный токен-hint или персональное имя бота студента"
+target_resolution: "1840+ px ширина (для container-md @2x на платформе)"
+notes: |
+  Оба поля Chat ID и Text — в режиме Expression (значок {{ }}). Убедись что выражения
+  полностью видны в кадре, не обрезаны.
+  Поле Text должно содержать путь output[0].content[0].text — это ключевой gotcha
+  задачи (студент часто пробует output_text и workflow падает).
+  Если credential называется '@profy_conveyor_bot' — это тестовый бот эталона,
+  в реальной задаче студент поставит свой. Маскировать не обязательно, но можно.
+arch_diff_pair: null

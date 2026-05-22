@@ -1,0 +1,35 @@
+id: fig-step4-chat
+file: _external/runtime-m0-02-telegram-chat.png
+type: runtime-chat
+source: runtime
+external_id: runtime-m0-02-telegram-chat
+anchor_step: step-activate-and-test
+node_name: null
+state: |
+  Активируй workflow (кнопка Publish в правом верхнем углу).
+  Открой Telegram → найди своего бота по username → напиши «Привет! Как тебя зовут?».
+  Дождись ответа от AI.
+  Сделай скрин окна переписки с ботом в Telegram.
+expected_ui:
+  chat_window: "Telegram-чат с ботом"
+  user_message: "«Привет! Как тебя зовут?» или любой тест-вопрос"
+  bot_response: "Связный ответ на русском языке в стиле системного промпта (полезный ассистент)"
+  no_errors: "нет красных сообщений об ошибке"
+expected_alt: |
+  Окно чата в Telegram с собственным ботом: пользователь написал вопрос, бот ответил
+  через AI
+expected_caption: |
+  Так выглядит результат: бот в Telegram отвечает на сообщение пользователя через AI.
+mask:
+  - "Username бота если не хочешь светить (он публичный, но по желанию)"
+  - "Имя и аватар пользователя (твои персональные данные)"
+  - "Любые другие переписки видимые на скрине"
+target_resolution: "1200+ px ширина (runtime-скрин, не n8n canvas)"
+notes: |
+  Это runtime-скрин: снимается не из редактора workflow, а из живого Telegram-чата.
+  Workflow должен быть активирован (Publish), иначе Trigger не будет ловить сообщения.
+  Если бот не отвечает: проверь что workflow active, что credential выбран правильно,
+  что в поле Text стоит output[0].content[0].text (не output_text).
+  Файл сохранить в screenshots/_external/runtime-m0-02-telegram-chat.png
+  (именно в _external/, а не в корневой screenshots/).
+arch_diff_pair: null
