@@ -36,9 +36,16 @@ site/rag-agent/
 │   ├── catalog.js                # Каталог стретчей + scoring + автоблоки
 │   ├── brief.js                  # 11 полей брифа
 │   ├── quizzes.js                # 5 квизов (14 вопросов)
+│   ├── quiz-runtime.js           # Общий рантайм всех 5 квизов
 │   ├── warnings.js               # Триггеры warnings
 │   ├── cases.js                  # Преднастроенные шаблоны кейсов
-│   └── preview.js                # Рендер sticky preview sidebar
+│   ├── case-runtime.js           # Рантайм страницы учебного кейса (рендер 9 блоков)
+│   ├── preview.js                # Рендер sticky preview sidebar
+│   ├── result.js                 # Финал: стек / warnings / Markdown / Техзадание
+│   ├── wizard-ui.js              # Общий UI-слой wizard'а (selector, progress, sidebar)
+│   └── brand-icons.js            # Иконки и цвета брендов технологий (для rec-card)
+├── lab/
+│   └── progress-variants.html    # Песочница вариантов прогресс-бара (noindex)
 └── README.md
 ```
 
